@@ -1,0 +1,17 @@
+<button type="button" class="button d-flex flex-items-center px-2 mx-1 h-100"
+    style="border-radious:3rem; back-ground:rgba(7, 131, 7, 0.895) !important;"
+    @onclick="HandleClick">
+    <i class="fa fa-file-excel-o mx-1" aria-hidden="true"></i>
+    <span class="mx-1">Exportar a excel</span>
+</button>
+
+@code{
+    [Parameter]
+    public EventCallback OnClick {get;set;}
+
+    private async void HandleClick()
+    {
+        await OnClick.InvokeAsync();
+    }
+
+}

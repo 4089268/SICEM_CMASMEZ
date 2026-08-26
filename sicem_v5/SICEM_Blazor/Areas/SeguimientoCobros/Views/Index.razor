@@ -1,0 +1,118 @@
+@page "/seguimiento_cobros"
+@using Sicem_Blazor.SeguimientoCobros.Models;
+@using Sicem_Blazor.SeguimientoCobros.Data;
+@using System.Threading
+@inject IJSRuntime JSRuntime
+@inject IncomeOfficeService incomeOfficeService
+@inject IMatToaster Toaster
+@implements IDisposable
+
+
+<div id="map" style="height:100%;width:100%;"></div>
+
+<div class="d-flex p-2 justify-content-end" style="height:90vh; position:fixed; right:0; ">
+    <div class="border rounded-lg m-2 p-2 bg-white" style=" width: 45rem;">
+        <div style="height:40%" >
+            <SfAccumulationChart @ref="accumulationChartIngresos" Title="Ingresos por Sucursal">
+                <AccumulationChartSeriesCollection>
+                    <AccumulationChartLegendSettings Visible="true" Position="LegendPosition.Top"></AccumulationChartLegendSettings>
+                    <AccumulationChartSeries DataSource="@incomeDataGraph" XName="Office" YName="Income" Name="Ingresos" InnerRadius="40%" Palettes="@palettes">
+                        <AccumulationDataLabelSettings Visible="true" Name="Ingresos"></AccumulationDataLabelSettings>
+                    </AccumulationChartSeries>
+                </AccumulationChartSeriesCollection>
+                <AccumulationChartLegendSettings Visible="false"></AccumulationChartLegendSettings>
+                <AccumulationChartTooltipSettings Enable="true"></AccumulationChartTooltipSettings>
+            </SfAccumulationChart>
+        </div>
+        <div style="height:35%">
+            <SfAccumulationChart @ref="accumulationChartRecibos" Title="Recibos por Sucursal">
+                <AccumulationChartSeriesCollection>
+                    <AccumulationChartSeries DataSource="@incomeDataGraph" XName="Office" YName="Bills" Name="Recibos" InnerRadius="40%" Palettes="@palettes">
+                        <AccumulationDataLabelSettings Visible="true" Name="Recibos"></AccumulationDataLabelSettings>
+                    </AccumulationChartSeries>
+                </AccumulationChartSeriesCollection>
+                <AccumulationChartLegendSettings Visible="false"></AccumulationChartLegendSettings>
+                <AccumulationChartTooltipSettings Enable="true"></AccumulationChartTooltipSettings>
+            </SfAccumulationChart>
+        </div>
+        <div style="height:25%">
+            <SfGrid @ref="dataGrid" DataSource="@incomeData" TValue="OfficePushpinMap" Height="100%" Width="100%" EnableHover="true">
+                <GridColumns>
+                    <GridColumn Field="@nameof(OfficePushpinMap.Office)" HeaderText="Sucursal" TextAlign="TextAlign.Left" />
+                    <GridColumn Field="@nameof(OfficePushpinMap.Bills)" HeaderText="Recibos" TextAlign="TextAlign.Right" Format="n0" />
+                    <GridColumn Field="@nameof(OfficePushpinMap.Income)" HeaderText="Ingresos" TextAlign="TextAlign.Right" Format="c2" />
+                </GridColumns>
+            </SfGrid>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private static Timer fetchTimer;
+    private List<OfficePushpinMap> incomeData {get; set;}
+    private List<OfficePushpinMap> incomeDataGraph {
+        get => incomeData.Where(item => item.Id < 900 ).ToList();
+    }
+    private SfGrid<OfficePushpinMap> dataGrid;
+    private SfAccumulationChart accumulationChartIngresos;
+    private SfAccumulationChart accumulationChartRecibos;
+    private string[] palettes = {"#2e86c1", "#28b463", "#d68910", "#884ea0"};
+
+    protected override void OnInitialized()
+    {
+        incomeData = incomeOfficeService.GetIncomes().ToList();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("initIncomeMap");
+            await JSRuntime.InvokeVoidAsync("actualizarItems", incomeData );
+            await Task.Delay(8000);
+            fetchTimer = new Timer(FetchData, null, 0, 6000);
+        }
+    }
+
+    private async void FetchData(object state)
+    {
+        try{
+            var tmpIncomeData = incomeOfficeService.GetIncomes().ToList();
+            refreIncomesData(tmpIncomeData);
+
+            await JSRuntime.InvokeVoidAsync("actualizarItems", tmpIncomeData );
+
+        }catch(Exception err){
+            Console.WriteLine( err.Message);
+        }
+    }
+
+    private void refreIncomesData(List<OfficePushpinMap> data)
+    {
+        try{
+            foreach(var newData in data){
+                var refdata = incomeData.Where(item => item.Id == newData.Id ).FirstOrDefault();
+                if(refdata != null ){
+                    refdata.Bills = newData.Bills;
+                    refdata.Income = newData.Income;
+                }
+            }
+            dataGrid.Refresh();
+            accumulationChartIngresos.Refresh();
+            accumulationChartRecibos.Refresh();
+        }catch(Exception err){
+            Console.WriteLine(err.Message);
+        }
+    }
+    
+    public async void Dispose()
+    {
+        await JSRuntime.InvokeVoidAsync("cerrarVentanaCobroCaja");
+
+        try{
+            fetchTimer.Dispose();
+        }catch(Exception){}
+    }
+
+}

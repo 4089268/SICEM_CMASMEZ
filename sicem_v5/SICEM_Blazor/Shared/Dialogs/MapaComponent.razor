@@ -1,0 +1,277 @@
+@using Syncfusion.Blazor.Maps
+@using Sicem_Blazor.Data.KML
+@using System.IO
+@inject IJSRuntime JSRuntime
+
+
+<VentanaSecundaria Titulo="@Titulo" Filas="@FilasTemplate" Columnas="@ColumnasTemplate" CerrarVentana="CerrarVentana_Click" Draggable="false">
+    <Content>
+
+        <div class="p-2" style="width:100%; height:100%; grid-area:1/1/2/3;">
+            <div class="button px-3 py-2 bg-success mr-4" @onclick="@(e => ExportarCamposVisible = true)" >
+                <i class="fa fa-download mr-2"></i>
+                <span>Exportar @(MarkerDataSource.Count() > 1 ? "Ubicaciones" :"Ubicacion" )</span>
+            </div>
+        </div>
+
+        <div class="p-2" style="width:100%; height:100%; grid-area:@(MarkerDataSource.Count() > 1?"2/1/3/2":"2/1/3/3");">
+            <div id="map" style="height:100%;width:100%;"></div>
+        </div>
+
+        @if(MarkerDataSource.Count() > 1){
+            <div class="p-2 border rounded" style="width:100%; height:100%; grid-area:2/2/3/3; overflow-y:auto;">
+            @foreach (var point in MarkerDataSource)
+            {
+                <div class="point-item" @onclick="@(e => MoverMapa(point))" style="border-bottom: 5px solid @(getColorByStatus(point.Padron.MesAdeudoAct));">
+                    <span class="tit">@point.Descripcion - @point.Subtitulo</span>
+                    <span class="loc"> @point.Latitude.ToString()  @point.Longitude.ToString() </span>
+                </div>
+            }
+            </div>
+        }
+
+        <div id="visorImg" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner" id="visorImg-list">
+                <div class="carousel-item active">
+                    <img src="..." class="d-block w-100" alt="...">
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-target="#visorImg" data-slide="prev" style="border: none; background: #00000075;">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-target="#visorImg" data-slide="next" style="border: none; background: #00000075;">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </button>
+            <button id="btn-closeImg" type="button" class="btn-close fa fa-close" aria-label="Close"></button>
+        </div>
+
+    </Content>
+</VentanaSecundaria>
+
+@if(ExportarCamposVisible){
+    <MapaCamposExportarVtn  OnClosed="@GenerarKML"/>
+}
+
+<style>
+    #visorImg{
+        display:none;
+        position: relative;
+        top: 113px;
+        left: 75px;
+        z-index: 66;
+        width: 350px;
+        height: 350px;
+        position: fixed;
+        border: 2px solid #555;
+        box-shadow: #333 3px 3px 10px;
+        border-radius: .7rem;
+        background-image: url(img/loading2.gif);
+        background-color: white;
+        background-position: center;
+        background-repeat: no-repeat;
+        transition: width .5s, height .5s;
+        cursor: pointer;
+    }
+    #visorImg.agrandar{
+        width: 50vh;
+        height: 50vh;
+    }
+    #visorImg img{
+        width: 100%;
+        height: 100%;
+        border-radius: .7rem;
+    }
+
+    #visorImg .btn-close{
+        z-index: 666;
+        position: absolute;
+        top: 5px;
+        left: 2px;
+        background: #0000;
+        border: none;
+        font-size: 1.4rem;
+        color: #333;
+    }
+
+    #visorImg .carousel-item .carousel-caption:hover{
+        color: #111;
+        background: #f5f5f588;
+    }
+
+    #visorImg .infoCuenta{
+        display:none;
+    }
+    #visorImg.agrandar .infoCuenta{
+        display:block;
+    }
+
+    .point-item{
+        display: flex;
+        flex-flow: column;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 1rem;
+        box-shadow: #3333336b 0px 2px 4px;
+        margin-bottom: .5rem;
+        cursor: pointer;
+    }
+    .point-item .tit{
+        font-size: 1.1rem;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    .point-item .loc{
+        font-size: .9rem;
+    }
+
+
+    
+</style>
+
+
+@code {
+    [Parameter] public double MinZoom {get;set;} = 1;
+    [Parameter] public double MaxZoom {get;set;} = 19;
+    [Parameter] public EventCallback OnClosed {get;set;}
+    [Parameter] public string Titulo {get;set;} = "Visor mapa";
+    [Parameter] public List<MapMark> MarkerDataSource { get; set; } = new List<MapMark>();
+    private MapMark PositionSelected;
+    private bool ExportarCamposVisible = false;
+
+
+    private SfMaps myMap {get;set;}
+    private double[] FilasTemplate = new double[]{40, .90};
+    private double[] ColumnasTemplate = new double[]{.82, 250};
+    
+
+    protected override void OnInitialized() {
+        PositionSelected = MarkerDataSource.FirstOrDefault();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            var dataPoints = new List<PointInfo>();
+            foreach( MapMark markData in MarkerDataSource){
+                var pointInfo = new PointInfo();
+                pointInfo.Titulo = markData.Descripcion;
+                pointInfo.SubTitulo = markData.Subtitulo;
+                pointInfo.Latitud = (decimal)markData.Latitude;
+                pointInfo.Longitud = (decimal)markData.Longitude;
+                pointInfo.IdOficina = markData.IdOficina;
+                pointInfo.RazonSocial = markData.Padron.RazonSocial;
+                pointInfo.IdCuenta = (int)markData.Padron.Id_Cuenta;
+                pointInfo.Localizacion = markData.Padron.Localizacion;
+                pointInfo.Direccion = markData.Padron.Direccion;
+                pointInfo.Colonia = markData.Padron.Colonia;
+                pointInfo.MesesAdeudo = markData.Padron.MesAdeudoAct;
+                dataPoints.Add(pointInfo);
+            }
+            await JSRuntime.InvokeVoidAsync("inicializarSicemMaps", dataPoints); 
+        }
+    }
+
+    private async Task CerrarVentana_Click(){
+        await OnClosed.InvokeAsync();
+    }
+
+    private async Task GenerarKML(List<string> camposExportar) {
+
+        ExportarCamposVisible = false;
+        if(camposExportar == null){
+            return;
+        }
+
+        // Generar lista de punto
+        var _puntos = new List<KmlPoint>();
+        foreach(var point in MarkerDataSource){
+
+            // Generar el titulo  con los camposa exportar
+            var _titulo = "";
+            
+            if(camposExportar.Count() > 1){
+                var _attributes = typeof(CatPadron).GetProperties();
+                foreach(var campo in camposExportar){
+                    System.Reflection.PropertyInfo _propInfo = _attributes.Where(item => item.Name.Equals(campo)).FirstOrDefault();
+                    if(_propInfo != null){
+                        _titulo = _titulo + $" {_propInfo.GetValue(point.Padron).ToString()} -";
+                    }
+                }
+                _titulo = _titulo.Remove(_titulo.Length-1, 1);
+
+            }else{
+                var _info = typeof(CatPadron).GetProperty(camposExportar.First());
+                _titulo = _info.GetValue(point.Padron).ToString();
+            }
+
+            _puntos.Add( new KmlPoint(){
+                Titulo = _titulo,
+                Latitud = point.Latitude,
+                Longitud = point.Longitude
+            }); 
+        }
+
+        // Generar kml
+        var _kmlGenerator = new KMLGenerator(_puntos);
+        var _kmlContent = _kmlGenerator.GenerarXml();
+
+        // Guardar documento
+        var _tmpPath = Path.GetTempPath();
+        var _name = $"predios-{Guid.NewGuid().ToString().Replace("-","")}.kml";
+        var _fileSrc = $"{_tmpPath}{_name}";
+        File.WriteAllText(_fileSrc, _kmlContent, System.Text.Encoding.UTF8);
+
+        // Descargar Archivo
+        var _options = new Dictionary<string, object>();
+        _options.Add("content", _kmlContent);
+        _options.Add("fileName", _name);
+        _options.Add("contentType", "application/vnd.google-earth.kml+xml");
+        await JSRuntime.InvokeVoidAsync("DownloAdFileFromBase64", _options);
+        
+    }
+    private async Task MoverMapa(MapMark markData){
+
+        var pointInfo = new PointInfo();
+        pointInfo.Titulo = markData.Descripcion;
+        pointInfo.SubTitulo = markData.Subtitulo;
+        pointInfo.Latitud = (decimal)markData.Latitude;
+        pointInfo.Longitud = (decimal)markData.Longitude;
+        pointInfo.IdOficina = markData.IdOficina;
+        pointInfo.RazonSocial = markData.Padron.RazonSocial;
+        pointInfo.IdCuenta = (int)markData.Padron.Id_Cuenta;
+        pointInfo.Localizacion = markData.Padron.Localizacion;
+        pointInfo.Direccion = markData.Padron.Direccion;
+        pointInfo.Colonia = markData.Padron.Colonia;
+        await JSRuntime.InvokeVoidAsync("moverMapa", pointInfo);
+    }
+
+    private string getColorByStatus(int meses)
+    {
+        switch(meses){
+            case 0:
+            case 1:
+            case 2:
+                return "green";
+            case 3:
+            case 4:
+            case 5:
+                return "orange";
+            default:
+                return "red"; 
+        }
+    }
+    public class PointInfo {
+        public string Titulo {get;set;}
+        public string SubTitulo {get;set;}
+        public decimal Latitud {get;set;}
+        public decimal Longitud {get;set;}
+        public int IdOficina {get;set;}
+        public string RazonSocial {get;set;}
+        public int IdCuenta {get;set;}
+        public string Localizacion {get;set;}
+        public string Direccion {get;set;}
+        public string Colonia {get;set;}
+        public int MesesAdeudo { get; set; } = 0;
+    }
+}

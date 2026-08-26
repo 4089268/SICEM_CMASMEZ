@@ -1,0 +1,77 @@
+@namespace Sicem_Blazor.Pages.Configuracion
+@page "/NotificacionesImages"
+
+<div class="notificacionesTemplateLayout">
+    <div style="grid-area:1/1/2/3;">
+        <div class="title-page text-uppercase" style="grid-area:1/1/2/2;">Notificaciones Imagenes</div>
+    </div>
+
+    <nav aria-label="breadcrumb" style="grid-area:2/1/3/3;">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="./">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="./Configuracion">Configuracion</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Notificaciones Imagenes</li>
+        </ol>
+    </nav>
+
+    @* Area Opciones *@
+    <div class="grid border rounded bg-white px-2 d-flex align-items-center" style="grid-area:3/1/4/3;">
+
+        <div class="button px-3 py-2 bg-success mr-3" @onclick="AgregarNuevoTemplateClick" >
+            <i class="fa fa-plus mr-2"></i>
+            <span>Agregar Imagen</span>
+        </div>
+    </div>
+    
+    <!-- ****** Catalog templates ******-->
+    <div class="border rounded bg-white p-2 p-1 w-100 h-100" style="grid-area:4/1/5/2">
+        <SfGrid @ref="DataGrid" DataSource="@DatosGrid" TValue="CatImagenesTemplate" AllowResizing="true" AllowSorting="true" AllowFiltering="false"
+            AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true">
+            <GridEvents RowSelected="OnDataGrid_SelectionChanged" TValue="CatImagenesTemplate"></GridEvents>
+            <GridColumns>
+                <GridColumn Field=@nameof(CatImagenesTemplate.Titulo) HeaderText="Titulo" TextAlign="TextAlign.Left" Width="140">
+                    <Template>
+                        @{
+                            var data = (context as CatImagenesTemplate);
+                            <i class="fa fa-newspaper mr-2" />
+                            <span>@data.Titulo</span>
+                        }
+                    </Template>
+                </GridColumn>
+            </GridColumns>
+        </SfGrid>
+    </div>
+
+    <!-- ****** Grid Detalle ******-->
+    <div class="border rounded bg-white p-2" style="grid-area:4/2/5/3;">
+        <div class="container" style="width: 100%; height: calc(100% - 4.5rem);">
+            @if(TemplateSeleccionado != null)
+            {
+                <div class="row h-100 overflow-auto">
+                    <div class="col-12 fa-2x pb-2">
+                        <input class="w-100" type="text" disabled value="@TemplateSeleccionado.Titulo" />
+                    </div>
+                    <div class="col-12">
+                        <img src="@TemplateSeleccionado.Path" class="img-fluid" alt="Imagen @TemplateSeleccionado.Titulo" />
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- ****** Acciones ******-->
+        <div class="d-flex p-2 justify-content-center" style="height:4rem;">
+            @* <button type="button" class="button px-3 py-2 bg-success mr-3" style="width:12rem;" disabled >
+                <i class="fa fa-save mr-3"></i>
+                <span>Actualizar</span>
+            </button> *@
+        </div>
+    </div>
+    
+</div>
+
+<BusyIndicator Busy="@cargando" ContentText="Cargando datos..." />
+
+@if(displayNotificationImageVtn)
+{
+    <CreateNotificationImageVtn OnClose="HandleCreateNotificationImageOnClose"/>
+}

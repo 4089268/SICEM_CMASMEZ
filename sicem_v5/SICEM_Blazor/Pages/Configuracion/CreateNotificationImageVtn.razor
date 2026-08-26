@@ -1,0 +1,25 @@
+@namespace Sicem_Blazor.Pages.Configuracion
+
+<VentanaSecundaria Titulo="@titulo" Filas="@gridFilas" Columnas="@gridColumnas" CerrarVentana="@CerrarModal">
+    <Content>
+        <div class="form">
+            <div class="item-cat">
+                <label class="my-auto h5">Titulo:</label>
+                <input type="text" @bind="@CatImagenesTemplate1.Titulo" />
+            </div>
+
+            <div class="item-cat">
+                <InputFile id="imageFile" OnChange="HandleFileSelected" accept="image/*" />
+                <label for="imageFile" class="my-auto h5">Archivo:</label>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center justify-content-center mt-5">
+            <button class="button py-2 w-100 mx-2" @onclick="HandleAddClick">
+                <span>Agregar</span>
+            </button>
+        </div>
+    </Content>
+</VentanaSecundaria>
+
+<BusyIndicator Busy="@busyDialog" ContentText="Cargando archivo..." />

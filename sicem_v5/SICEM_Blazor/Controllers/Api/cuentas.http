@@ -1,0 +1,7 @@
+@CuentasAPI_HostAddress = https://localhost:5001
+@AuthToken = _my_auth_token_
+
+### API Cuentas
+GET {{CuentasAPI_HostAddress}}/api/cuentas
+Authorization: Bearer {{AuthToken}}
+###
