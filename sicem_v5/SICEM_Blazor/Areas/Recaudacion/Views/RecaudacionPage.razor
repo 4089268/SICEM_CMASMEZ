@@ -52,19 +52,13 @@
                     </Template>
                 </GridColumn>
                 <GridColumn Field="@nameof(Recaudacion_Resumen.Oficina)" HeaderText="Oficina" TextAlign="TextAlign.Left" Width="170" />
-                
                 <GridColumn Field="@nameof(Recaudacion_Resumen.Usuarios_Propios)" HeaderText="Usu Propios" TextAlign="TextAlign.Right" Width="115" Format="n0" />
-                <GridColumn Field="@nameof(Recaudacion_Resumen.Ingresos_Propios)" HeaderText="Imp Propios" TextAlign="TextAlign.Right" Width="125" Format="c2" />
-
+                <GridColumn Field="@nameof(Recaudacion_Resumen.Ingresos_Propios)" HeaderText="$ Propios" TextAlign="TextAlign.Right" Width="125" Format="c2" />
                 <GridColumn Field="@nameof(Recaudacion_Resumen.Usuarios_Otros)" HeaderText="Usu Otros" TextAlign="TextAlign.Right" Width="115" Format="n0" />
-                <GridColumn Field="@nameof(Recaudacion_Resumen.Ingresos_Otros)" HeaderText="Imp Otros" TextAlign="TextAlign.Right" Width="125" Format="c2" />
-                
-
-                <GridColumn Field="@nameof(Recaudacion_Resumen.Usuarios_Total)" HeaderText="Usuarios Total" TextAlign="TextAlign.Center" Width="125" Format="n0" />
-
-                <GridColumn Field="@nameof(Recaudacion_Resumen.Importe_Total)" HeaderText="Importe Total" TextAlign="TextAlign.Center" Width="135" Format="c2" />
-                <GridColumn Field="@nameof(Recaudacion_Resumen.Cobrado)" HeaderText="Importe Cobrado" TextAlign="TextAlign.Center" Width="135" Format="c2" />
-                
+                <GridColumn Field="@nameof(Recaudacion_Resumen.Ingresos_Otros)" HeaderText="$ Otros" TextAlign="TextAlign.Right" Width="125" Format="c2" />
+                <GridColumn Field="@nameof(Recaudacion_Resumen.Usuarios_Total)" HeaderText="Total Usu" TextAlign="TextAlign.Center" Width="125" Format="n0" />
+                <GridColumn Field="@nameof(Recaudacion_Resumen.Importe_Total)" HeaderText="Total $" TextAlign="TextAlign.Center" Width="135" Format="c2" />
+                <GridColumn Field="@nameof(Recaudacion_Resumen.Cobrado)" HeaderText="Cobrado" TextAlign="TextAlign.Center" Width="135" Format="c2" />
 
                 <GridColumn HeaderText="Acciones" TextAlign="TextAlign.Left" Width="230">
                     <Template>
@@ -211,8 +205,8 @@
         this.Sector = 0;
     }
 
-    public void Procesar(SeleccionarFechaEventArgs e) {
-
+    public void Procesar(SeleccionarFechaEventArgs e)
+    {
         this.f1 = e.Fecha1;
         this.f2 = e.Fecha2;
         this.Subsistema = e.Subsistema;
@@ -224,10 +218,11 @@
         datosRecaudacion = new List<Recaudacion_Resumen>();
         DatosGrafica_Ingresos = new List<ChartItem>();
         DatosGrafica_Usuarios = new List<ChartItem>();
-        var Tareas = new List<Task>();
+        var tareas = new List<Task>();
 
         //****** Prepara Filas
-        foreach (var enlace in enlaces) {
+        foreach (var enlace in enlaces)
+        {
             var oficinaModel = new Recaudacion_Resumen();
             oficinaModel.Enlace  = enlace;
             datosRecaudacion.Add(oficinaModel);
@@ -245,11 +240,12 @@
             });
 
             //*** Agregar tarea
-            Tareas.Add(new Task(() => ConsultarOficina(enlace)) );
+            tareas.Add(new Task(() => ConsultarOficina(enlace)) );
         }
 
         //*** Agregar fila total
-        if (enlaces.Length > 1) {
+        if (enlaces.Length > 1)
+        {
             var oficinaModel = new Recaudacion_Resumen(){
                 Estatus = ResumenOficinaEstatus.Completado,
                 Enlace = new Ruta(){
@@ -261,7 +257,10 @@
         }
 
         //****** Iniciar tareas
-        foreach (var tarea in Tareas) { tarea.Start(); }
+        foreach (var tarea in tareas)
+        {
+            tarea.Start();
+        }
 
     }
     private void ConsultarOficina(IEnlace enlace) {
@@ -504,5 +503,4 @@
         await Task.Delay(100);
         this.busyDialog = false;
     }
-    
 }

@@ -22,33 +22,36 @@
                             <Template>
                                 @{
                                     var data = (context as Recaudacion_IngresosDias);
-                                    <div class="d-flex justify-content-between">
-                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Ver detalle" @onclick="@( e => VerDetalleDias(data.Fecha))">
-                                            <i class="fa fa-th" aria-hidden="true"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Ingresos Por Cajas" @onclick="@(e => IngresosPorCajas(data) )" >
-                                            <i class="fa fa-store" aria-hidden="true"></i>
-                                        </button>
-                                        @*
-                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Detalle por Conceptos Y Tipos Usuarios" @onclick="@(e => IngresosPorConceptosTiposUsuarios(data) )" >
-                                            <i class="fa fa-poll-h" aria-hidden="true"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Ingresos Por Formas de Pago" @onclick="@(e => IngresosPorFormasDePago(data) )" >
-                                            <i class="fa fa-money-bill" aria-hidden="true"></i>
-                                        </button>
-                                        *@
-                                    </div>
+                                    if(!data.Fecha_Letras.Contains(" TOTAL"))
+                                    {
+                                        <div class="d-flex justify-content-between">
+                                            <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Ver detalle" @onclick="@( e => VerDetalleDias(data.Fecha))">
+                                                <i class="fa fa-th" aria-hidden="true"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Ingresos Por Cajas" @onclick="@(e => IngresosPorCajas(data) )" >
+                                                <i class="fa fa-store" aria-hidden="true"></i>
+                                            </button>
+                                            @*
+                                            <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Detalle por Conceptos Y Tipos Usuarios" @onclick="@(e => IngresosPorConceptosTiposUsuarios(data) )" >
+                                                <i class="fa fa-poll-h" aria-hidden="true"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Ingresos Por Formas de Pago" @onclick="@(e => IngresosPorFormasDePago(data) )" >
+                                                <i class="fa fa-money-bill" aria-hidden="true"></i>
+                                            </button>
+                                            *@
+                                        </div>
+                                    }
                                 }
                             </Template>
                         </GridColumn>
                         <GridColumn Field="@nameof(Recaudacion_IngresosDias.Fecha_Letras)" HeaderText="Fecha" TextAlign="TextAlign.Left" Width="120" />
-                        <GridColumn Field="@nameof(Recaudacion_IngresosDias.Usuarios_Propios)" HeaderText="Usuarios Prop." TextAlign="TextAlign.Center" Width="115" Format="n0" />
-                        <GridColumn Field="@nameof(Recaudacion_IngresosDias.Ingresos_Propios)" HeaderText="Ingresos Prop." TextAlign="TextAlign.Right" Width="135" Format="c2" />
-                        <GridColumn Field="@nameof(Recaudacion_IngresosDias.Usuarios_Otros)" HeaderText="Usuarios Prop." TextAlign="TextAlign.Center" Width="115" Format="n0" />
-                        <GridColumn Field="@nameof(Recaudacion_IngresosDias.Ingresos_Otros)" HeaderText="Ingresos Prop." TextAlign="TextAlign.Right" Width="135" Format="c2" />
-                        <GridColumn Field="@nameof(Recaudacion_IngresosDias.Importe_Total)" HeaderText="Importe Total" TextAlign="TextAlign.Center" Width="135" Format="c2" />
+                        <GridColumn Field="@nameof(Recaudacion_IngresosDias.Usuarios_Propios)" HeaderText="Usu Propios" TextAlign="TextAlign.Center" Width="115" Format="n0" />
+                        <GridColumn Field="@nameof(Recaudacion_IngresosDias.Ingresos_Propios)" HeaderText="$ Propios" TextAlign="TextAlign.Right" Width="135" Format="c2" />
+                        <GridColumn Field="@nameof(Recaudacion_IngresosDias.Usuarios_Otros)" HeaderText="Usu Otros" TextAlign="TextAlign.Center" Width="115" Format="n0" />
+                        <GridColumn Field="@nameof(Recaudacion_IngresosDias.Ingresos_Otros)" HeaderText="$ Otros" TextAlign="TextAlign.Right" Width="135" Format="c2" />
+                        <GridColumn Field="@nameof(Recaudacion_IngresosDias.Usuarios_Total)" HeaderText="Total Usu" TextAlign="TextAlign.Center" Width="115" Format="n0" />
+                        <GridColumn Field="@nameof(Recaudacion_IngresosDias.Importe_Total)" HeaderText="Total $" TextAlign="TextAlign.Center" Width="135" Format="c2" />
                         <GridColumn Field="@nameof(Recaudacion_IngresosDias.Cobrado)" HeaderText="Cobrado" TextAlign="TextAlign.Center" Width="135" Format="c2" />
-                        <GridColumn Field="@nameof(Recaudacion_IngresosDias.Usuarios_Total)" HeaderText="Usaurios Total" TextAlign="TextAlign.Center" Width="115" Format="n0" />
                     </GridColumns>
                 </SfGrid>
             </div>
@@ -84,9 +87,30 @@
 
 
     //****** Funciones Generales *******
-    public void Inicializar(IEnlace enlace, IEnumerable<Recaudacion_IngresosDias> datos) {
+    public void Inicializar(IEnlace enlace, IEnumerable<Recaudacion_IngresosDias> datos)
+    {
         this.Enlace = enlace;
-        this.DatosIngresos = datos.ToList();
+        if(datos.Count() > 1)
+        {
+            this.DatosIngresos = datos
+                .Append(new Recaudacion_IngresosDias
+                {
+                    Fecha112 = " TOTAL",
+                    Fecha_Letras = " TOTAL",
+                    Usuarios_Propios = datos.Sum(d=>d.Usuarios_Propios),
+                    Usuarios_Otros = datos.Sum(d=>d.Usuarios_Otros),
+                    Usuarios_Total = datos.Sum(d=>d.Usuarios_Total),
+                    Ingresos_Propios = datos.Sum(d=>d.Ingresos_Propios),
+                    Ingresos_Otros = datos.Sum(d=>d.Ingresos_Otros),
+                    Importe_Total = datos.Sum(d=>d.Importe_Total),
+                    Cobrado = datos.Sum(d=>d.Cobrado)
+                })
+                .ToList();
+        }
+        else
+        {
+            this.DatosIngresos = datos.ToList();
+        }
     }
     private async Task Cerrar_Modal() {
         if(DatosIngresos != null){
