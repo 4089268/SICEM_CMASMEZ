@@ -1,65 +1,64 @@
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Notifications
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor
-@using Syncfusion.Blazor.Buttons
-@using Syncfusion.Blazor.Calendars
+@using Radzen
+@using Radzen.Blazor
 @using Sicem_Blazor.Micromedicion.Models
 @inject IJSRuntime JSRuntime
 
-@if (Visible) {
+@if (Visible)
+{
     <VentanaSecundaria Titulo="@Titulo" CerrarVentana="@CerrarModal" Filas="@(new double[] {50, 480, 160 })" Columnas="@(new double[] { 1020 })">
         <Content>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 1/2; grid-column: 1/2;">
                 <div class="w-100 d-flex align-items-center">
+                    @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                     <MatButton Class="ml-1 mr-2" Raised="true" Style="height:2.5rem;" OnClick="@GenerarExcel">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
+                    *@
                     <MatButton Class="mr-2" Raised="true" Style="height:2.5rem;" Disabled="true">Generar Reporte <i class="fa fa-file-pdf-o ml-2" aria-hidden="true"></i></MatButton>
                 </div>
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <SfGrid @ref="dataGrid" DataSource="@datosGrid" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true">
-                    <GridColumns>
-                        <GridColumn Field="@nameof(Micromedicion_Anomalia.Anomalia)" HeaderText="Anomalia" TextAlign="TextAlign.Left" Width="220" />
-                        <GridColumn Field="@nameof(Micromedicion_Anomalia.Ene)" HeaderText="Ene" TextAlign="TextAlign.Center" Width="60" />
-                        <GridColumn Field="@nameof(Micromedicion_Anomalia.Feb)" HeaderText="Feb" TextAlign="TextAlign.Center" Width="60" />
-                        <GridColumn Field="@nameof(Micromedicion_Anomalia.Mar)" HeaderText="Mar" TextAlign="TextAlign.Center" Width="60" />
-                        <GridColumn Field="@nameof(Micromedicion_Anomalia.Abr)" HeaderText="Abr" TextAlign="TextAlign.Center" Width="60" />
-                        <GridColumn Field="@nameof(Micromedicion_Anomalia.May)" HeaderText="May" TextAlign="TextAlign.Center" Width="60" />
-                        <GridColumn Field="@nameof(Micromedicion_Anomalia.Jun)" HeaderText="Jun" TextAlign="TextAlign.Center" Width="60" />
-                        <GridColumn Field="@nameof(Micromedicion_Anomalia.Jul)" HeaderText="Jul" TextAlign="TextAlign.Center" Width="60" />
-                        <GridColumn Field="@nameof(Micromedicion_Anomalia.Ago)" HeaderText="Ago" TextAlign="TextAlign.Center" Width="60" />
-                        <GridColumn Field="@nameof(Micromedicion_Anomalia.Sep)" HeaderText="Sep" TextAlign="TextAlign.Center" Width="60" />
-                        <GridColumn Field="@nameof(Micromedicion_Anomalia.Oct)" HeaderText="Oct" TextAlign="TextAlign.Center" Width="60" />
-                        <GridColumn Field="@nameof(Micromedicion_Anomalia.Nov)" HeaderText="Nov" TextAlign="TextAlign.Center" Width="60" />
-                        <GridColumn Field="@nameof(Micromedicion_Anomalia.Dic)" HeaderText="Dic" TextAlign="TextAlign.Center" Width="60" />
-                    </GridColumns>
-                </SfGrid>
+                <RadzenDataGrid TItem="Micromedicion_Anomalia" @ref="DataGrid" Data="@datosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                    <Columns>
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Anomalia.Anomalia)" Title="Anomalia" TextAlign="TextAlign.Left" Width="220px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Anomalia.Ene)" Title="Ene" TextAlign="TextAlign.Center" Width="60px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Anomalia.Feb)" Title="Feb" TextAlign="TextAlign.Center" Width="60px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Anomalia.Mar)" Title="Mar" TextAlign="TextAlign.Center" Width="60px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Anomalia.Abr)" Title="Abr" TextAlign="TextAlign.Center" Width="60px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Anomalia.May)" Title="May" TextAlign="TextAlign.Center" Width="60px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Anomalia.Jun)" Title="Jun" TextAlign="TextAlign.Center" Width="60px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Anomalia.Jul)" Title="Jul" TextAlign="TextAlign.Center" Width="60px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Anomalia.Ago)" Title="Ago" TextAlign="TextAlign.Center" Width="60px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Anomalia.Sep)" Title="Sep" TextAlign="TextAlign.Center" Width="60px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Anomalia.Oct)" Title="Oct" TextAlign="TextAlign.Center" Width="60px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Anomalia.Nov)" Title="Nov" TextAlign="TextAlign.Center" Width="60px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Anomalia.Dic)" Title="Dic" TextAlign="TextAlign.Center" Width="60px" />
+                    </Columns>
+                </RadzenDataGrid>
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 3/4; grid-column: 1/2;">
-                <SfChart Title="" Height="146">
-                    <ChartPrimaryXAxis Title="" ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-                    <ChartPrimaryYAxis Title="Anomalias"></ChartPrimaryYAxis>
-                    <ChartTooltipSettings Enable="true" Header="Ingresos" Shared="true" Format="${point.x} ${series.name}: ${point.y}"></ChartTooltipSettings>
-                    <ChartSeriesCollection>
-                        <ChartSeries DataSource="@itemsGrafica" XName="Descripcion" YName="Valor1" Type="ChartSeriesType.Column">
-                            <ChartMarker>
-                                <ChartDataLabel Visible="true"></ChartDataLabel>
-                            </ChartMarker>
-                        </ChartSeries>
-                    </ChartSeriesCollection>
-                </SfChart>
+                <RadzenChart Style="height:146px; width:100%;">
+                    <RadzenCategoryAxis />
+                    <RadzenValueAxis ><RadzenAxisTitle Text="Anomalias" /></RadzenValueAxis>
+                    <RadzenChartTooltipOptions Shared="true" />
+                    <RadzenColumnSeries Data="@itemsGrafica" CategoryProperty="Descripcion" ValueProperty="Valor1">
+                        <TooltipTemplate Context="item">
+                            @item.Descripcion : @item.Valor1
+                        </TooltipTemplate>
+                        <ChildContent>
+                            <RadzenSeriesDataLabels Visible="true" />
+                        </ChildContent>
+                    </RadzenColumnSeries>
+                </RadzenChart>
             </div>
 
         </Content>
     </VentanaSecundaria>
 }
 
-@code {
+@code
+{
 
     [Parameter] public bool Visible { get; set; }
     [Parameter] public EventCallback CerrarModal { get; set; }
@@ -69,27 +68,33 @@
     [Parameter] public int Sector { get; set; }
     public string Titulo = "Detalle Anomalias Anual";
 
-    SfGrid<Micromedicion_Anomalia> dataGrid { get; set; }
+    RadzenDataGrid<Micromedicion_Anomalia> DataGrid { get; set; }
     public List<Micromedicion_Anomalia> datosGrid { get; set;}
     public List<ChartItem> itemsGrafica { get; set; }
 
     //"******** Funciones ********"
-    private async Task Cerrar_Modal() {
+    private async Task Cerrar_Modal()
+    {
         this.datosGrid.Clear();
         await CerrarModal.InvokeAsync("");
     }
-    public async Task Inicializar(Micromedicion_Anomalia[] datos){
+    public async Task Inicializar(Micromedicion_Anomalia[] datos)
+    {
         this.datosGrid = datos.ToList();
-        if (datosGrid.Count > 0) {
+        if (datosGrid.Count > 0)
+        {
             ProcesarDatosGrafica();
         }
         await Task.Delay(100);
     }
 
-    private void ProcesarDatosGrafica() {
+    private void ProcesarDatosGrafica()
+    {
         Micromedicion_Anomalia xTotales = null;
-        foreach (Micromedicion_Anomalia xi in datosGrid) {
-            if (xi.Id_Anomalia == 0) {
+        foreach (Micromedicion_Anomalia xi in datosGrid)
+        {
+            if (xi.Id_Anomalia == 0)
+            {
                 xTotales = xi;
             }
         }
@@ -110,10 +115,13 @@
 
 
     }
+    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task GenerarExcel() {
-        await this.dataGrid.ExcelExport(new ExcelExportProperties {
+        await this.DataGrid.ExcelExport(new ExcelExportProperties {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
+    */
 
 }

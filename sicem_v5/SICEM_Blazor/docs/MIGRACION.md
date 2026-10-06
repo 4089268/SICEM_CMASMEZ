@@ -146,6 +146,9 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | `ChartSeriesType.StackingColumn` / `Column` | `RadzenStackedColumnSeries` / `RadzenColumnSeries` |
 | `ChartTooltipSettings Format="${point.x} : ${point.y}"` | `TooltipTemplate Context="item"` con `@item.<XName> : @item.<YName>` (`$${point.y}` → `.ToString("c2")`) |
 | `chart.RefreshLiveData()` | `chart.Reload()` |
+| `SfTab` + `TabItem` / `TabHeader` / `ContentTemplate` | `RadzenTabs` + `<Tabs>` + `RadzenTabsItem Text=".."` |
+| `AccumulationChartSeries StartAngle="270" EndAngle="90"` (semicírculo) | `RadzenDonutSeries StartAngle="180" TotalAngle="180"` |
+| `CaptionTemplate` con `var order = (context as CaptionTemplateContext)` | `GroupHeaderTemplate` con `var order = new { Key = context.Data.Key?.ToString() ?? "", Count = context.Data.Count }` (el resto del template no cambia) |
 | `ChartSeriesType.Bar` | `RadzenBarSeries` |
 | `ChartSeriesType.Line` + `DashArray` | `RadzenLineSeries LineType="LineType.Dashed"` |
 | `ChartMarker Visible` | `RadzenMarkers MarkerType="MarkerType.Circle"` |
@@ -167,7 +170,7 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | 5 | Descuentos | `/descuentos` | ✅ Migrado (2026-10-06) |
 | 6 | Facturación | `/facturacion` | ✅ Migrado (2026-10-06) |
 | 7 | Eficiencia | `/Eficiencia` | ✅ Migrado (2026-10-06) |
-| 8 | Micromedición | `/micromedicion` | Pendiente |
+| 8 | Micromedición | `/micromedicion` | ✅ Migrado (2026-10-06) |
 | 9 | Padrón de Usuarios | `/padron` | Pendiente |
 | 10 | Órdenes de Trabajo | `/ordenes` | Pendiente |
 | 11 | Antigüedad de Saldos | `/controlRezago` | Pendiente |
@@ -286,6 +289,22 @@ Exportación comentada (`TODO-EXPORT-RADZEN`) en 7 archivos. Allman y renombres 
 Exportación comentada (`TODO-EXPORT-RADZEN`) en los archivos con exportación. Allman y renombres de miembros privados.
 
 - [ ] Prueba manual: consulta multi-oficina con gráfica; ventanas Anual, Conceptos, Sectores, Colonias y su Detalle.
+
+### Módulo 8 – Micromedición (2026-10-06)
+
+10 archivos en `Areas/Micromedicion/Views/`: 7 `SfGrid`, 3 `SfChart`, 3 `SfAccumulationChart`, 1 `SfTab` → Radzen.
+
+| Archivo | Cambios específicos |
+|---|---|
+| `MicromedicionPage.razor` | **Patrón multi-oficina:** `try/catch` propio por oficina y refresco con `InvokeAsync(() => ...Reload())`. |
+| `MicromedicionOficinaPage.razor` | Líneas de historial y 3 medias donas. **Corrección:** las series usaban `YName="Valor"`, propiedad que **no existe** en `ChartItem` (los datos se cargan en `Valor1`), por lo que en Syncfusion esas gráficas no mostraban datos. Ahora usan `Valor1`. ⚠️ Cambio visible: estas gráficas ahora sí muestran información. |
+| `ResumenTarifasVtn.razor` | `SfTab` → `RadzenTabs`. Se quitó el atributo `Content` de una pestaña, que tenía texto de ejemplo de la documentación de Syncfusion (no se mostraba porque `ContentTemplate` tiene prioridad). |
+| `Micromedicion_ResumenTarifasLocalidad.razor` | Agrupación por Localidad con encabezado `TOTAL` / nombre en mayúsculas. |
+| Resto (Anomalías, Padrón, Sectores, Tarifas Global) | Grids convertidos. |
+
+Exportación comentada (`TODO-EXPORT-RADZEN`) en los archivos con exportación. Allman y renombres de miembros privados.
+
+- [ ] Prueba manual: consulta multi-oficina; página por oficina (historial y las 3 medias donas, ahora con datos); ventanas Anomalías, Padrón, Resumen de Tarifas (ambas pestañas) y Sectores.
 
 ### Pendientes de la Fase 2
 
