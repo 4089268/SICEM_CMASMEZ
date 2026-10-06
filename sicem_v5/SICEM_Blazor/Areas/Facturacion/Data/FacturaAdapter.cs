@@ -1,5 +1,5 @@
 using System;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using Sicem_Blazor.Data;
 using Sicem_Blazor.Facturacion.Models;
 using Sicem_Blazor.Models.Entities.Arquos;
