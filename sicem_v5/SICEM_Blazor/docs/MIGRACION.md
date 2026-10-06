@@ -69,6 +69,16 @@ Cada entrada indica la fecha, la rama, qué se cambió, por qué, y lo que queda
 | `Models/Entities/Sicem/Ruta.cs` | Propiedad `StringConection` y su `SqlConnectionStringBuilder` reformateados a estilo Allman; se agregó `using Microsoft.Data.SqlClient` en lugar de nombres totalmente calificados. Sin cambios de comportamiento. |
 | `CLAUDE.md` | Datos de configuración corregidos para este proyecto (`appsettings.sample.json`, `SyncfusionLicense`, `BingMapsKey`/`GoogleMapsKey`; se quitó `EMETER`, que no existe aquí); versión .NET 8 → 10; referencia a esta bitácora. Las reglas de código no se modificaron. |
 
+### Herramienta local `dotnet-ef`
+
+**Fecha:** 2026-10-06
+
+| Archivo | Cambio |
+|---|---|
+| `.config/dotnet-tools.json` | `dotnet-ef` 5.0.0 → 10.0.12 (misma versión que EF Core). Se agrega al repositorio para que todo el equipo use la misma versión con `dotnet tool restore`. |
+
+Verificado: `dotnet ef dbcontext list` detecta `SicemContext` y `ArquosContext`.
+
 Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que no se reformatearon (el cambio no se considera sustancial).
 
 ---
