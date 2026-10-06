@@ -175,7 +175,7 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | 9 | Padrón de Usuarios | `/padron` | ✅ Migrado (2026-10-06) |
 | 10 | Órdenes de Trabajo | `/ordenes` | ✅ Migrado (2026-10-06) |
 | 11 | Antigüedad de Saldos | `/controlRezago` | ✅ Migrado (2026-10-06) |
-| 12 | Lecturas | `/lecturas` | Pendiente |
+| 12 | Lecturas | `/lecturas` | ✅ Migrado (2026-10-06) |
 | 13 | Pago en Línea | `/PagoLineaAnalitycs` | Pendiente |
 | 14 | Configuración | `/configuracion` | Pendiente |
 
@@ -351,6 +351,12 @@ Allman y renombres de miembros privados.
 Exportación comentada (`TODO-EXPORT-RADZEN`) en los archivos con exportación. Allman y renombres de miembros privados.
 
 - [ ] Prueba manual: consulta multi-oficina con gráfica; Resumen (pestañas y detalle de rezago); Análisis de Cartera y su detalle (cambiar meses/saldo); Eficiencia de Órdenes (global y por trabajo, cambiar días); Situación de Toma.
+
+### Módulo 12 – Lecturas (2026-10-06)
+
+4 archivos en `Areas/Lecturas/Views/` (`Index`, `DesempenioLecturistas`, `IncidenciasLecturas`, `DetalleLecturistaVtn`): 3 `SfGrid`, 1 `SfChart` → Radzen. Estas páginas consultan una oficina a la vez (no usan tareas paralelas), por lo que no aplica el patrón multi-oficina. Allman y renombres de miembros privados.
+
+- [ ] Prueba manual: Desempeño de Lecturistas (grid, gráfica y detalle por lecturista) e Incidencias.
 
 ### Pendientes de la Fase 2
 

@@ -1,5 +1,5 @@
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
+@using Radzen
+@using Radzen.Blazor
 @using Sicem_Blazor.Lecturas.Data
 @using Sicem_Blazor.Lecturas.Models
 @inject IMatToaster Toaster
@@ -10,80 +10,87 @@
 <div style="width: 100%; height: calc(100vh - 20rem); display: grid; grid-template-columns: 100%; grid-template-rows: 5rem 4.5rem 1fr 1fr; grid-gap: .4rem .4rem;">
 
     <div role="filter" class="border rounded bg-white px-2 d-flex align-items-center" style="grid-area:1/1/2/2;">
-        <SeleccionarFecha fecha1="@Fecha1" fecha2="@Fecha2" ProcesarParam="@Procesar" OcultarSector="true"/>
+        <SeleccionarFecha fecha1="@_fecha1" fecha2="@_fecha2" ProcesarParam="@Procesar" OcultarSector="true"/>
     </div>
 
     <div role="actions" class="border rounded bg-white px-2 d-flex align-items-center" style="grid-area:2/1/3/2;">
+        @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
         <MatButton style="min-width: 130px;" Raised="true" @onclick="ExportarExcel_Click">Exportar Excel</MatButton>
+        *@
     </div>
 
     @* ****** DataGrid ****** *@
     <div class="border rounded bg-white p-2 d-flex" style="grid-area:3/1/5/2;">
-        <SfGrid @ref="dataGrid" DataSource="@datosLecturas" TValue="Incidencia" AllowResizing="true" AllowSorting="true" AllowFiltering="false"
-                AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true">
-            <GridColumns>
-                <GridColumn Field="@nameof(Incidencia.Cuenta)" HeaderText="Cuenta" TextAlign="TextAlign.Center" Width="115" Format="n0" />
-                <GridColumn Field="@nameof(Incidencia.Localizacion)" HeaderText="Localizacion" TextAlign="TextAlign.Left" Width="170" />
-                <GridColumn Field="@nameof(Incidencia.Usuario)" HeaderText="Usuario" TextAlign="TextAlign.Left" Width="170" />
-                <GridColumn Field="@nameof(Incidencia.Lecturista)" HeaderText="Lecturista" TextAlign="TextAlign.Left" Width="170" />
-                <GridColumn Field="@nameof(Incidencia.Lectura)" HeaderText="Lectura" TextAlign="TextAlign.Left" Width="120" />
-                <GridColumn Field="@nameof(Incidencia.Anomalia)" HeaderText="Anomalia" TextAlign="TextAlign.Left" Width="170" />
-                <GridColumn Field="@nameof(Incidencia.Descripcion)" HeaderText="Descripcion" TextAlign="TextAlign.Left" Width="210" />
-                <GridColumn Field="@nameof(Incidencia.Fecha)" HeaderText="Fecha" TextAlign="TextAlign.Left" Width="170" />
-            </GridColumns>
-        </SfGrid>
+        <RadzenDataGrid TItem="Incidencia" @ref="dataGrid" Data="@DatosLecturas" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:100%;">
+            <Columns>
+                <RadzenDataGridColumn Property="@nameof(Incidencia.Cuenta)" Title="Cuenta" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Incidencia.Localizacion)" Title="Localizacion" TextAlign="TextAlign.Left" Width="170px" />
+                <RadzenDataGridColumn Property="@nameof(Incidencia.Usuario)" Title="Usuario" TextAlign="TextAlign.Left" Width="170px" />
+                <RadzenDataGridColumn Property="@nameof(Incidencia.Lecturista)" Title="Lecturista" TextAlign="TextAlign.Left" Width="170px" />
+                <RadzenDataGridColumn Property="@nameof(Incidencia.Lectura)" Title="Lectura" TextAlign="TextAlign.Left" Width="120px" />
+                <RadzenDataGridColumn Property="@nameof(Incidencia.Anomalia)" Title="Anomalia" TextAlign="TextAlign.Left" Width="170px" />
+                <RadzenDataGridColumn Property="@nameof(Incidencia.Descripcion)" Title="Descripcion" TextAlign="TextAlign.Left" Width="210px" />
+                <RadzenDataGridColumn Property="@nameof(Incidencia.Fecha)" Title="Fecha" TextAlign="TextAlign.Left" Width="170px" />
+            </Columns>
+        </RadzenDataGrid>
     </div>
 
-    <BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
+    <BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
 
 </div>
 
-@code{
+@code
+{
 
-    private SfGrid<Incidencia> dataGrid {get;set;}
-    private List<Incidencia> datosLecturas {get;set;}
-    private bool busyDialog = false;
+    private RadzenDataGrid<Incidencia> dataGrid {get;set;}
+    private List<Incidencia> DatosLecturas {get;set;}
+    private bool _busyDialog = false;
 
-    private DateTime Fecha1, Fecha2;
-    private int Subsistema, Sector;
-    private IEnlace EnlaceSeleccionado;
+    private DateTime _fecha1, _fecha2;
+    private int _subsistema, _sector;
+    private IEnlace _enlaceSeleccionado;
 
     //********* Funciones  *********
-    protected override void OnInitialized() {
-        this.Fecha1 = DateTime.Now;
-        this.Fecha2 = DateTime.Now;
-        this.Subsistema = 0;
-        this.Sector = 0;
+    protected override void OnInitialized()
+    {
+        this._fecha1 = DateTime.Now;
+        this._fecha2 = DateTime.Now;
+        this._subsistema = 0;
+        this._sector = 0;
     }
 
-    public void Procesar(SeleccionarFechaEventArgs e) {
-        this.Fecha1 = e.Fecha1;
-        this.Fecha2 = e.Fecha2;
-        this.Subsistema = e.Subsistema;
-        this.Sector = e.Sector;
+    public void Procesar(SeleccionarFechaEventArgs e)
+    {
+        this._fecha1 = e.Fecha1;
+        this._fecha2 = e.Fecha2;
+        this._subsistema = e.Subsistema;
+        this._sector = e.Sector;
 
-        datosLecturas = new List<Incidencia>();
+        DatosLecturas = new List<Incidencia>();
         var enlaces = sicemService.ObtenerOficinasDelUsuario();
         var oficinas = sicemService.ObtenerEnlaces().Where(item => enlaces.Select(i => i.Id).Contains(item.Id)).ToArray();
 
-        this.EnlaceSeleccionado = oficinas.FirstOrDefault();
+        this._enlaceSeleccionado = oficinas.FirstOrDefault();
         
-        ProcesarConsulta(this.EnlaceSeleccionado);
+        ProcesarConsulta(this._enlaceSeleccionado);
 
     }
 
-    private async void ProcesarConsulta(IEnlace oficina){
-        this.busyDialog = true;
+    private async void ProcesarConsulta(IEnlace oficina)
+    {
+        this._busyDialog = true;
         await Task.Delay(100);
     
-        var dateRange = new DateRange(Fecha1, Fecha2);
-        this.datosLecturas = lecturasService.ObtenerIncidencias(dateRange, oficina).ToList();
+        var dateRange = new DateRange(_fecha1, _fecha2);
+        this.DatosLecturas = lecturasService.ObtenerIncidencias(dateRange, oficina).ToList();
 
         await Task.Delay(100);
-        this.busyDialog = false;
+        this._busyDialog = false;
         StateHasChanged();
     }
 
+    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task ExportarExcel_Click()
     {
         var _options = new ExcelExportProperties(){
@@ -91,5 +98,6 @@
         };
         await this.dataGrid.ExportToExcelAsync(_options);
     }
+    */
 
 }
