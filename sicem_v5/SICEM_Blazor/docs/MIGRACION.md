@@ -165,7 +165,7 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | 3 | Seguimiento Pagos | `/seguimiento_cobros` | ✅ Migrado (2026-10-06) |
 | 4 | Recaudación | `/recaudacion` | ✅ Migrado (2026-10-06) |
 | 5 | Descuentos | `/descuentos` | ✅ Migrado (2026-10-06) |
-| 6 | Facturación | `/facturacion` | Pendiente |
+| 6 | Facturación | `/facturacion` | ✅ Migrado (2026-10-06) |
 | 7 | Eficiencia | `/Eficiencia` | Pendiente |
 | 8 | Micromedición | `/micromedicion` | Pendiente |
 | 9 | Padrón de Usuarios | `/padron` | Pendiente |
@@ -258,6 +258,20 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 Exportación comentada (`TODO-EXPORT-RADZEN`) en 4 archivos. Allman y renombres de miembros privados en los 5 archivos.
 
 - [ ] Prueba manual: consulta multi-oficina, gráficas, página por oficina, ventanas de Autorizó (y su detalle con selección) y Conceptos.
+
+### Módulo 6 – Facturación (2026-10-06)
+
+7 archivos en `Areas/Facturacion/Views/`: 7 `SfGrid`, 2 `SfChart` → Radzen.
+
+| Archivo | Cambios específicos |
+|---|---|
+| `FacturacionPage.razor` | Grid y gráfica por oficina. **Patrón multi-oficina:** `try/catch` propio por oficina (`Estatus = 2` si falla) y refresco con `InvokeAsync(() => ...Reload())`. |
+| `Facturacion_AnualVtn.razor` | Las 2 series eran `StackingLine`, pero solo una es visible a la vez (`GraficaActual`), así que `RadzenLineSeries` es equivalente. |
+| Resto (Conceptos, Usuarios, Colonias, Localidades, Detalle) | Grids convertidos. |
+
+Exportación comentada (`TODO-EXPORT-RADZEN`) en 7 archivos. Allman y renombres de miembros privados (p. ej. `Fecha1` → `_fecha1`, `datosFacturacion` → `DatosFacturacion`).
+
+- [ ] Prueba manual: consulta multi-oficina con gráfica, y las ventanas Conceptos, Anual (cambio de gráfica), Localidades, Colonias, Usuarios y Detalle.
 
 ### Pendientes de la Fase 2
 

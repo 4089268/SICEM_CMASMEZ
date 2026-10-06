@@ -1,53 +1,53 @@
-@using Syncfusion.Blazor
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Buttons
-@using Syncfusion.Blazor.Grids
+@using Radzen
+@using Radzen.Blazor
 @using Sicem_Blazor.Facturacion.Models
 @inject FacturacionService facturacionService
 @inject IJSRuntime JSRuntime
 
-@if(Visible){
-    <VentanaSecundaria Titulo="@Titulo2" CerrarVentana="@CerrarVentana" Filas="@Filas" Columnas="@Columnas">
+@if(Visible)
+{
+    <VentanaSecundaria Titulo="@Titulo2" CerrarVentana="@CerrarVentana" Filas="@_filas" Columnas="@_columnas">
         <Content>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 1/2; grid-column: 1/2;">
                 <div class="w-100 d-flex align-items-center">
+                    @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                     <MatButton Class="mr-2" Raised="true" Style="height:2.5rem;" @onclick="@GenerarExcel">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
+                    *@
                     <div class="d-flex align-items-center jusitfy-content-center ml-auto pr-2">
                         <label class="px-3" style="font-size:1.2rem;">LOCALIDAD:</label>
-                        <ComboBox Width="220" InitValue="0" Options="@CatLocalidades" OnSelected="@ComboLocalidad_Selected" />
+                        <ComboBox Width="220" InitValue="0" Options="@_catLocalidades" OnSelected="@ComboLocalidad_Selected" />
                     </div>
                 </div>
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <SfGrid @ref="dataGrid" DataSource="@datosGrid" TValue="Facturacion_Conceptos" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true">
-                    <GridColumns>
-                        <GridColumn Field="@nameof(Facturacion_Conceptos.Id_Concepto)" HeaderText="Id Concepto" TextAlign="TextAlign.Center" Width="60" Visible="false" />
-                        <GridColumn Field="@nameof(Facturacion_Conceptos.Concepto)" HeaderText="Concepto" TextAlign="TextAlign.Left" Width="180" />
+                <RadzenDataGrid TItem="Facturacion_Conceptos" @ref="DataGrid" Data="@_datosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:100%;">
+                    <Columns>
+                        <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.Id_Concepto)" Title="Id Concepto" TextAlign="TextAlign.Center" Width="60px" Visible="false" />
+                        <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.Concepto)" Title="Concepto" TextAlign="TextAlign.Left" Width="180px" />
 
-                        <GridColumn Field="@nameof(Facturacion_Conceptos.Domestico_Sub)" Visible="false" HeaderText="Domestico Sub." TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                        <GridColumn Field="@nameof(Facturacion_Conceptos.Domestico_Iva)" Visible="false" HeaderText="Domestico IVA" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                        <GridColumn Field="@nameof(Facturacion_Conceptos.Domestico_Total)" Visible="false" HeaderText="Domestico Total" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                        <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.Domestico_Sub)" Visible="false" Title="Domestico Sub." TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.Domestico_Iva)" Visible="false" Title="Domestico IVA" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.Domestico_Total)" Visible="false" Title="Domestico Total" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
                         
-                        <GridColumn Field="@nameof(Facturacion_Conceptos.Comercial_Sub)" Visible="false" HeaderText="Comercial Sub." TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                        <GridColumn Field="@nameof(Facturacion_Conceptos.Comercial_Iva)" Visible="false" HeaderText="Comercial IVA" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                        <GridColumn Field="@nameof(Facturacion_Conceptos.Comercial_Total)" Visible="false" HeaderText="Comercial Total" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                        <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.Comercial_Sub)" Visible="false" Title="Comercial Sub." TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.Comercial_Iva)" Visible="false" Title="Comercial IVA" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.Comercial_Total)" Visible="false" Title="Comercial Total" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
                                                 
-                        <GridColumn Field="@nameof(Facturacion_Conceptos.Industrial_Sub)" Visible="false" HeaderText="Industrial Sub." TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                        <GridColumn Field="@nameof(Facturacion_Conceptos.Industrial_Iva)" Visible="false" HeaderText="Industrial IVA" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                        <GridColumn Field="@nameof(Facturacion_Conceptos.Industrial_Total)" Visible="false" HeaderText="Industrial Total" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                        <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.Industrial_Sub)" Visible="false" Title="Industrial Sub." TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.Industrial_Iva)" Visible="false" Title="Industrial IVA" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.Industrial_Total)" Visible="false" Title="Industrial Total" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
                         
-                        <GridColumn Field="@nameof(Facturacion_Conceptos.ServGen_Sub)" Visible="false" HeaderText="Publico Sub." TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                        <GridColumn Field="@nameof(Facturacion_Conceptos.ServGen_Iva)" Visible="false" HeaderText="Publico IVA" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                        <GridColumn Field="@nameof(Facturacion_Conceptos.ServGen_Total)" Visible="false" HeaderText="Publico Total" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                        <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.ServGen_Sub)" Visible="false" Title="Publico Sub." TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.ServGen_Iva)" Visible="false" Title="Publico IVA" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.ServGen_Total)" Visible="false" Title="Publico Total" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
                         
-                        <GridColumn Field="@nameof(Facturacion_Conceptos.Subtotal)" Visible="false" HeaderText="Subtotal" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                        <GridColumn Field="@nameof(Facturacion_Conceptos.Iva)"    Visible="false" HeaderText="IVA" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                        <GridColumn Field="@nameof(Facturacion_Conceptos.Total)" Visible="false" HeaderText="Total" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                        <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.Subtotal)" Visible="false" Title="Subtotal" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.Iva)" Visible="false" Title="IVA" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.Total)" Visible="false" Title="Total" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                        <GridColumn HeaderText="Total" TextAlign="TextAlign.Center" Width="210">
+                        <RadzenDataGridColumn Title="Total" TextAlign="TextAlign.Center" Width="210px">
                             <HeaderTemplate>
                                 <div class="colorT6" style="grid-area: 1/1/2/4;">Total</div>
                             </HeaderTemplate>
@@ -55,7 +55,8 @@
                                 @{
                                     var data = (context as Facturacion_Conceptos);
                                     var _classInfo = "";
-                                    switch(data.Id_Concepto){
+                                    switch(data.Id_Concepto)
+                                    {
                                         case 997:
                                             _classInfo="infoRow1";
                                         break;
@@ -74,9 +75,9 @@
                                     </div>
                                 }
                             </Template>
-                        </GridColumn>
+                        </RadzenDataGridColumn>
 
-                        <GridColumn HeaderText="Domesticos" TextAlign="TextAlign.Center" Width="210">
+                        <RadzenDataGridColumn Title="Domesticos" TextAlign="TextAlign.Center" Width="210px">
                             <HeaderTemplate>
                                 <div class="colorT1" style="grid-area: 1/1/2/4;">Domesticos</div>
                             </HeaderTemplate>
@@ -90,9 +91,9 @@
                                     </div>
                                 }
                             </Template>
-                        </GridColumn>
+                        </RadzenDataGridColumn>
 
-                        <GridColumn HeaderText="Comercial" TextAlign="TextAlign.Center" Width="210">
+                        <RadzenDataGridColumn Title="Comercial" TextAlign="TextAlign.Center" Width="210px">
                             <HeaderTemplate>
                                 <div class="colorT3" style="grid-area: 1/1/2/4;">Comercial</div>
                             </HeaderTemplate>
@@ -106,9 +107,9 @@
                                     </div>
                                 }
                             </Template>
-                        </GridColumn>
+                        </RadzenDataGridColumn>
 
-                        <GridColumn HeaderText="Industrial" TextAlign="TextAlign.Center" Width="210"> 
+                        <RadzenDataGridColumn Title="Industrial" TextAlign="TextAlign.Center" Width="210px"> 
                             <HeaderTemplate>
                                 <div class="colorT4" style="grid-area: 1/1/2/4;">Industrial</div>
                             </HeaderTemplate>
@@ -122,9 +123,9 @@
                                     </div>
                                 }
                             </Template>
-                        </GridColumn>
+                        </RadzenDataGridColumn>
 
-                        <GridColumn HeaderText="Publico" TextAlign="TextAlign.Center" Width="210">
+                        <RadzenDataGridColumn Title="Publico" TextAlign="TextAlign.Center" Width="210px">
                             <HeaderTemplate>
                                 <div class="colorT5" style="grid-area: 1/1/2/4;">Publico</div>
                             </HeaderTemplate>
@@ -138,10 +139,10 @@
                                     </div>
                                 }
                             </Template>
-                        </GridColumn>
+                        </RadzenDataGridColumn>
 
-                    </GridColumns>
-                </SfGrid>
+                    </Columns>
+                </RadzenDataGrid>
             </div>
 
         </Content>
@@ -184,9 +185,10 @@
 
 </style>
 
-<BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
+<BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
 
-@code {
+@code
+{
 
     [Parameter] public bool Visible { get; set; }
     [Parameter] public EventCallback CerrarModal { get; set; }
@@ -194,57 +196,68 @@
     [Parameter] public int Subsistema {get;set;}
     [Parameter] public int Sector {get;set;}
     public string Titulo {get;set;} = "CONCEPTOS FACTURADOS";
-    private string Titulo2 {
-        get {
-            if(idLocalidadSeleccionado > 0){
-                return $"{Titulo} - {CatLocalidades[idLocalidadSeleccionado]}";
-            }else{
+    private string Titulo2
+    {
+        get
+        {
+            if(_idLocalidadSeleccionado > 0)
+            {
+                return $"{Titulo} - {_catLocalidades[_idLocalidadSeleccionado]}";
+            }
+            else
+            {
                 return Titulo;
             }
         }
     }
 
-    private SfGrid<Facturacion_Conceptos> dataGrid {get;set;}
-    private IEnlace oficinaActual;
-    private List<Facturacion_Conceptos> datosGrid;
-    private double[] Filas = new double[]{48,700};
-    private double[] Columnas = new double[] {0.85};
-    private bool busyDialog = false;
-    private Dictionary<int, string> CatLocalidades = new Dictionary<int, string>();
-    private int idLocalidadSeleccionado = 0;
+    private RadzenDataGrid<Facturacion_Conceptos> DataGrid {get;set;}
+    private IEnlace _oficinaActual;
+    private List<Facturacion_Conceptos> _datosGrid;
+    private double[] _filas = new double[]{48,700};
+    private double[] _columnas = new double[] {0.85};
+    private bool _busyDialog = false;
+    private Dictionary<int, string> _catLocalidades = new Dictionary<int, string>();
+    private int _idLocalidadSeleccionado = 0;
     
 
     //"******** Funciones Generales ********"
-    public void Inicializar(IEnlace oficina, IEnumerable<Facturacion_Conceptos> datos, Dictionary<int,string> catLocal,  bool agregarTotal = true){
-        this.CatLocalidades = catLocal;
+    public void Inicializar(IEnlace oficina, IEnumerable<Facturacion_Conceptos> datos, Dictionary<int,string> catLocal,  bool agregarTotal = true)
+    {
+        this._catLocalidades = catLocal;
 
-        this.oficinaActual = oficina;
-        this.datosGrid = datos.ToList();
+        this._oficinaActual = oficina;
+        this._datosGrid = datos.ToList();
     }
+    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task GenerarExcel(){
         var _name = $"{Titulo2.Replace(" ","_")}-{Guid.NewGuid().ToString().Replace("-","")}.xlsx";
 
         var p = new ExcelExportProperties();
         p.IncludeHiddenColumn = true;
         p.FileName = _name;
-        await this.dataGrid.ExcelExport(p);
+        await this.DataGrid.ExcelExport(p);
     }
-    private async Task CerrarVentana(){
+    */
+    private async Task CerrarVentana()
+    {
         await CerrarModal.InvokeAsync("");
     }
 
-    private async Task ComboLocalidad_Selected(int idLocalidad){
-        busyDialog = true;
+    private async Task ComboLocalidad_Selected(int idLocalidad)
+    {
+        _busyDialog = true;
         await Task.Delay(100);
 
-        idLocalidadSeleccionado = idLocalidad;
-        datosGrid = new List<Facturacion_Conceptos>();
+        _idLocalidadSeleccionado = idLocalidad;
+        _datosGrid = new List<Facturacion_Conceptos>();
         StateHasChanged();
-        datosGrid = facturacionService.ObtenerFacturacionConceptos(oficinaActual, this.Fecha.Year, this.Fecha.Month, this.Subsistema, this.Sector, idLocalidad).ToList();
+        _datosGrid = facturacionService.ObtenerFacturacionConceptos(_oficinaActual, this.Fecha.Year, this.Fecha.Month, this.Subsistema, this.Sector, idLocalidad).ToList();
         StateHasChanged();
 
         await Task.Delay(200);
-        busyDialog = false;
+        _busyDialog = false;
 
         await JSRuntime.InvokeVoidAsync("iniciarVentanaConceptos");
 
