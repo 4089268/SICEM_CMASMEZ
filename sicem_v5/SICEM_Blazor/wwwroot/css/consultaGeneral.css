@@ -49,14 +49,7 @@
         font-size:1.3rem;
     }
 
-.e-tab.e-fill .e-tab-header .e-toolbar-item.e-active .e-tab-wrap {
-    background: var(--mdc-theme-secondary) !important;
-    border-color: var(--mdc-theme-secondary) !important;
-}
 
-.e-tab.e-fill .e-tab-header {
-    border-bottom: 2px solid var(--mdc-theme-secondary) !important;
-}
 
 @media only screen and (max-width: 800px) {
     .panelBusqueda{

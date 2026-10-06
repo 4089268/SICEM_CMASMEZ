@@ -60,7 +60,7 @@ Cada entrada indica la fecha, la rama, qué se cambió, por qué, y lo que queda
 - [ ] Probar login, consultas, exportaciones Excel/PDF contra la base de datos real.
 - [ ] Probar las pantallas con filtros por listas. Desde EF Core 8, `.Contains(lista)` se traduce con `OPENJSON`, que requiere nivel de compatibilidad ≥ 130 (SQL Server 2016+). Si falla, agregar `o => o.UseCompatibilityLevel(120)` en `UseSqlServer` (`Startup.cs`).
 - [ ] Probar las 17 consultas `FromSql`.
-- [ ] Verificar en el navegador que Syncfusion 19.2 y MatBlazor 2.8 funcionan en .NET 10 (grids, gráficas, exportaciones, diálogos). No están hechos para esta versión.
+- [ ] Verificar en el navegador que MatBlazor 2.8 (botones, menú, toaster, pestañas) funciona en .NET 10; no está hecho para esta versión. (Syncfusion ya se eliminó en la Fase 2.)
 
 ### Ajustes de estilo de código (reglas de `CLAUDE.md`)
 
@@ -420,12 +420,31 @@ Allman y renombres de miembros privados.
 
 - [ ] Prueba manual: seleccionar y limpiar opciones en cada filtro y realizar la consulta. Verificar que la selección múltiple se guarde en las listas `List<int>` del filtro (si Radzen marcara error de conversión al seleccionar, cambiar esas propiedades a `IEnumerable<int>`).
 
+### Remoción de Syncfusion (2026-10-06)
+
+Syncfusion quedó **eliminado por completo** del proyecto.
+
+| Archivo | Cambio |
+|---|---|
+| `Sicem_Blazor.csproj` | Se quitó `Syncfusion.Blazor` 19.2.0.44. Se agregó `Newtonsoft.Json` 13.0.4 como referencia directa: `WHttpService`, `NotificacionTemplate` y `NotificacionesTemplateService` lo usaban, pero llegaba como dependencia indirecta de Syncfusion (misma versión que ya se usaba). |
+| `Startup.cs` | Se quitó `using Syncfusion.Blazor`, `services.AddSyncfusionBlazor()` y el registro de licencia. Allman. |
+| `Pages/_Host.cshtml` | Se quitaron `bootstrap4.css`, `fabric.css` de Syncfusion y `syncfusion-blazor-base.min.js`. |
+| `wwwroot/js/Syncfusion/` | Eliminado. |
+| `appsettings.sample.json` (y `appsettings.json` local, no versionado) | Se quitó la clave `SyncfusionLicense`. ⚠️ Quitarla también del `appsettings.json` de producción. |
+| `_Imports.razor` | `@using Radzen` / `@using Radzen.Blazor` globales; se quitaron de los 112 archivos `.razor` que los declaraban. Los `.razor.cs` conservan sus `using`. |
+| `wwwroot/css/site.css` + `site.min.css`, `consultaGeneral.css` + `consultaGeneral.min.css` | Se quitaron las reglas `.e-*` de Syncfusion (los `.min.css` se editaron igual, no hay proceso de minificado en el proyecto). |
+| `wwwroot/css/radzen-ajustes.css` | Se agregó la fuente de la aplicación (`Montzerrat`, el `@font-face` de Montserrat de `site.css`) para los componentes y gráficas de Radzen, y la pestaña activa con el color secundario del tema (antes `.e-tab.e-fill`). |
+| `CLAUDE.md` (local) | Sección de UI actualizada a Radzen; se quitó `SyncfusionLicense`. |
+
+**Verificación:** `dotnet build` sin errores ni advertencias; la app arranca y las 21 rutas (14 módulos del menú y páginas de Configuración) responden 200; los recursos `_content/Syncfusion.Blazor/*` ya no existen (404).
+
 ### Pendientes de la Fase 2
 
 - [ ] **Exportación Excel/PDF** (`TODO-EXPORT-RADZEN`): elegir librería (EPPlus/Aspose requieren licencia comercial; alternativas: ClosedXML [MIT] + QuestPDF [Community]) e implementar un servicio reutilizable que reciba las columnas visibles del `RadzenDataGrid` y los datos.
-- [x] CSS de Syncfusion en `site.css` trasladado a `radzen-ajustes.css`. Pendiente: borrar las reglas `.e-*` de `site.css`/`site.min.css` y `consultaGeneral.css` al quitar Syncfusion.
+- [x] CSS de Syncfusion trasladado a `radzen-ajustes.css` y reglas `.e-*` eliminadas.
 - [x] **`Pages/Maps/SicemMaps.razor`** eliminada (2026-10-06): era el único uso de `SfMaps`, ruta `/SicemMaps` sin enlaces desde el menú ni desde otro componente (página de prueba con oficinas fijas de otro organismo, sin marcadores y con una llave de Bing Maps en el código). No confundir con la función JS `inicializarSicemMaps` de `wwwroot/js/map.js`, que sí usa `MapaComponent` y se conserva.
-- [ ] Al terminar todos los módulos: quitar `Syncfusion.Blazor` del `.csproj`, `AddSyncfusionBlazor()` y el registro de licencia en `Startup.cs`, los CSS/JS de Syncfusion en `_Host.cshtml`, la clave `SyncfusionLicense`, y mover los `@using` de Radzen a `_Imports.razor`.
+- [x] Quitar Syncfusion (paquete, registro, licencia, CSS/JS, `@using` de Radzen a `_Imports.razor`) — ver *Remoción de Syncfusion*.
+- [ ] Prueba manual de todos los módulos con sesión y datos reales (listas por módulo arriba).
 
 ---
 

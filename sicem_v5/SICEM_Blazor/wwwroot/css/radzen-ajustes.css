@@ -1,4 +1,16 @@
-/* Ajustes de Radzen.Blazor durante la migración desde Syncfusion (ver docs/MIGRACION.md) */
+/* Ajustes de Radzen.Blazor (migración desde Syncfusion, ver docs/MIGRACION.md) */
+
+/* Fuente de la aplicación (Montzerrat = @font-face de Montserrat definido en site.css),
+   igual que la regla ".e-control, .e-css, text { font-family: 'Montzerrat' }" que se aplicaba a Syncfusion */
+:root
+{
+    --rz-text-font-family: 'Montzerrat', sans-serif;
+}
+
+.rz-chart text
+{
+    font-family: 'Montzerrat', sans-serif;
+}
 
 /* Grids con agrupación inicial pero sin el área para arrastrar columnas
    (equivalente a GridGroupSettings ShowDropArea="false" de Syncfusion) */
@@ -94,4 +106,17 @@
 .filtro .rz-dropdown
 {
     min-height: 2.1rem;
+}
+
+/* Pestañas: pestaña activa con el color secundario del tema
+   (equivalente de las reglas .e-tab.e-fill que había en consultaGeneral.css) */
+.rz-tabview
+{
+    --rz-tabs-tab-selected-background-color: var(--mdc-theme-secondary);
+    --rz-tabs-tab-selected-color: #fff;
+}
+
+.rz-tabview-nav
+{
+    border-bottom: 2px solid var(--mdc-theme-secondary);
 }
