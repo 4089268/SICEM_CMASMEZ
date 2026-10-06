@@ -53,3 +53,45 @@
 {
     font-size: 1.3rem;
 }
+
+/* Búsqueda Avanzada (FiltroDatosComponent): filtros compactos.
+   Sobrescribe los estilos .filtro de site.css (se carga después). */
+.filtro
+{
+    padding: 1rem 1rem;
+    margin: .5rem .5rem;
+    border-radius: 4px;
+}
+
+.filtro .title
+{
+    font-size: 1.1rem;
+}
+
+.filtro .items
+{
+    grid-row-gap: 0;
+}
+
+.filtro .items .item
+{
+    margin: .2rem .5rem;
+}
+
+.filtro .items .item label
+{
+    height: auto;
+    font-size: .9rem;
+}
+
+.filtro .items .item input[type="text"],
+.filtro .items .item select
+{
+    height: 2.1rem;
+    padding: .2rem .5rem;
+}
+
+.filtro .rz-dropdown
+{
+    min-height: 2.1rem;
+}
