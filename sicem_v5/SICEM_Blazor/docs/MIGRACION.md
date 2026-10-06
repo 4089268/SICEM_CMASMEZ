@@ -171,7 +171,7 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | 6 | Facturación | `/facturacion` | ✅ Migrado (2026-10-06) |
 | 7 | Eficiencia | `/Eficiencia` | ✅ Migrado (2026-10-06) |
 | 8 | Micromedición | `/micromedicion` | ✅ Migrado (2026-10-06) |
-| 9 | Padrón de Usuarios | `/padron` | Pendiente |
+| 9 | Padrón de Usuarios | `/padron` | ✅ Migrado (2026-10-06) |
 | 10 | Órdenes de Trabajo | `/ordenes` | Pendiente |
 | 11 | Antigüedad de Saldos | `/controlRezago` | Pendiente |
 | 12 | Lecturas | `/lecturas` | Pendiente |
@@ -305,6 +305,22 @@ Exportación comentada (`TODO-EXPORT-RADZEN`) en los archivos con exportación. 
 Exportación comentada (`TODO-EXPORT-RADZEN`) en los archivos con exportación. Allman y renombres de miembros privados.
 
 - [ ] Prueba manual: consulta multi-oficina; página por oficina (historial y las 3 medias donas, ahora con datos); ventanas Anomalías, Padrón, Resumen de Tarifas (ambas pestañas) y Sectores.
+
+### Módulo 9 – Padrón de Usuarios (2026-10-06)
+
+12 archivos en `Areas/Padron/Views/`: 11 `SfGrid`, 2 `SfChart`, 1 `SfAccumulationChart`, 1 `SfTab` → Radzen.
+
+| Archivo | Cambios específicos |
+|---|---|
+| `PadronPage.razor` | **Patrón multi-oficina:** `try/catch` propio por oficina (`Estatus = 2` si falla; aquí `Estatus` es `int`) y refresco con `InvokeAsync(() => ...Reload())`. |
+| `PadronOficinaPage.razor` | Media dona. **Corrección:** misma situación que en Micromedición, la serie usaba `YName="Valor"` (inexistente en `ChartItem`); ahora `Valor1`. ⚠️ La gráfica ahora sí muestra datos. |
+| `ResumenVtn.razor` | `SfTab` (3 pestañas: Sectores, Tarifas, Colonias) → `RadzenTabs`; se quitó el texto de ejemplo de Syncfusion en `Content`. |
+| `ModificacionesABCVtn.razor` | `DataGrid_SelectedRow` recibe la fila en lugar de `RowSelectEventArgs`. |
+| Resto (Últimos Contratos, Tarifas Modificadas, Detalle Usuarios, vistas de resumen) | Grids convertidos. |
+
+Exportación comentada (`TODO-EXPORT-RADZEN`) en los archivos con exportación. Allman y renombres de miembros privados.
+
+- [ ] Prueba manual: consulta multi-oficina con gráfica; página por oficina (media dona); Resumen (3 pestañas y su detalle); Últimos Contratos; Tarifas Modificadas; Modificaciones ABC (selección y filtros).
 
 ### Pendientes de la Fase 2
 

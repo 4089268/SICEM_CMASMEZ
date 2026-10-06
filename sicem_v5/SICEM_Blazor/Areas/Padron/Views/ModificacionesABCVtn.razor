@@ -1,16 +1,13 @@
-@using Syncfusion.Blazor
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Buttons
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Data
+@using Radzen
+@using Radzen.Blazor
 @using Sicem_Blazor.Padron.Models
 @inject IJSRuntime JSRuntime
 @inject IMatToaster Toaster
 @inject PadronService padronService
 
 
-@if (Visible) {
+@if (Visible)
+{
     <VentanaSecundaria Titulo="@Titulo" CerrarVentana="@CerrarModal" Filas="@(new double[]{ 50, 570})" Columnas="@(new double[]{.65,.25})">
         <Content>
 
@@ -19,40 +16,35 @@
                 
                 <div role="form-group" class="mr-2 d-flex align-items-center">
                     <InputLabel Value="Sucursal:" />
-                    <ComboBox InitValue="0" Options="@cat_sucursales" Width="160"
+                    <ComboBox InitValue="0" Options="@_cat_sucursales" Width="160"
                         OnSelected="@( val => ComboBoxFiltro_SelectionChaged("sucursales", val) )"
                     />
                 </div>
 
                 <div role="form-group" class="mr-2 d-flex align-items-center">
                     <InputLabel Value="Colonia:" />
-                    <ComboBox InitValue="0" Options="@cat_colonias" Width="160"
+                    <ComboBox InitValue="0" Options="@_cat_colonias" Width="160"
                         OnSelected="@( val => ComboBoxFiltro_SelectionChaged("colonias", val) )"
                     />
                 </div>
 
                 <div role="form-group" class="mr-2 d-flex align-items-center">
                     <InputLabel Value="Departamento:" />
-                    <ComboBox InitValue="0" Options="@cat_departamentos" Width="160"
+                    <ComboBox InitValue="0" Options="@_cat_departamentos" Width="160"
                         OnSelected="@( val => ComboBoxFiltro_SelectionChaged("departamentos", val) )"
                     />
                 </div>
 
+                @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                 <ExportExcelButton OnClick="@GenerarExcel" />
+                *@
             </div>
 
             <!-- ****** DataGrid ****** -->
             <div class="d-flex flex-row m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <SfGrid @ref="dataGrid" DataSource="@datosGrid" AllowPaging="@allowPagesGrid" 
-                    AllowSorting="true" AllowResizing="true"
-                    AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" 
-                    Height="100%" Width="100%" EnableHover="true"
-                >
-                    <GridPageSettings PageSize="200"></GridPageSettings>
-                    <GridSelectionSettings Mode="Syncfusion.Blazor.Grids.SelectionMode.Row" Type="Syncfusion.Blazor.Grids.SelectionType.Single" EnableToggle="true"></GridSelectionSettings>
-                    <GridEvents RowSelected="DataGrid_SelectedRow" TValue="Padron_ModifABC"></GridEvents>
-                    <GridColumns>
-                        <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="55">
+                <RadzenDataGrid TItem="Padron_ModifABC" @ref="_dataGrid" Data="@datosGrid" AllowPaging="@_allowPagesGrid" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" PageSize="200" SelectionMode="DataGridSelectionMode.Single" RowSelect="DataGrid_SelectedRow" Style="height:100%; width:100%;">
+                    <Columns>
+                        <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="55px">
                             <Template>
                                 @{
                                     var data = (context as Padron_ModifABC);
@@ -62,21 +54,21 @@
                                     </button>
                                 }
                             </Template>
-                        </GridColumn>
-                        <!-- <GridColumn Field="@nameof(Padron_ModifABC.Id_Abc)" HeaderText="Id" TextAlign="TextAlign.Center" Width="80" /> -->
-                        <GridColumn Field="@nameof(Padron_ModifABC.Fecha)" HeaderText="Fecha" TextAlign="TextAlign.Center" Width="140" />
-                        <GridColumn Field="@nameof(Padron_ModifABC.Id_Cuenta)" HeaderText="Cuenta" TextAlign="TextAlign.Center" Width="90" />
-                        <GridColumn Field="@nameof(Padron_ModifABC.Razon_Social)" HeaderText="Razon Social" TextAlign="TextAlign.Left" Width="140" />
-                        <GridColumn Field="@nameof(Padron_ModifABC.Direccion)" HeaderText="Direccion" TextAlign="TextAlign.Left" Width="140" />
-                        <GridColumn Field="@nameof(Padron_ModifABC.Observacion)" HeaderText="Observacion" TextAlign="TextAlign.Left" Width="190" />
-                        <GridColumn Field="@nameof(Padron_ModifABC.Maquina)" HeaderText="Maquina" TextAlign="TextAlign.Left" Width="100" />
-                        <GridColumn Field="@nameof(Padron_ModifABC.Operador)" HeaderText="Operador" TextAlign="TextAlign.Left" Width="120" />
-                        <GridColumn Field="@nameof(Padron_ModifABC.Sucursal)" HeaderText="Sucursal" TextAlign="TextAlign.Left" Width="100" />
-                        <GridColumn Field="@nameof(Padron_ModifABC.Localizacion)" HeaderText="Localizacion" TextAlign="TextAlign.Left" Width="90" />
-                        <GridColumn Field="@nameof(Padron_ModifABC.Colonia)" HeaderText="Colonia" TextAlign="TextAlign.Left" Width="120" />
-                        <GridColumn Field="@nameof(Padron_ModifABC.Departamento)" HeaderText="Departamento" TextAlign="TextAlign.Left" Width="120" />
-                    </GridColumns>
-                </SfGrid>
+                        </RadzenDataGridColumn>
+                        <!-- <RadzenDataGridColumn Property="@nameof(Padron_ModifABC.Id_Abc)" Title="Id" TextAlign="TextAlign.Center" Width="80px" /> -->
+                        <RadzenDataGridColumn Property="@nameof(Padron_ModifABC.Fecha)" Title="Fecha" TextAlign="TextAlign.Center" Width="140px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_ModifABC.Id_Cuenta)" Title="Cuenta" TextAlign="TextAlign.Center" Width="90px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_ModifABC.Razon_Social)" Title="Razon Social" TextAlign="TextAlign.Left" Width="140px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_ModifABC.Direccion)" Title="Direccion" TextAlign="TextAlign.Left" Width="140px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_ModifABC.Observacion)" Title="Observacion" TextAlign="TextAlign.Left" Width="190px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_ModifABC.Maquina)" Title="Maquina" TextAlign="TextAlign.Left" Width="100px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_ModifABC.Operador)" Title="Operador" TextAlign="TextAlign.Left" Width="120px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_ModifABC.Sucursal)" Title="Sucursal" TextAlign="TextAlign.Left" Width="100px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_ModifABC.Localizacion)" Title="Localizacion" TextAlign="TextAlign.Left" Width="90px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_ModifABC.Colonia)" Title="Colonia" TextAlign="TextAlign.Left" Width="120px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_ModifABC.Departamento)" Title="Departamento" TextAlign="TextAlign.Left" Width="120px" />
+                    </Columns>
+                </RadzenDataGrid>
             </div>
 
             <div class="m-1 p-2 border rounded bg-white d-flex flex-column" style="grid-row: 2/3; grid-column: 2/3;">
@@ -88,14 +80,13 @@
                 </div>
 
                 <div style="height: calc(100% - 10rem);">
-                    <SfGrid @ref="dataGrid2" DataSource="@datosGrid_campos" AllowSorting="true" AllowResizing="true" AllowFiltering="false"
-                            AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="100%" EnableHover="true">
-                        <GridColumns>
-                            <GridColumn Field=@nameof(Padron_ModifABC_Campo.Campo) HeaderText="Campo" Width="110"> </GridColumn>
-                            <GridColumn Field=@nameof(Padron_ModifABC_Campo.valor_ant) HeaderText="Valor Anterior" Width="90"></GridColumn>
-                            <GridColumn Field=@nameof(Padron_ModifABC_Campo.Valor_act) HeaderText="Valor Nuevo" Width="90"></GridColumn>
-                        </GridColumns>
-                    </SfGrid>
+                    <RadzenDataGrid TItem="Padron_ModifABC_Campo" @ref="_dataGrid2" Data="@datosGrid_campos" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" Style="height:100%; width:100%;">
+                        <Columns>
+                            <RadzenDataGridColumn Property="@nameof(Padron_ModifABC_Campo.Campo)" Title="Campo" Width="110px"> </RadzenDataGridColumn>
+                            <RadzenDataGridColumn Property="@nameof(Padron_ModifABC_Campo.valor_ant)" Title="Valor Anterior" Width="90px"></RadzenDataGridColumn>
+                            <RadzenDataGridColumn Property="@nameof(Padron_ModifABC_Campo.Valor_act)" Title="Valor Nuevo" Width="90px"></RadzenDataGridColumn>
+                        </Columns>
+                    </RadzenDataGrid>
                 </div>
             </div>
 
@@ -104,13 +95,15 @@
 
     <BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
 
-    @if (DatosGenerales_visible) {
-        <DatosGenerales_Dialog IdOficina="@OficinaActual.Id" Cuenta="@CuentaActual" CerrarVentana="@(e => DatosGenerales_visible = false)" />
+    @if (_datosGenerales_visible)
+    {
+        <DatosGenerales_Dialog IdOficina="@OficinaActual.Id" Cuenta="@_cuentaActual" CerrarVentana="@(e => _datosGenerales_visible = false)" />
     }
 
 }
 
-@code {
+@code
+{
 
     [Parameter] public bool Visible { get; set; }
     [Parameter] public EventCallback CerrarModal { get; set; }
@@ -123,34 +116,37 @@
 
 
     //******** Variables ********
-    SfGrid<Padron_ModifABC> dataGrid;
-    SfGrid<Padron_ModifABC_Campo> dataGrid2;
+    RadzenDataGrid<Padron_ModifABC> _dataGrid;
+    RadzenDataGrid<Padron_ModifABC_Campo> _dataGrid2;
     public List<Padron_ModifABC> datos;
     public List<Padron_ModifABC> datosGrid;
     public List<Padron_ModifABC_Campo> datos_campos;
     public List<Padron_ModifABC_Campo> datosGrid_campos;
     public string ObservacionTemp = "";
 
-    Dictionary<int, string> cat_sucursales = new Dictionary<int, string>();
-    Dictionary<int, string> cat_colonias = new Dictionary<int, string>();
-    Dictionary<int, string> cat_departamentos = new Dictionary<int, string>();
+    Dictionary<int, string> _cat_sucursales = new Dictionary<int, string>();
+    Dictionary<int, string> _cat_colonias = new Dictionary<int, string>();
+    Dictionary<int, string> _cat_departamentos = new Dictionary<int, string>();
 
 
-    private bool allowPagesGrid = false, busyDialog = false;
-    private int sucursal_seleccionado = 0, colonia_seleccionado = 0, departamento_seleccionado = 0;
-    private bool DatosGenerales_visible = false;
-    private string CuentaActual = "0";
+    private bool _allowPagesGrid = false, busyDialog = false;
+    private int _sucursal_seleccionado = 0, colonia_seleccionado = 0, departamento_seleccionado = 0;
+    private bool _datosGenerales_visible = false;
+    private string _cuentaActual = "0";
 
     //******** Funciones Generales ********
-    private async Task Cerrar_Modal() {
+    private async Task Cerrar_Modal()
+    {
         this.datosGrid.Clear();
         this.datosGrid_campos.Clear();
-        this.allowPagesGrid = false;
+        this._allowPagesGrid = false;
         await CerrarModal.InvokeAsync("");
     }
-    public async Task Inicializar(Padron_ModifABC_Response _datos) {
-        if (_datos.Modificaciones.Length > 1000) {
-            this.allowPagesGrid = true;
+    public async Task Inicializar(Padron_ModifABC_Response _datos)
+    {
+        if (_datos.Modificaciones.Length > 1000)
+        {
+            this._allowPagesGrid = true;
         }
         this.datos = _datos.Modificaciones.ToList();
         this.datosGrid = _datos.Modificaciones.ToList();
@@ -159,41 +155,49 @@
         await Task.Delay(100);
     }
 
-    public void Calcular_Catalogo() {
+    public void Calcular_Catalogo()
+    {
         this.busyDialog = true;
 
-        this.cat_sucursales = new Dictionary<int, string>();
-        cat_sucursales.Add(0, "TODOS");
-        this.cat_colonias = new Dictionary<int, string>();
-        cat_colonias.Add(0, "TODOS");
-        this.cat_departamentos = new Dictionary<int, string>();
-        cat_departamentos.Add(0, "TODOS");
+        this._cat_sucursales = new Dictionary<int, string>();
+        _cat_sucursales.Add(0, "TODOS");
+        this._cat_colonias = new Dictionary<int, string>();
+        _cat_colonias.Add(0, "TODOS");
+        this._cat_departamentos = new Dictionary<int, string>();
+        _cat_departamentos.Add(0, "TODOS");
 
 
-        this.datos.GroupBy(item => item.Id_Sucursal).ToList().ForEach(group => {
-            try {
-                this.cat_sucursales.Add(group.Key, group.FirstOrDefault().Sucursal ?? "");
+        this.datos.GroupBy(item => item.Id_Sucursal).ToList().ForEach(group =>
+        {
+            try
+            {
+                this._cat_sucursales.Add(group.Key, group.FirstOrDefault().Sucursal ?? "");
             }
             catch (Exception) { }
         });
 
-        this.datos.GroupBy(item => item.Id_Colonia).ToList().ForEach(group => {
-            try {
-                this.cat_colonias.Add(group.Key, group.FirstOrDefault().Colonia ?? "");
+        this.datos.GroupBy(item => item.Id_Colonia).ToList().ForEach(group =>
+        {
+            try
+            {
+                this._cat_colonias.Add(group.Key, group.FirstOrDefault().Colonia ?? "");
             }
             catch (Exception) { }
         });
 
-        this.datos.GroupBy(item => item.Id_Departamento).ToList().ForEach(group => {
-            try {
-                this.cat_departamentos.Add(group.Key, group.FirstOrDefault().Departamento ?? "");
+        this.datos.GroupBy(item => item.Id_Departamento).ToList().ForEach(group =>
+        {
+            try
+            {
+                this._cat_departamentos.Add(group.Key, group.FirstOrDefault().Departamento ?? "");
             }
             catch (Exception) { }
         });
 
         this.busyDialog = false;
     }
-    public async Task Procesar() {
+    public async Task Procesar()
+    {
         busyDialog = true;
         await Task.Delay(100);
 
@@ -205,13 +209,15 @@
 
         Padron_ModifABC_Response tmpData = padronService.ObtenerModificacionesABC(OficinaActual, Fecha1.Year, Fecha2.Month);
 
-        if (tmpData == null) {
+        if (tmpData == null)
+        {
             Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
             await Task.Delay(100);
             busyDialog = false;
             return;
         }
-        if (tmpData.Modificaciones.Length <= 0) {
+        if (tmpData.Modificaciones.Length <= 0)
+        {
             Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
             await Task.Delay(100);
             busyDialog = false;
@@ -227,49 +233,61 @@
         await Task.Delay(100);
         busyDialog = false;
     }
-    private void MostrarEnConsultaGeneral(Padron_ModifABC e) {
-        this.CuentaActual = e.Id_Cuenta.ToString();
-        this.DatosGenerales_visible = true;
+    private void MostrarEnConsultaGeneral(Padron_ModifABC e)
+    {
+        this._cuentaActual = e.Id_Cuenta.ToString();
+        this._datosGenerales_visible = true;
     }
+    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task GenerarExcel() {
-        await this.dataGrid.ExcelExport(new ExcelExportProperties {
+        await this._dataGrid.ExcelExport(new ExcelExportProperties {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    private void DataGrid_SelectedRow(RowSelectEventArgs<Padron_ModifABC> args) {
-        Padron_ModifABC tmpData = (Padron_ModifABC)args.Data;
+    */
+    private void DataGrid_SelectedRow(Padron_ModifABC tmpData)
+    {
         this.ObservacionTemp = tmpData.Observacion;
         long idAbc = tmpData.Id_Abc;
         this.datosGrid_campos = datos_campos.Where(item => item.Id_Abc == idAbc).ToList();
     }
-    private void ComboBoxFiltro_SelectionChaged(string sender, int val) {
-        switch (sender) {
-            case "sucursales": this.sucursal_seleccionado = val; break;
+    private void ComboBoxFiltro_SelectionChaged(string sender, int val)
+    {
+        switch (sender)
+        {
+            case "sucursales": this._sucursal_seleccionado = val; break;
             case "colonias": this.colonia_seleccionado = val; break;
             case "departamentos": this.departamento_seleccionado = val; break;
         }
         FiltrarDatos();
     }
-    private void FiltrarDatos() {
+    private void FiltrarDatos()
+    {
 
-        if (sucursal_seleccionado == 0 && colonia_seleccionado == 0 && departamento_seleccionado == 0) {
+        if (_sucursal_seleccionado == 0 && colonia_seleccionado == 0 && departamento_seleccionado == 0)
+        {
             this.datosGrid = this.datos;
         }
-        else {
+        else
+        {
 
             var datosFiltrados = this.datos;
 
-            if (sucursal_seleccionado > 0) {
+            if (_sucursal_seleccionado > 0)
+            {
                 var tmpData = datosFiltrados;
-                datosFiltrados = tmpData.Where(item => item.Id_Sucursal == sucursal_seleccionado).ToList<Padron_ModifABC>();
+                datosFiltrados = tmpData.Where(item => item.Id_Sucursal == _sucursal_seleccionado).ToList<Padron_ModifABC>();
             }
 
-            if (colonia_seleccionado > 0) {
+            if (colonia_seleccionado > 0)
+            {
                 var tmpData = datosFiltrados;
                 datosFiltrados = tmpData.Where(item => item.Id_Colonia == colonia_seleccionado).ToList<Padron_ModifABC>();
             }
 
-            if (departamento_seleccionado > 0) {
+            if (departamento_seleccionado > 0)
+            {
                 var tmpData = datosFiltrados;
                 datosFiltrados = tmpData.Where(item => item.Id_Departamento == departamento_seleccionado).ToList<Padron_ModifABC>();
             }

@@ -1,6 +1,6 @@
 @page "/Padron"
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
+@using Radzen
+@using Radzen.Blazor
 @using Sicem_Blazor.Padron.Models
 @using Sicem_Blazor.Data;
 @inject NavigationManager navigationManager
@@ -18,22 +18,25 @@
 
     @* ****** Acciones ****** *@
     <div class="border rounded bg-white p-2 d-flex align-items-center" style="grid-area:3/1/4/2;">
+        @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
         <MatButton Class="mx-2" style="min-width: 130px;" Raised="true" @onclick="ExportarExcel_Click">Exportar Excel</MatButton>
+        *@
         <MatButton Class="mx-2" style="min-width: 130px;" Raised="true" Disabled="true">Generar Reporte</MatButton>
     </div>
 
     @* ****** DataGrid ****** *@
     <div class="border rounded bg-white p-2 d-flex" style="grid-area:4/1/5/2;">
-        <SfGrid @ref="DataGrid" DataSource="@DatosGrid" TValue="Padron_Resumen" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true"
-                AllowPdfExport="true" Height="99%" Width="100%" EnableHover="true">
-            <GridColumns>
+        <RadzenDataGrid TItem="Padron_Resumen" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:99%; width:100%;">
+            <Columns>
 
-                <GridColumn Width="40">
+                <RadzenDataGridColumn Width="40px">
                     <Template>
                         @{
                             var data = (context as Padron_Resumen);
-                            if (data.Id > 0) {
-                                @switch (data.Estatus) {
+                            if (data.Id > 0)
+                            {
+                                @switch (data.Estatus)
+                                {
 
                                     case 1:
                                         <i class="fas fa-check-circle" style="color:green; font-size:1.5rem;"></i>
@@ -50,12 +53,12 @@
                             }
                         }
                     </Template>
-                </GridColumn>
+                </RadzenDataGridColumn>
 
-                <GridColumn Field="@nameof(Padron_Resumen.Oficina)" HeaderText="Oficina" TextAlign="TextAlign.Left" Width="140" />
-                <GridColumn Field="@nameof(Padron_Resumen.FechaModificacion)" HeaderText="Actualizado" TextAlign="TextAlign.Center" Width="190" />
+                <RadzenDataGridColumn Property="@nameof(Padron_Resumen.Oficina)" Title="Oficina" TextAlign="TextAlign.Left" Width="140px" />
+                <RadzenDataGridColumn Property="@nameof(Padron_Resumen.FechaModificacion)" Title="Actualizado" TextAlign="TextAlign.Center" Width="190px" />
 
-                <GridColumn HeaderText="Usuarios Activos" TextAlign="TextAlign.Center" Width="140">
+                <RadzenDataGridColumn Title="Usuarios Activos" TextAlign="TextAlign.Center" Width="140px">
                     <Template>
                         @{
                             var data = (context as Padron_Resumen);
@@ -65,11 +68,11 @@
                             </div>
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn Field="@nameof(Padron_Resumen.Activos_Usuarios)" HeaderText="Usuarios Activos" TextAlign="TextAlign.Center" Width="125" Format="n0" Visible="false" />
-                <GridColumn Field="@nameof(Padron_Resumen.Activos_Adeudos)" HeaderText="Importe Activos" TextAlign="TextAlign.Right" Width="125" Format="c2" Visible="false" />
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Property="@nameof(Padron_Resumen.Activos_Usuarios)" Title="Usuarios Activos" TextAlign="TextAlign.Center" Width="125px" FormatString="{0:n0}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(Padron_Resumen.Activos_Adeudos)" Title="Importe Activos" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" Visible="false" />
 
-                <GridColumn HeaderText="Usuarios Sala Espera" TextAlign="TextAlign.Center" Width="140">
+                <RadzenDataGridColumn Title="Usuarios Sala Espera" TextAlign="TextAlign.Center" Width="140px">
                     <Template>
                         @{
                             var data = (context as Padron_Resumen);
@@ -79,11 +82,11 @@
                             </div>
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn Field="@nameof(Padron_Resumen.Espera_Usuarios)" HeaderText="Usuarios Sala Espera" TextAlign="TextAlign.Center" Width="125" Format="n0" Visible="false" />
-                <GridColumn Field="@nameof(Padron_Resumen.Espera_Adeudos)" HeaderText="Importe Sala Espera" TextAlign="TextAlign.Right" Width="125" Format="c2" Visible="false" />
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Property="@nameof(Padron_Resumen.Espera_Usuarios)" Title="Usuarios Sala Espera" TextAlign="TextAlign.Center" Width="125px" FormatString="{0:n0}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(Padron_Resumen.Espera_Adeudos)" Title="Importe Sala Espera" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" Visible="false" />
 
-                <GridColumn HeaderText="Usuarios Baja Temporal" TextAlign="TextAlign.Center" Width="140">
+                <RadzenDataGridColumn Title="Usuarios Baja Temporal" TextAlign="TextAlign.Center" Width="140px">
                     <Template>
                         @{
                             var data = (context as Padron_Resumen);
@@ -93,11 +96,11 @@
                             </div>
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn Field="@nameof(Padron_Resumen.BajaTemp_Usuarios)" HeaderText="Usuarios Baja Tmp" TextAlign="TextAlign.Center" Width="125" Format="n0" Visible="false" />
-                <GridColumn Field="@nameof(Padron_Resumen.BajaTemp_Adeudos)" HeaderText="Importe Baja Tmp" TextAlign="TextAlign.Right" Width="125" Format="c2" Visible="false" />
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Property="@nameof(Padron_Resumen.BajaTemp_Usuarios)" Title="Usuarios Baja Tmp" TextAlign="TextAlign.Center" Width="125px" FormatString="{0:n0}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(Padron_Resumen.BajaTemp_Adeudos)" Title="Importe Baja Tmp" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" Visible="false" />
 
-                <GridColumn HeaderText="Usuarios Baja Definitiva" TextAlign="TextAlign.Center" Width="140">
+                <RadzenDataGridColumn Title="Usuarios Baja Definitiva" TextAlign="TextAlign.Center" Width="140px">
                     <Template>
                         @{
                             var data = (context as Padron_Resumen);
@@ -107,11 +110,11 @@
                             </div>
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn Field="@nameof(Padron_Resumen.BajaDef_Usuarios)" HeaderText="Usuarios Baja Def" TextAlign="TextAlign.Center" Width="125" Format="n0" Visible="false" />
-                <GridColumn Field="@nameof(Padron_Resumen.BajaDef_Adeudos)" HeaderText="Importe Baja Def" TextAlign="TextAlign.Right" Width="125" Format="c2" Visible="false" />
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Property="@nameof(Padron_Resumen.BajaDef_Usuarios)" Title="Usuarios Baja Def" TextAlign="TextAlign.Center" Width="125px" FormatString="{0:n0}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(Padron_Resumen.BajaDef_Adeudos)" Title="Importe Baja Def" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" Visible="false" />
 
-                <GridColumn HeaderText="Usuarios Congelados" TextAlign="TextAlign.Center" Width="140">
+                <RadzenDataGridColumn Title="Usuarios Congelados" TextAlign="TextAlign.Center" Width="140px">
                     <Template>
                         @{
                             var data = (context as Padron_Resumen);
@@ -121,11 +124,11 @@
                             </div>
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn Field="@nameof(Padron_Resumen.Conge_Usuarios)" HeaderText="Usuarios Congelados" TextAlign="TextAlign.Center" Width="125" Format="n0" Visible="false" />
-                <GridColumn Field="@nameof(Padron_Resumen.Conge_Adeudos)" HeaderText="Importe Congelados" TextAlign="TextAlign.Right" Width="125" Format="c2" Visible="false" />
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Property="@nameof(Padron_Resumen.Conge_Usuarios)" Title="Usuarios Congelados" TextAlign="TextAlign.Center" Width="125px" FormatString="{0:n0}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(Padron_Resumen.Conge_Adeudos)" Title="Importe Congelados" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" Visible="false" />
 
-                <GridColumn HeaderText="Total Usuarios" TextAlign="TextAlign.Center" Width="140">
+                <RadzenDataGridColumn Title="Total Usuarios" TextAlign="TextAlign.Center" Width="140px">
                     <Template>
                         @{
                             var data = (context as Padron_Resumen);
@@ -135,15 +138,16 @@
                             </div>
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn Field="@nameof(Padron_Resumen.Total_Usuarios)" HeaderText="Usuarios Total" TextAlign="TextAlign.Center" Width="125" Format="n0" Visible="false" />
-                <GridColumn Field="@nameof(Padron_Resumen.Total_Adeudos)" HeaderText="Importe Total" TextAlign="TextAlign.Right" Width="125" Format="c2" Visible="false" />
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Property="@nameof(Padron_Resumen.Total_Usuarios)" Title="Usuarios Total" TextAlign="TextAlign.Center" Width="125px" FormatString="{0:n0}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(Padron_Resumen.Total_Adeudos)" Title="Importe Total" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" Visible="false" />
 
-                <GridColumn HeaderText="Acciones" TextAlign="TextAlign.Left" Width="140">
+                <RadzenDataGridColumn Title="Acciones" TextAlign="TextAlign.Left" Width="140px">
                     <Template>
                         @{
                             var data = (context as Padron_Resumen);
-                            if (data.Id > 0) {
+                            if (data.Id > 0)
+                            {
                                 <div class="d-flex p-1">
                                     <button type="button" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="top" title="Contratos Realizados" disabled="@(data.Estatus != 1 )" @onclick=@( e => ContratosRealizados_Click(data) )>
                                         <i class="fa fa-people-arrows" aria-hidden="true"></i>
@@ -158,52 +162,60 @@
                             }
                         }
                     </Template>
-                </GridColumn>
-            </GridColumns>
-        </SfGrid>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
     </div>
 
     <!--- ****** Graficas ****** -->
     <div class="d-flex" style="grid-area:5/1/6/2;" >
-        <SfChart @ref="GraficaUsuarios" Height="100%" Width="100%" Title="Grafica Usuarios">
-            <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-            <ChartPrimaryYAxis Visible="false" LabelFormat="n0" />
-            <ChartTooltipSettings Enable="true" Header="Ingresos" Format="<b>${series.name}</b> : ${point.y}" Shared="true"></ChartTooltipSettings>
-            <ChartLegendSettings Visible="true" Position="LegendPosition.Right"></ChartLegendSettings>
-            <ChartSeriesCollection>
-
-                <ChartSeries DataSource="@DatosGrafica" Name="Usuarios Activos" XName="Descripcion" YName="Valor1" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Middle" />
-                    </ChartMarker>
-                </ChartSeries>
-
-                <ChartSeries DataSource="@DatosGrafica" Name="Usuarios Espera" XName="Descripcion" YName="Valor2" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Middle" />
-                    </ChartMarker>
-                </ChartSeries>
-
-                <ChartSeries DataSource="@DatosGrafica" Name="Usuarios Baja Temporal" XName="Descripcion" YName="Valor3" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Middle" />
-                    </ChartMarker>
-                </ChartSeries>
-
-                <ChartSeries DataSource="@DatosGrafica" Name="Usuarios Baja Definitiva" XName="Descripcion" YName="Valor4" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Middle" />
-                    </ChartMarker>
-                </ChartSeries>
-
-                <ChartSeries DataSource="@DatosGrafica" Name="Usuarios Congelados" XName="Descripcion" YName="Valor5" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Middle" />
-                    </ChartMarker>
-                </ChartSeries>
-
-            </ChartSeriesCollection>
-        </SfChart>
+        <div class="text-center font-weight-bold">Grafica Usuarios</div>
+        <RadzenChart @ref="GraficaUsuarios" Style="height:100%; width:100%;">
+            <RadzenCategoryAxis />
+            <RadzenValueAxis Visible="false" FormatString="{0:n0}" />
+            <RadzenChartTooltipOptions Shared="true" />
+            <RadzenLegend Visible="true" Position="LegendPosition.Right" />
+            <RadzenStackedBarSeries Data="@DatosGrafica" Title="Usuarios Activos" CategoryProperty="Descripcion" ValueProperty="Valor1">
+                <TooltipTemplate Context="item">
+                    <b>Usuarios Activos</b> : @item.Valor1
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="true" />
+                </ChildContent>
+            </RadzenStackedBarSeries>
+            <RadzenStackedBarSeries Data="@DatosGrafica" Title="Usuarios Espera" CategoryProperty="Descripcion" ValueProperty="Valor2">
+                <TooltipTemplate Context="item">
+                    <b>Usuarios Espera</b> : @item.Valor2
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="true" />
+                </ChildContent>
+            </RadzenStackedBarSeries>
+            <RadzenStackedBarSeries Data="@DatosGrafica" Title="Usuarios Baja Temporal" CategoryProperty="Descripcion" ValueProperty="Valor3">
+                <TooltipTemplate Context="item">
+                    <b>Usuarios Baja Temporal</b> : @item.Valor3
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="true" />
+                </ChildContent>
+            </RadzenStackedBarSeries>
+            <RadzenStackedBarSeries Data="@DatosGrafica" Title="Usuarios Baja Definitiva" CategoryProperty="Descripcion" ValueProperty="Valor4">
+                <TooltipTemplate Context="item">
+                    <b>Usuarios Baja Definitiva</b> : @item.Valor4
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="true" />
+                </ChildContent>
+            </RadzenStackedBarSeries>
+            <RadzenStackedBarSeries Data="@DatosGrafica" Title="Usuarios Congelados" CategoryProperty="Descripcion" ValueProperty="Valor5">
+                <TooltipTemplate Context="item">
+                    <b>Usuarios Congelados</b> : @item.Valor5
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="true" />
+                </ChildContent>
+            </RadzenStackedBarSeries>
+        </RadzenChart>
     </div>
 
 </div>
@@ -218,41 +230,41 @@
 
 
 @* ****** Dialogos y ventanas secundarias ****** *@
-<UltimosContratosVtn @ref="VtnContratos"
-    Visible="@VtnContratos_Visible"
-    CerrarModal="@( e => VtnContratos_Visible = false )" 
-    Fecha1="@f1" 
-    Fecha2="@f2" 
-    Subsistema="@Subsistema" 
-    Sector="@Sector"
+<UltimosContratosVtn @ref="_vtnContratos"
+    Visible="@_vtnContratos_Visible"
+    CerrarModal="@( e => _vtnContratos_Visible = false )" 
+    Fecha1="@_f1" 
+    Fecha2="@_f2" 
+    Subsistema="@_subsistema" 
+    Sector="@_sector"
 />
 
-<TarifasModificadasVtn @ref="VtnModifTarifas"
-    Visible="@VtnModifTarifas_Visible"
-    CerrarModal="@(()=> VtnModifTarifas_Visible  = false)"
-    Fecha1="@f1"
-    Fecha2="@f2"
-    Subsistema="@Subsistema"
-    Sector="@Sector"
+<TarifasModificadasVtn @ref="_vtnModifTarifas"
+    Visible="@_vtnModifTarifas_Visible"
+    CerrarModal="@(()=> _vtnModifTarifas_Visible  = false)"
+    Fecha1="@_f1"
+    Fecha2="@_f2"
+    Subsistema="@_subsistema"
+    Sector="@_sector"
 />
 
-<ModificacionesABCVtn @ref="VtnModifABC"
-    Visible="@VtnModifABC_Visible"
-    CerrarModal="@(()=> VtnModifABC_Visible = false)"
-    Fecha1="@f1"
-    Fecha2="@f2"
-    Subsistema="@Subsistema"
-    Sector="@Sector"
+<ModificacionesABCVtn @ref="_vtnModifABC"
+    Visible="@_vtnModifABC_Visible"
+    CerrarModal="@(()=> _vtnModifABC_Visible = false)"
+    Fecha1="@_f1"
+    Fecha2="@_f2"
+    Subsistema="@_subsistema"
+    Sector="@_sector"
 />
 
 <Padron_ColoniasVtn @ref="VtnColoniasPadron"
-    Visible="@VtnColoniasPadron_Visible"
-    CerrarModal="@(()=> VtnColoniasPadron_Visible = false )"
+    Visible="@_vtnColoniasPadron_Visible"
+    CerrarModal="@(()=> _vtnColoniasPadron_Visible = false )"
 />
 
 <Padron_SectoresVtn @ref="VtnSectoresPadron"
-    Visible="@VtnSectoresPadron_Visible"
-    CerrarModal="@(()=> VtnSectoresPadron_Visible = false )"
+    Visible="@_vtnSectoresPadron_Visible"
+    CerrarModal="@(()=> _vtnSectoresPadron_Visible = false )"
 />
 
 <Padron_DetalleUsuariosVtn @ref="VtnPadronDetalle"
@@ -260,64 +272,69 @@
     CerrarModal="@( e => VtnPadronDetalle_Visible = false)"
 />
 
-@if(ResumenVtnVisible){
+@if(_resumenVtnVisible)
+{
     <ResumenVtn Datos="@DatosResumen"
-        Titulo="@tituloResumen"
-        OnClosed="@(e => ResumenVtnVisible = false)"
+        Titulo="@_tituloResumen"
+        OnClosed="@(e => _resumenVtnVisible = false)"
         Enlace="@EnlaceSeleccionado"
     />
 }
 
-<BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
+<BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
 
 
-@code{
-    private SfGrid<Padron_Resumen> DataGrid { get; set; }
-    private SfChart GraficaUsuarios {get; set;}
-    private bool busyDialog = false;
-    private DateTime f1, f2;
-    private int Subsistema, Sector;
+@code
+{
+    private RadzenDataGrid<Padron_Resumen> DataGrid { get; set; }
+    private RadzenChart GraficaUsuarios {get; set;}
+    private bool _busyDialog = false;
+    private DateTime _f1, _f2;
+    private int _subsistema, _sector;
     private List<Padron_Resumen> DatosGrid { get; set; }
     private List<ChartItem> DatosGrafica { get; set; }
     private IEnlace EnlaceSeleccionado {get;set;}
-    private UltimosContratosVtn VtnContratos;
-    private bool VtnContratos_Visible = false;
-    private TarifasModificadasVtn VtnModifTarifas;
-    private bool VtnModifTarifas_Visible = false;
-    private ModificacionesABCVtn VtnModifABC;
-    private bool VtnModifABC_Visible = false;
+    private UltimosContratosVtn _vtnContratos;
+    private bool _vtnContratos_Visible = false;
+    private TarifasModificadasVtn _vtnModifTarifas;
+    private bool _vtnModifTarifas_Visible = false;
+    private ModificacionesABCVtn _vtnModifABC;
+    private bool _vtnModifABC_Visible = false;
 
     private Padron_ColoniasVtn VtnColoniasPadron {get;set;}
-    private bool VtnColoniasPadron_Visible = false;
+    private bool _vtnColoniasPadron_Visible = false;
     private Padron_SectoresVtn VtnSectoresPadron {get;set;}
-    private bool VtnSectoresPadron_Visible = false;
+    private bool _vtnSectoresPadron_Visible = false;
     private Padron_DetalleUsuariosVtn VtnPadronDetalle  {get;set;}
     private bool VtnPadronDetalle_Visible {get;set;} = false;
 
-    private bool ResumenVtnVisible = false;
+    private bool _resumenVtnVisible = false;
     private List<Padron_DetallePadron> DatosResumen {get;set;}
-    private string tituloResumen = "";
+    private string _tituloResumen = "";
 
     //********* Funciones  *********
-    protected override void OnInitialized() {
+    protected override void OnInitialized()
+    {
 
         // Validar si se cuenta con la opcion
-        if(!sicemService.Usuario.OpcionSistemas.Select(item => item.Id).Contains(Sicem_Blazor.Data.OpcionesSistema.PADRON_USUARIOS)){
+        if(!sicemService.Usuario.OpcionSistemas.Select(item => item.Id).Contains(Sicem_Blazor.Data.OpcionesSistema.PADRON_USUARIOS))
+        {
             navigationManager.NavigateTo("/");
             return;
         }
 
         var _now = DateTime.Now;
-        this.f1 = new DateTime(_now.Year, _now.Month, 1);
-        this.f2 = new DateTime(_now.Year, _now.Month, DateTime.DaysInMonth(_now.Year, _now.Month));
-        this.Subsistema = 0;
-        this.Sector = 0;
+        this._f1 = new DateTime(_now.Year, _now.Month, 1);
+        this._f2 = new DateTime(_now.Year, _now.Month, DateTime.DaysInMonth(_now.Year, _now.Month));
+        this._subsistema = 0;
+        this._sector = 0;
     }
-    public void Procesar(SeleccionarFechaEventArgs e) {
-        this.f1 = e.Fecha1;
-        this.f2 = e.Fecha2;
-        this.Subsistema = e.Subsistema;
-        this.Sector = e.Sector;
+    public void Procesar(SeleccionarFechaEventArgs e)
+    {
+        this._f1 = e.Fecha1;
+        this._f2 = e.Fecha2;
+        this._subsistema = e.Subsistema;
+        this._sector = e.Sector;
 
         var enlaces = sicemService.ObtenerOficinasDelUsuario();
         var oficinas = sicemService.ObtenerEnlaces().Where(item => enlaces.Select(i => i.Id).Contains(item.Id)).ToArray();
@@ -326,14 +343,17 @@
         var Tareas = new List<Task>();
 
         //*** Generar items
-        foreach(var oficina in oficinas){
-            var _itemGrid = new Padron_Resumen() {
+        foreach(var oficina in oficinas)
+        {
+            var _itemGrid = new Padron_Resumen()
+            {
                 Estatus = 0,
                 Enlace = oficina
             };
             this.DatosGrid.Add(_itemGrid);
 
-            var _itemGraf = new ChartItem() {
+            var _itemGraf = new ChartItem()
+            {
                 Id= oficina.Id,
                 Descripcion = oficina.Oficina
             };
@@ -344,7 +364,8 @@
 
         }
 
-        if(oficinas.Length > 1) {
+        if(oficinas.Length > 1)
+        {
             var _itemTotal = new Padron_Resumen();
             this.DatosGrid.Add(_itemTotal);
         }
@@ -352,12 +373,15 @@
         Tareas.ForEach(item => item.Start());
 
     }
-    private void Procesar_Datos_Grafica(){
+    private void Procesar_Datos_Grafica()
+    {
 
         //*** Datos Usuarios
         var tmpList1 = new List<ChartItem>();
-        foreach (var item in this.DatosGrid.OrderByDescending(item => item.Enlace.Id).ToList()) {
-            if (item.Id > 0) {
+        foreach (var item in this.DatosGrid.OrderByDescending(item => item.Enlace.Id).ToList())
+        {
+            if (item.Id > 0)
+            {
                 var newItem = new ChartItem();
                 newItem.Id = item.Enlace.Id;
                 newItem.Descripcion = item.Oficina;
@@ -371,16 +395,29 @@
         }
         this.DatosGrafica = tmpList1;
     }
-    private void ProcesarConsulta(IEnlace oficina){
-        var tmpDatos = padronService.ObtenerPadronResumen(oficina, f1.Year, f1.Month, Subsistema, Sector);
+    private void ProcesarConsulta(IEnlace oficina)
+    {
+        // Un error en esta oficina no debe detener a las demás (CLAUDE.md); Estatus 2 = Error
+        Padron_Resumen tmpDatos;
+        try
+        {
+            tmpDatos = padronService.ObtenerPadronResumen(oficina, _f1.Year, _f1.Month, _subsistema, _sector);
+        }
+        catch (Exception)
+        {
+            tmpDatos = null;
+        }
+        tmpDatos ??= new Padron_Resumen() { Estatus = 2 };
         
         var _random = new Random();
         var _sleepTime = _random.Next(100,3000);
         System.Threading.Thread.Sleep(_sleepTime);
 
-        lock(DatosGrid){
+        lock(DatosGrid)
+        {
             var _itemGrid = this.DatosGrid.Where(item => item.Id == oficina.Id).FirstOrDefault();
-            if( _itemGrid != null) {
+            if( _itemGrid != null)
+            {
                 _itemGrid.Estatus = tmpDatos.Estatus;
                 _itemGrid.Activos_Usuarios = tmpDatos.Activos_Usuarios;
                 _itemGrid.Activos_Adeudos = tmpDatos.Activos_Adeudos;
@@ -397,27 +434,28 @@
                 _itemGrid.FechaModificacion = tmpDatos.FechaModificacion;
             }
             RecalculatFilaTotal();
-            this.DataGrid.Refresh();
         }
+        _ = InvokeAsync(() => this.DataGrid.Reload());
         
-        lock(DatosGrafica){
+        lock(DatosGrafica)
+        {
             var _itemGrafica = this.DatosGrafica.Where(item => item.Id == oficina.Id).FirstOrDefault();
-            if( _itemGrafica != null) {
+            if( _itemGrafica != null)
+            {
                 _itemGrafica.Valor1 = (decimal)tmpDatos.Activos_Usuarios;
                 _itemGrafica.Valor2 = (decimal)tmpDatos.Espera_Usuarios;
                 _itemGrafica.Valor3 = (decimal)tmpDatos.BajaTemp_Usuarios;
                 _itemGrafica.Valor4 = (decimal)tmpDatos.BajaDef_Usuarios;
                 _itemGrafica.Valor5 = (decimal)tmpDatos.Conge_Usuarios;
             }
-            try {
-                this.GraficaUsuarios.RefreshLiveData();
-            }
-            catch (Exception) { }
+            _ = InvokeAsync(() => this.GraficaUsuarios.Reload());
         }
     }
-    private void RecalculatFilaTotal(){
+    private void RecalculatFilaTotal()
+    {
         var _itemTotal = this.DatosGrid.Where(item => item.Id == 0).FirstOrDefault();
-        if( _itemTotal != null) {
+        if( _itemTotal != null)
+        {
             var _datos = this.DatosGrid.Where(item => item.Id > 0 ).ToList();
             _itemTotal.Activos_Usuarios = _datos.Sum(item => item.Activos_Usuarios);
             _itemTotal.Activos_Adeudos = _datos.Sum(item => item.Activos_Adeudos);
@@ -435,27 +473,31 @@
 
     }
 
-    private async Task ContratosRealizados_Click(Padron_Resumen data){
-        if (VtnContratos_Visible) {
+    private async Task ContratosRealizados_Click(Padron_Resumen data)
+    {
+        if (_vtnContratos_Visible)
+        {
             return;
         }
 
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(200);
 
-        var tmpdata = padronService.ObtenerContratosRealizados(data.Enlace, f1.Year, f1.Month).ToArray();
+        var tmpdata = padronService.ObtenerContratosRealizados(data.Enlace, _f1.Year, _f1.Month).ToArray();
 
-        if (tmpdata == null) {
+        if (tmpdata == null)
+        {
             Toaster.Add("Hubo un error al procesar la peticion, int�ntelo mas tarde.", MatToastType.Warning);
             await Task.Delay(100);
-            this.busyDialog = false;
+            this._busyDialog = false;
             return;
         }
 
-        if(tmpdata.Length <= 0) {
+        if(tmpdata.Length <= 0)
+        {
             Toaster.Add("No hay contratos realizados en este periodo..", MatToastType.Info);
             await Task.Delay(100);
-            this.busyDialog = false;
+            this._busyDialog = false;
             return;
         }
 
@@ -463,61 +505,73 @@
         var catTarifas = sicemService.CatalogoTarifas(data.Enlace.Id);
 
         //*** Inicializar ventana secundaria
-        VtnContratos_Visible = true;
-        VtnContratos.Titulo = $"{data.Enlace.Nombre.ToUpper()} - CONTRATOS REALIZADOS";
-        VtnContratos.EnlaceActual = data.Enlace;
-        await VtnContratos.Inicializar(tmpdata, catTarifas);
+        _vtnContratos_Visible = true;
+        _vtnContratos.Titulo = $"{data.Enlace.Nombre.ToUpper()} - CONTRATOS REALIZADOS";
+        _vtnContratos.EnlaceActual = data.Enlace;
+        await _vtnContratos.Inicializar(tmpdata, catTarifas);
 
         await Task.Delay(200);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
-    private async Task ModificacionesTarifa_Click(Padron_Resumen data) {
-        if(VtnModifTarifas_Visible) {
+    private async Task ModificacionesTarifa_Click(Padron_Resumen data)
+    {
+        if(_vtnModifTarifas_Visible)
+        {
             return;
         }
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(200);
 
-        var tmpdata = padronService.ObtenerModifiTarifas(data.Enlace, this.f1.Year, this.f1.Month);
-        if (tmpdata == null) {
+        var tmpdata = padronService.ObtenerModifiTarifas(data.Enlace, this._f1.Year, this._f1.Month);
+        if (tmpdata == null)
+        {
             Toaster.Add("Hubo un error al procesar la petici�n, int�ntelo mas tarde.", MatToastType.Warning);
         }
-        if(tmpdata.Count() <= 0) {
+        if(tmpdata.Count() <= 0)
+        {
             Toaster.Add("No hay datos disponibles, para este periodo.", MatToastType.Info);
         }
-        else {
-            VtnModifTarifas_Visible = true;
-            VtnModifTarifas.Titulo = $"{data.Enlace.Nombre.ToUpper()} - MODIFICACIONES DE TARIFAS";
-            VtnModifTarifas.OficinaActual = data.Enlace;
-            await VtnModifTarifas.Inicializar(tmpdata.ToArray());
+        else
+        {
+            _vtnModifTarifas_Visible = true;
+            _vtnModifTarifas.Titulo = $"{data.Enlace.Nombre.ToUpper()} - MODIFICACIONES DE TARIFAS";
+            _vtnModifTarifas.OficinaActual = data.Enlace;
+            await _vtnModifTarifas.Inicializar(tmpdata.ToArray());
         }
         await Task.Delay(200);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
-    private async Task BitacoraABC_Clikc(Padron_Resumen data){
-        if (VtnModifABC_Visible) {
+    private async Task BitacoraABC_Clikc(Padron_Resumen data)
+    {
+        if (_vtnModifABC_Visible)
+        {
             return;
         }
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(200);
 
-        var tmpdata = padronService.ObtenerModificacionesABC(data.Enlace, this.f1.Year, this.f1.Month);
-        if (tmpdata == null) {
+        var tmpdata = padronService.ObtenerModificacionesABC(data.Enlace, this._f1.Year, this._f1.Month);
+        if (tmpdata == null)
+        {
             Toaster.Add("Hubo un error al procesar la petici�n, int�ntelo mas tarde.", MatToastType.Warning);
         }
-        if (tmpdata.Modificaciones.Length <= 0) {
+        if (tmpdata.Modificaciones.Length <= 0)
+        {
             Toaster.Add("No hay datos disponibles, para este periodo.", MatToastType.Info);
         }
-        else {
-            VtnModifABC_Visible = true;
-            VtnModifABC.Titulo = $"{data.Enlace.Nombre.ToUpper()} - MODIFICACIONES ABC";
-            VtnModifABC.OficinaActual = data.Enlace;
-            await VtnModifABC.Inicializar(tmpdata);
+        else
+        {
+            _vtnModifABC_Visible = true;
+            _vtnModifABC.Titulo = $"{data.Enlace.Nombre.ToUpper()} - MODIFICACIONES ABC";
+            _vtnModifABC.OficinaActual = data.Enlace;
+            await _vtnModifABC.Inicializar(tmpdata);
         }
         await Task.Delay(200);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
 
+    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task ExportarExcel_Click(){
         var p = new ExcelExportProperties {
             FileName = $"Sicem_{Guid.NewGuid().ToString().Replace("-","")}.xlsx",
@@ -525,83 +579,102 @@
         };
         await DataGrid.ExportToExcelAsync(excelExportProperties: p);
     }
-    private string FormateoMoneda(decimal valor){
+    */
+    private string FormateoMoneda(decimal valor)
+    {
         return valor.ToString("c2");
     }
-    private async Task PadronColonias_Click(Padron_Resumen data){
-        if(VtnColoniasPadron_Visible){
+    private async Task PadronColonias_Click(Padron_Resumen data)
+    {
+        if(_vtnColoniasPadron_Visible)
+        {
             return;
         }
 
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(200);
 
-        var _datos = padronService.ObtenerPadronPorColonia(data.Enlace, this.f1.Year, this.f1.Month);
-        if(_datos.Count() <= 0){
+        var _datos = padronService.ObtenerPadronPorColonia(data.Enlace, this._f1.Year, this._f1.Month);
+        if(_datos.Count() <= 0)
+        {
             Toaster.Add("No hay datos disponibles", MatToastType.Info);
-        }else{
+        }
+        else
+        {
             VtnColoniasPadron.Inicializar(_datos.ToList(), data.Enlace);
             VtnColoniasPadron.Titulo = $"{data.Enlace.Nombre} - PADRON POR COLONIAS";
-            VtnColoniasPadron_Visible = true;
+            _vtnColoniasPadron_Visible = true;
         }
 
         await Task.Delay(200);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
-    private async Task PadronSectores_Click(Padron_Resumen data){
-        if(VtnSectoresPadron_Visible){
+    private async Task PadronSectores_Click(Padron_Resumen data)
+    {
+        if(_vtnSectoresPadron_Visible)
+        {
             return;
         }
 
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(200);
 
-        var _datos = padronService.ObtenerPadronPorSectores(data.Enlace, this.f1.Year, this.f1.Month);
-        if(_datos.Count() <= 0){
+        var _datos = padronService.ObtenerPadronPorSectores(data.Enlace, this._f1.Year, this._f1.Month);
+        if(_datos.Count() <= 0)
+        {
             Toaster.Add("No hay datos disponibles", MatToastType.Info);
-        }else{
+        }
+        else
+        {
             VtnSectoresPadron.Inicializar(_datos.ToList(), data.Enlace);
             VtnColoniasPadron.Titulo = $"{data.Enlace.Nombre} - PADRON POR SECTORES";
-            VtnSectoresPadron_Visible = true;
+            _vtnSectoresPadron_Visible = true;
         }
 
         await Task.Delay(200);
-        this.busyDialog = false;
+        this._busyDialog = false;
 
     }
 
-    private async Task PadronGridDetalle_Click(Padron_Resumen data, int opcion){
+    private async Task PadronGridDetalle_Click(Padron_Resumen data, int opcion)
+    {
 
-        if(ResumenVtnVisible || data.Id <= 0){
+        if(_resumenVtnVisible || data.Id <= 0)
+        {
             return;
         }
 
         DatosResumen = null;
 
-        busyDialog = true;
+        _busyDialog = true;
         await Task.Delay(200);
 
         var _estatus = CalcularIdEstatus(opcion);
         this.EnlaceSeleccionado = data.Enlace;
 
-        DatosResumen = padronService.ObtenerDetallePadron(data.Enlace, f1.Year, f1.Month, this.Subsistema, this.Sector, (int) _estatus["id"]).ToList();
-        if(DatosResumen.Count() <= 0){
+        DatosResumen = padronService.ObtenerDetallePadron(data.Enlace, _f1.Year, _f1.Month, this._subsistema, this._sector, (int) _estatus["id"]).ToList();
+        if(DatosResumen.Count() <= 0)
+        {
             Toaster.Add("No hay datos disponibles para mostrar", MatToastType.Warning);
-        }else {
-            tituloResumen = $"{_estatus["descripcion"]} de {f1.ToString("MMMM")} del {f1.ToString("yyyy")} ".ToUpper();
-            ResumenVtnVisible = true;
+        }
+        else
+        {
+            _tituloResumen = $"{_estatus["descripcion"]} de {_f1.ToString("MMMM")} del {_f1.ToString("yyyy")} ".ToUpper();
+            _resumenVtnVisible = true;
         }
 
         await Task.Delay(200);
-        busyDialog = false;
+        _busyDialog = false;
         
     }
 
-    public Dictionary<string,object> CalcularIdEstatus(int opcion){
+    public Dictionary<string,object> CalcularIdEstatus(int opcion)
+    {
         var _idEstatus = 0;
         var _estatus = "";
 
-        switch(opcion){
+        switch(opcion)
+        {
             //*** Usuarios Activos
             case 1:
                 _idEstatus = 1;
@@ -639,7 +712,8 @@
                 break;
         }
 
-        return new Dictionary<string,object>(){
+        return new Dictionary<string,object>()
+        {
             {"id",_idEstatus},
             {"descripcion",_estatus}
         };

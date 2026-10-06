@@ -1,14 +1,12 @@
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Notifications
-@using Syncfusion.Blazor.Inputs
+@using Radzen
+@using Radzen.Blazor
 @using Sicem_Blazor.Padron.Models
 @inject IJSRuntime JSRuntime
 @inject PadronService padronService
 @inject NavigationManager NavManager
 
-@if (Visible) {
+@if (Visible)
+{
 
     <VentanaSecundaria 
         Titulo="@Titulo" 
@@ -22,19 +20,20 @@
             <Panel>
             <Content>
                 <InputLabel Value="Tarifa:" />
-                <ComboBox InitValue="0" Options="@cat_tarifas" OnSelected="@(val => FiltrarDatos(val))" Width="260" CustomClass="mx-2" />
+                <ComboBox InitValue="0" Options="@_cat_tarifas" OnSelected="@(val => FiltrarDatos(val))" Width="260" CustomClass="mx-2" />
                 
+                @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                 <ExportExcelButton OnClick="GenerarExcel" />
+                *@
             </Content>
             </Panel>
 
             <!-- ****** DataGrid ****** -->
             <Panel>
             <Content>
-                <SfGrid @ref="dataGrid" DataSource="@datosGrid" AllowPaging="@allowPagesGrid" AllowSorting="true" AllowResizing="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true">
-                    <GridPageSettings PageSize="1000"></GridPageSettings>
-                    <GridColumns>
-                        <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="55">
+                <RadzenDataGrid TItem="Padron_Contratos" @ref="_dataGrid" Data="@datosGrid" AllowPaging="@_allowPagesGrid" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" PageSize="1000" Style="height:100%; width:auto;">
+                    <Columns>
+                        <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="55px">
                             <Template>
                                 @{
                                     var data = (context as Padron_Contratos);
@@ -43,19 +42,19 @@
                                     </button>
                                 }
                             </Template>
-                        </GridColumn>
-                        <GridColumn Field="@nameof(Padron_Contratos.Id_Contrato)" HeaderText="Contrato" TextAlign="TextAlign.Center" Width="90" />
-                        <GridColumn Field="@nameof(Padron_Contratos.Fecha_Contratado)" HeaderText="Fecha" TextAlign="TextAlign.Left" Width="130" />
-                        <GridColumn Field="@nameof(Padron_Contratos.Cuenta)" HeaderText="Cuenta" TextAlign="TextAlign.Center" Width="120" />
-                        <GridColumn Field="@nameof(Padron_Contratos.Localizacion)" HeaderText="Localizacion" TextAlign="TextAlign.Left" Width="140" />
-                        <GridColumn Field="@nameof(Padron_Contratos.Usuario)" HeaderText="Usuario" TextAlign="TextAlign.Left" Width="190" />
-                        <GridColumn Field="@nameof(Padron_Contratos.Tarifa_Contratada)" HeaderText="Tarifa Contr" TextAlign="TextAlign.Center" Width="120" />
-                        <GridColumn Field="@nameof(Padron_Contratos.Tarifa_Actual)" HeaderText="Tarifa Act" TextAlign="TextAlign.Center" Width="120" />
-                        <GridColumn Field="@nameof(Padron_Contratos.Subtotal)" HeaderText="Subtotal" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                        <GridColumn Field="@nameof(Padron_Contratos.Iva)" HeaderText="IVA" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                        <GridColumn Field="@nameof(Padron_Contratos.Total)" HeaderText="Total" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                    </GridColumns>
-                </SfGrid>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn Property="@nameof(Padron_Contratos.Id_Contrato)" Title="Contrato" TextAlign="TextAlign.Center" Width="90px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_Contratos.Fecha_Contratado)" Title="Fecha" TextAlign="TextAlign.Left" Width="130px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_Contratos.Cuenta)" Title="Cuenta" TextAlign="TextAlign.Center" Width="120px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_Contratos.Localizacion)" Title="Localizacion" TextAlign="TextAlign.Left" Width="140px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_Contratos.Usuario)" Title="Usuario" TextAlign="TextAlign.Left" Width="190px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_Contratos.Tarifa_Contratada)" Title="Tarifa Contr" TextAlign="TextAlign.Center" Width="120px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_Contratos.Tarifa_Actual)" Title="Tarifa Act" TextAlign="TextAlign.Center" Width="120px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_Contratos.Subtotal)" Title="Subtotal" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_Contratos.Iva)" Title="IVA" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_Contratos.Total)" Title="Total" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                    </Columns>
+                </RadzenDataGrid>
             </Content>
            </Panel>
 
@@ -64,12 +63,14 @@
 
     <BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
 
-    @if (DatosGenerales_visible) {
-        <DatosGenerales_Dialog IdOficina="@EnlaceActual.Id" Cuenta="@CuentaActual" CerrarVentana="@(e => DatosGenerales_visible = false)" />
+    @if (_datosGenerales_visible)
+    {
+        <DatosGenerales_Dialog IdOficina="@EnlaceActual.Id" Cuenta="@_cuentaActual" CerrarVentana="@(e => _datosGenerales_visible = false)" />
     }
 }
 
-@code {
+@code
+{
 
     [Parameter] public bool Visible { get; set; }
     [Parameter] public EventCallback CerrarModal { get; set; }
@@ -80,59 +81,72 @@
     public string Titulo = "Contratos Realizados";
     public IEnlace EnlaceActual = null;
 
-    SfGrid<Padron_Contratos> dataGrid;
+    RadzenDataGrid<Padron_Contratos> _dataGrid;
     public Padron_Contratos[] datos { get; set; }
     public List<Padron_Contratos> datosGrid { get; set; }
-    Dictionary<int, string> cat_tarifas = new Dictionary<int, string>();
+    Dictionary<int, string> _cat_tarifas = new Dictionary<int, string>();
 
-    private bool allowPagesGrid = false, busyDialog = false;
-    private int idTarifaSeleccionada = 0;
-    private bool DatosGenerales_visible = false;
-    private string CuentaActual = "0";
+    private bool _allowPagesGrid = false, busyDialog = false;
+    private int _idTarifaSeleccionada = 0;
+    private bool _datosGenerales_visible = false;
+    private string _cuentaActual = "0";
 
     //"******** Funciones ********"
-    private async Task Cerrar_Modal() {
+    private async Task Cerrar_Modal()
+    {
         this.datosGrid = new List<Padron_Contratos>();
         await CerrarModal.InvokeAsync("");
     }
-    public async Task Inicializar(Padron_Contratos[] _datos, Dictionary<int, string> _cat) {
-        if (_datos.Length > 1000) {
-            this.allowPagesGrid = true;
+    public async Task Inicializar(Padron_Contratos[] _datos, Dictionary<int, string> _cat)
+    {
+        if (_datos.Length > 1000)
+        {
+            this._allowPagesGrid = true;
         }
         this.datos = _datos;
         this.datosGrid = datos.ToList();
-        this.cat_tarifas = _cat;
-        this.cat_tarifas[0] = "TODOS";
+        this._cat_tarifas = _cat;
+        this._cat_tarifas[0] = "TODOS";
 
         await Task.Delay(100);
     }
-    public async Task Procesar() {
+    public async Task Procesar()
+    {
         busyDialog = true;
         this.datos = padronService.ObtenerContratosRealizados(EnlaceActual, Fecha1.Year, Fecha1.Month).ToArray();
-        FiltrarDatos(idTarifaSeleccionada);
+        FiltrarDatos(_idTarifaSeleccionada);
         busyDialog = false;
         await Task.Delay(100);
     }
-    private void MostrarEnConsultaGeneral(Padron_Contratos e) {
-        this.CuentaActual = e.Cuenta.ToString();
-        DatosGenerales_visible = true;
+    private void MostrarEnConsultaGeneral(Padron_Contratos e)
+    {
+        this._cuentaActual = e.Cuenta.ToString();
+        _datosGenerales_visible = true;
     }
+    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task GenerarExcel() {
-        await this.dataGrid.ExcelExport(new ExcelExportProperties {
+        await this._dataGrid.ExcelExport(new ExcelExportProperties {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    private void FiltrarDatos(int id_tarifa_seleccionada) {
-        this.idTarifaSeleccionada = id_tarifa_seleccionada;
-        if (id_tarifa_seleccionada == 0) {
+    */
+    private void FiltrarDatos(int id_tarifa_seleccionada)
+    {
+        this._idTarifaSeleccionada = id_tarifa_seleccionada;
+        if (id_tarifa_seleccionada == 0)
+        {
             this.datosGrid = this.datos.ToList();
         }
-        else {
+        else
+        {
             var tmpData = this.datos.Where(item => item.Id_Tarifa_Actual == id_tarifa_seleccionada || item.Id_Tarifa_Contratada == id_tarifa_seleccionada).ToArray();
-            if (tmpData.Length > 0) {
+            if (tmpData.Length > 0)
+            {
                 this.datosGrid = tmpData.ToList();
             }
-            else {
+            else
+            {
                 this.datosGrid = new List<Padron_Contratos>();
             }
         }
