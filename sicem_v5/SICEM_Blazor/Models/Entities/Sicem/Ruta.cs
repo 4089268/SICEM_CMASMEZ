@@ -44,13 +44,14 @@ namespace Sicem_Blazor.Models
                     Password = this.Contraseña,
                     ApplicationName = "Sicem",
                     ConnectTimeout = (60 * 20),
-                    Encrypt = SqlConnectionEncryptOption.Optional
+                    Encrypt = SqlConnectionEncryptOption.Mandatory,
+                    TrustServerCertificate = true
                 };
                 return _connectionBuilder.ConnectionString;
             }
         }
 
-        // *** IMPLEMENTACIONES
+        // * Imple
         public string Nombre => Oficina;
         public string GetConnectionString() => StringConection;
     }
