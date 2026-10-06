@@ -1,19 +1,16 @@
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Notifications
-@using Syncfusion.Blazor.Inputs
+@using Radzen
+@using Radzen.Blazor
 @namespace Sicem_Blazor.Pages.Configuracion.Partials
 
 <div class="container">
     <div class="row">
         <div class="p-2 col-12" style="height:80px;">
             <label class="pb-1" style="font-size:1.5em;">Titulo</label>
-            <SfTextBox Multiline=false Placeholder="Titulo" Readonly="true"></SfTextBox>
+            <RadzenTextBox Placeholder="Titulo" ReadOnly="true" class="w-100" />
         </div>
         <div class="overflow-auto p-2 col-12">
             <label class="pb-1" style="font-size:1.5em;">Mensaje</label>
-            <SfTextBox Multiline=true Placeholder="Mensaje a notificar" Style="height:20rem;" Readonly="true"></SfTextBox>
+            <RadzenTextArea Placeholder="Mensaje a notificar" Style="height:20rem;" ReadOnly="true" class="w-100" />
         </div>
 
         <div class="d-flex col-12 pl-5">

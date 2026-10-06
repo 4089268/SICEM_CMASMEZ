@@ -1,10 +1,7 @@
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Notifications
-@using Syncfusion.Blazor.Inputs
 @namespace Sicem_Blazor.Pages.Configuracion
 @page "/NotificacionesTemplates"
+@using Radzen
+@using Radzen.Blazor
 @using Sicem_Blazor.Pages.Configuracion.Partials
 
 <div class="content-layout">
@@ -34,19 +31,18 @@
         <div class="d-flex align-items-center p-1" style="height:4rem;">
             <div class="d-flex align-items-center border rounded p-2" style="width: 24rem; height:100%; font-size:1.1rem;">
                 <i class="fa fa-search ml-2 mr-2" style="color:#555;"></i>
-                <input type="text" placeholder="Buscar" @bind-value="searchText" @onkeyup="OnGridSearch_KeyUp" style="border: none; outline:none; background-color:#fff; width:100%; box-shadow:none;" />
-                @if(searchText.Trim().Length > 1){
+                <input type="text" placeholder="Buscar" @bind-value="_searchText" @onkeyup="OnGridSearch_KeyUp" style="border: none; outline:none; background-color:#fff; width:100%; box-shadow:none;" />
+                @if(_searchText.Trim().Length > 1)
+                {
                     <i class="fa fa-close link-btn aling ali align-self-start m m-1" aria-hidden="true" style="width: 1rem;height: 1rem;color: #333;text-decoration: none !important;" @onclick="ClearSearch_Click"></i>
                 }
             </div>
         </div>
 
         <div class="p-1" style="width: 100%; height: calc(100% - 4.5rem);">
-            <SfGrid @ref="DataGrid" DataSource="@DatosGrid" TValue="NotificacionTemplate" AllowResizing="true" AllowSorting="true" AllowFiltering="false"
-                AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true">
-                <GridEvents RowSelected="OnDataGrid_SelectionChanged" TValue="NotificacionTemplate"></GridEvents>
-                <GridColumns>
-                    <GridColumn Field=@nameof(NotificacionTemplate.Titulo) HeaderText="Titulo" TextAlign="TextAlign.Left" Width="140">
+            <RadzenDataGrid TItem="NotificacionTemplate" @ref="DataGrid" Data="@(Sicem_Blazor.Helpers.BusquedaGrid.Filtrar(DatosGrid, _textoBusquedaGrid))" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" RowSelect="OnDataGrid_SelectionChanged" SelectionMode="DataGridSelectionMode.Single" Style="height:100%; width:100%;">
+                <Columns>
+                    <RadzenDataGridColumn Property="@nameof(NotificacionTemplate.Titulo)" Title="Titulo" TextAlign="TextAlign.Left" Width="140px">
                         <Template>
                             @{
                                 var data = (context as NotificacionTemplate);
@@ -54,9 +50,9 @@
                                 <span>@data.Titulo</span>
                             }
                         </Template>
-                    </GridColumn>
-                </GridColumns>
-            </SfGrid>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
         </div>
     </div>
 
@@ -112,4 +108,4 @@
     }
 </style>
 
-<BusyIndicator Busy="@cargando" ContentText="Cargando datos..." />
+<BusyIndicator Busy="@_cargando" ContentText="Cargando datos..." />

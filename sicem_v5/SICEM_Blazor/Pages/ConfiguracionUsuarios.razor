@@ -1,9 +1,6 @@
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Notifications
-@using Syncfusion.Blazor.Inputs
 @page "/Configuracion/CatUsuarios"
+@using Radzen
+@using Radzen.Blazor
 @inject SicemService sicemService
 
 <div class="tarifasLayout">
@@ -35,31 +32,33 @@
 
     <!-- ****** Datagrid ****** -->
     <div class="d-flex align-items-center" style="grid-area:4/1/5/2;">
-        @if (Busy) {
+        @if (_busy)
+        {
             <div class="spinner-border" role="status"> </div>
         }
-        else {
-            <SfGrid @ref="dataGrid" DataSource="@catUsuarios" AllowResizing="true" Height="100%" AllowSorting="true" RowHeight="28">
-                <GridColumns>
-                    <GridColumn Field=@nameof(Usuario.Nombre) HeaderText="Nombre" TextAlign="TextAlign.Left" Width="140"></GridColumn>
-                    <GridColumn Field=@nameof(Usuario.Usuario1) HeaderText="Usuario" TextAlign="TextAlign.Left" Width="80"></GridColumn>
-                    <GridColumn Field=@nameof(Usuario.Administrador) HeaderText="Admin" TextAlign="TextAlign.Center" Width="68">
+        else
+        {
+            <RadzenDataGrid TItem="Usuario" @ref="DataGrid" Data="@(Sicem_Blazor.Helpers.BusquedaGrid.Filtrar(catUsuarios, _textoBusquedaGrid))" AllowColumnResize="true" AllowSorting="true" Density="Density.Compact" Style="height:100%;">
+                <Columns>
+                    <RadzenDataGridColumn Property="@nameof(Usuario.Nombre)" Title="Nombre" TextAlign="TextAlign.Left" Width="140px"></RadzenDataGridColumn>
+                    <RadzenDataGridColumn Property="@nameof(Usuario.Usuario1)" Title="Usuario" TextAlign="TextAlign.Left" Width="80px"></RadzenDataGridColumn>
+                    <RadzenDataGridColumn Property="@nameof(Usuario.Administrador)" Title="Admin" TextAlign="TextAlign.Center" Width="68px">
                         <Template>
                             @{
                                 var config = (context as Usuario);
                                 <input type="checkbox" checked=@config.Administrador disabled />
                             }
                         </Template>
-                    </GridColumn>
-                    <GridColumn Field=@nameof(Usuario.Inactivo) HeaderText="Inactivo" TextAlign="TextAlign.Center" Width="68">
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn Property="@nameof(Usuario.Inactivo)" Title="Inactivo" TextAlign="TextAlign.Center" Width="68px">
                         <Template>
                             @{
                                 var config = (context as Usuario);
                                 <input type="checkbox" checked=@config.Inactivo @onchange="@((e)=> CheckBoxModificarUsuario_Click(config.Id, "Inactivo", e.Value) )" />
                             }
                         </Template>
-                    </GridColumn>
-                    <GridColumn HeaderText="" TextAlign="TextAlign.Left" Width="120">
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn Title="" TextAlign="TextAlign.Left" Width="120px">
                         <Template>
                             @{
                                 var config = (context as Usuario);
@@ -68,21 +67,23 @@
                                 </div>
                             }
                         </Template>
-                    </GridColumn>
-                </GridColumns>
-            </SfGrid>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
         }
     </div>
 </div>
 
 <ModificarUsuario @ref="ModificarUsuarioVtn" Visible="@ModificarUsuarioVtn_Visible" CerrarModal="@ModificarUsuario_Closed" />
 
-@code{
+@code
+{
+    private string _textoBusquedaGrid = "";
 
-    private SfGrid<Usuario> dataGrid { get; set; }
+    private RadzenDataGrid<Usuario> DataGrid { get; set; }
     private List<Usuario> catUsuarios { get; set; }
-    private bool Busy = false;
-    private string stringSearch = "";
+    private bool _busy = false;
+    private string _stringSearch = "";
     private ModificarUsuario ModificarUsuarioVtn { get; set; }
     private bool ModificarUsuarioVtn_Visible { get; set; } = false;
 
@@ -92,8 +93,10 @@
     }
 
 
-    private async Task AgregarUsuario_Click(){
-        if (ModificarUsuarioVtn_Visible){
+    private async Task AgregarUsuario_Click()
+    {
+        if (ModificarUsuarioVtn_Visible)
+        {
             return;
         }
         ModificarUsuarioVtn_Visible = true;
@@ -101,8 +104,10 @@
         await ModificarUsuarioVtn.Inicializar();
         await Task.Delay(100);
     }
-    private async Task BotonModificarUsuario_Click(Usuario u){
-        if (ModificarUsuarioVtn_Visible) {
+    private async Task BotonModificarUsuario_Click(Usuario u)
+    {
+        if (ModificarUsuarioVtn_Visible)
+        {
             return;
         }
         ModificarUsuarioVtn_Visible = true;
@@ -115,24 +120,29 @@
         await ModificarUsuarioVtn.Inicializar(modif:true);
         await Task.Delay(100);
     }
-    private async Task CheckBoxModificarUsuario_Click(int idUsuario, string opcion, object val){
+    private async Task CheckBoxModificarUsuario_Click(int idUsuario, string opcion, object val)
+    {
         await Task.Delay(100);
     }
 
-    private async Task ModificarUsuario_Closed(){
+    private async Task ModificarUsuario_Closed()
+    {
         ModificarUsuarioVtn_Visible = false;
-        this.Busy = true;
+        this._busy = true;
         await Task.Delay(100);
 
         this.catUsuarios = sicemService.ObtenerListadoUsuarios().ToList();
 
         await Task.Delay(100);
-        this.Busy = false;
+        this._busy = false;
     }
 
-    private async Task InputSearch_KeyUp(KeyboardEventArgs e){
-        if(e.Key == "Enter"){
-            await dataGrid.SearchAsync(stringSearch);
+    private async Task InputSearch_KeyUp(KeyboardEventArgs e)
+    {
+        if(e.Key == "Enter")
+        {
+            _textoBusquedaGrid = _stringSearch; // SfGrid.SearchAsync -> filtro en memoria (Helpers/BusquedaGrid)
+            await DataGrid.FirstPage();
         }
     }
 

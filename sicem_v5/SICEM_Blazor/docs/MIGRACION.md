@@ -142,6 +142,7 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | `SfAccumulationChart Title` | `<div>` con el título encima de la gráfica (RadzenChart no tiene título) |
 | `grid.Refresh()` / `chart.Refresh()` desde un `Timer` | `await InvokeAsync(...)` + `Reload()` (hilo de render) |
 | CSS `.e-rowcell` | `.rz-cell-data` |
+| `grid.SearchAsync(texto)` (búsqueda global) | `Data="@(Sicem_Blazor.Helpers.BusquedaGrid.Filtrar(datos, _textoBusquedaGrid))"` + `_textoBusquedaGrid = texto; await grid.FirstPage();` |
 | `ChartSeriesType.StackingBar` | `RadzenStackedBarSeries` |
 | `ChartSeriesType.StackingColumn` / `Column` | `RadzenStackedColumnSeries` / `RadzenColumnSeries` |
 | `ChartTooltipSettings Format="${point.x} : ${point.y}"` | `TooltipTemplate Context="item"` con `@item.<XName> : @item.<YName>` (`$${point.y}` → `.ToString("c2")`) |
@@ -177,7 +178,7 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | 11 | Antigüedad de Saldos | `/controlRezago` | ✅ Migrado (2026-10-06) |
 | 12 | Lecturas | `/lecturas` | ✅ Migrado (2026-10-06) |
 | 13 | Pago en Línea | `/PagoLineaAnalitycs` | ✅ Migrado (2026-10-06) |
-| 14 | Configuración | `/configuracion` | Pendiente |
+| 14 | Configuración | `/configuracion` | ✅ Migrado (2026-10-06) |
 
 ### Módulo 1 – Consulta General (2026-10-06)
 
@@ -374,6 +375,22 @@ Exportación comentada (`TODO-EXPORT-RADZEN`) en los archivos con exportación. 
 Allman y renombres de miembros privados, aplicados en conjunto al `.razor` y su `.razor.cs`. Los parámetros de métodos que se llaman igual que un campo no se renombran.
 
 - [ ] Prueba manual: Incorporación de Pagos (carga de archivos, tabla de archivos que se actualiza con el timer, registros, aplicar pago, filtro "solo pendientes"); resumen por oficina, por días, detalle de oficina y detalle de pagos.
+
+### Módulo 14 – Configuración (2026-10-06)
+
+Páginas enlazadas desde `/configuracion`: Catálogo de Usuarios, Conceptos, Historial de Conexiones, Sesiones y Notificaciones (plantillas e imágenes). 12 `.razor` + 2 `.razor.cs`: 10 `SfGrid`, 4 `SfTextBox` → Radzen.
+
+| Archivo | Cambios específicos |
+|---|---|
+| **Nuevo:** `Helpers/BusquedaGrid.cs` | Búsqueda de texto en memoria: devuelve las filas en las que alguna propiedad simple (texto, número, fecha, enum) contiene el texto, sin distinguir mayúsculas. Reemplaza `SfGrid.SearchAsync`, que Radzen no tiene. |
+| `ConfiguracionUsuarios.razor`, `Shared/Dialogs/ConfigurarUsuarios.razor`, `Shared/Dialogs/ConfigurarOficinas.razor`, `Areas/Conceptos/Views/ConceptosPage.razor`, `HistorialConexiones/ConexionesPage.razor`, `Configuracion/NotificacionesTemplatesPage.razor(.cs)` | Búsqueda del grid con `BusquedaGrid.Filtrar(...)`; al buscar se regresa a la primera página (`FirstPage()`). |
+| `ConceptosPage.razor`, `NotificacionesImages.razor.cs`, `NotificacionesTemplatesPage.razor.cs` | `OnDataGrid_SelectionChanged` recibe la fila en lugar de `RowSelectEventArgs`. `Refresh()` → `InvokeAsync(() => ...Reload())`. |
+| `Configuracion/Partials/DisplayFormTemplate.razor`, `DisplayEmptyTemplate.razor` | Título → `RadzenTextBox`; mensaje (multilínea) → `RadzenTextArea`. |
+| Resto (Modificar Usuario, Publicar Conceptos, Sesiones, Imágenes) | Grids convertidos. |
+
+Allman y renombres de miembros privados.
+
+- [ ] Prueba manual: buscar en cada catálogo (Enter y limpiar búsqueda), alta/edición de usuarios y oficinas, conceptos (selección, edición, publicar), sesiones, historial de conexiones, plantillas e imágenes de notificaciones.
 
 ### Pendientes de la Fase 2
 

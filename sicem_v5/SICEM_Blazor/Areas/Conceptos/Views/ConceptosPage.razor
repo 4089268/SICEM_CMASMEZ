@@ -1,9 +1,6 @@
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Notifications
-@using Syncfusion.Blazor.Inputs
 @page "/Configuracion/Conceptos"
+@using Radzen
+@using Radzen.Blazor
 @using Sicem_Blazor.Conceptos.Models
 @using Sicem_Blazor.Conceptos.Data
 @inject IMatToaster Toaster
@@ -30,25 +27,30 @@
         <div class="MyCombobox mr-3" style="width:17rem; height:2.5rem;">
             <select @onchange=@OnComboboxOficinas_SelectionChanged>
                 <option value="0" disabled selected>SELECCIONE UNA OFICINA</option>
-                @foreach (var item in catOficinas) {
+                @foreach (var item in _catOficinas)
+                {
                     <option value=@item.Id>@item.Nombre</option>
                 }
             </select>
         </div>
 
         @**** Boton Exportar Excel ****@
-        @if(datosConceptos != null){
+        @if(DatosConceptos != null)
+        {
+            @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
             <div class="button px-3 py-2 bg-success mr-3" @onclick="OnExportExcel_Click" >
                 <i class="fa fa-file-excel mr-2"></i>
                 <span>Exportar Catalogo</span>
             </div>
+            *@
         }
 
         @* *** Boton Publicar Cambios ****@
-        @if(ConceptosModificados.Count > 0){
+        @if(_conceptosModificados.Count > 0)
+        {
             <div class="button px-3 py-2" @onclick="OnPublicar_Click" >
                 <i class="fa fa-cloud-upload mr-2"></i>
-                <span>Publicar Conceptos (@ConceptosModificados.Count)</span>
+                <span>Publicar Conceptos (@_conceptosModificados.Count)</span>
             </div>
         }
 
@@ -62,39 +64,55 @@
             <div class="d-flex align-items-center p-1" style="height:4rem;">
                 <div class="d-flex align-items-center border rounded p-2" style="width: 24rem; height:100%; font-size:1.1rem;">
                     <i class="fa fa-search ml-2 mr-2" style="color:#555;"></i>
-                    <input type="text" placeholder="Buscar Concepto" @bind-value="searchText" @onkeyup="OnGridSearch_KeyUp" style="border: none; outline:none; background-color:#fff; width:100%; box-shadow:none;" />
-                    @if(searchText.Trim().Length > 1){
+                    <input type="text" placeholder="Buscar Concepto" @bind-value="SearchText" @onkeyup="OnGridSearch_KeyUp" style="border: none; outline:none; background-color:#fff; width:100%; box-shadow:none;" />
+                    @if(SearchText.Trim().Length > 1)
+                    {
                         <i class="fa fa-close link-btn aling ali align-self-start m m-1" aria-hidden="true" style="width: 1rem;height: 1rem;color: #333;text-decoration: none !important;" @onclick="ClearSearch_Click"></i>
                     }
                 </div>
             </div>
 
             <div class="p-1" style="width: 100%; height: calc(100% - 4.5rem);">
-                <SfGrid @ref="dataGrid" DataSource="@datosGrid" TValue="Concepto" AllowResizing="true" AllowSorting="true" AllowFiltering="false"
-                    AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true">
-                    <GridEvents RowSelected="OnDataGrid_SelectionChanged" TValue="Concepto"></GridEvents>
-                    <GridColumns>
-                        <GridColumn HeaderText="" Width="50" TextAlign="TextAlign.Center">
+                <RadzenDataGrid TItem="Concepto" @ref="DataGrid" Data="@(Sicem_Blazor.Helpers.BusquedaGrid.Filtrar(DatosGrid, _textoBusquedaGrid))" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" RowSelect="OnDataGrid_SelectionChanged" SelectionMode="DataGridSelectionMode.Single" Style="height:100%; width:100%;">
+                    <Columns>
+                        <RadzenDataGridColumn Title="" Width="50px" TextAlign="TextAlign.Center">
                             <Template>
                             @{
                                 var data = (context as Concepto);
-                                @if(ConceptosModificados.Contains(data.Id_Concepto)){
+                                @if(_conceptosModificados.Contains(data.Id_Concepto))
+                                {
                                     <span class="badge rounded-pill bg-warning px-4 py-1">M</span>
                                 }
                             }
                             </Template>
-                        </GridColumn>
-                        <GridColumn Field="@nameof(Concepto.Id_Concepto)" HeaderText="Id Concepto" TextAlign="TextAlign.Center" Width="110" />
-                        <GridColumn Field="@nameof(Concepto.Descripcion)" HeaderText="Concepto" TextAlign="TextAlign.Left" Width="200" />
-                        <GridColumn Field="@nameof(Concepto.Importe)" HeaderText="Importe" TextAlign="TextAlign.Right" Width="110" Format="c2"/>
-                        <GridColumn Field="@nameof(Concepto.Inactivo)" HeaderText="Inactivo" TextAlign="TextAlign.Center" Width="100" DisplayAsCheckBox="true"/>
-                        <GridColumn Field="@nameof(Concepto.Id_TipoConcepto)" HeaderText="Tipo Concepto" TextAlign="TextAlign.Center" Width="120" />
-                        <GridColumn Field="@nameof(Concepto.Credito)" HeaderText="Credito" TextAlign="TextAlign.Center" Width="100"  DisplayAsCheckBox="true"/>
-                        <GridColumn Field="@nameof(Concepto.Mostrar)" HeaderText="Mostrar" TextAlign="TextAlign.Center" Width="100"  DisplayAsCheckBox="true"/>
-                        <GridColumn Field="@nameof(Concepto.Id_Estatus)" HeaderText="Id Estatus" TextAlign="TextAlign.Center" Width="100" Visible="false" />
-                        <GridColumn Field="@nameof(Concepto.Costo_Estatico)" HeaderText="Costo Estatico" TextAlign="TextAlign.Center" Width="120" DisplayAsCheckBox="true"/>
-                        <GridColumn Field="@nameof(Concepto.Estatus)" HeaderText="Estatus" TextAlign="TextAlign.Center" Width="110" />
-                        <GridColumn HeaderText="Acciones" TextAlign="TextAlign.Left">
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn Property="@nameof(Concepto.Id_Concepto)" Title="Id Concepto" TextAlign="TextAlign.Center" Width="110px" />
+                        <RadzenDataGridColumn Property="@nameof(Concepto.Descripcion)" Title="Concepto" TextAlign="TextAlign.Left" Width="200px" />
+                        <RadzenDataGridColumn Property="@nameof(Concepto.Importe)" Title="Importe" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Concepto.Inactivo)" Title="Inactivo" TextAlign="TextAlign.Center" Width="100px">
+                            <Template Context="fila">
+                                <RadzenCheckBox TValue="bool" Value="@fila.Inactivo" Disabled="true" />
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn Property="@nameof(Concepto.Id_TipoConcepto)" Title="Tipo Concepto" TextAlign="TextAlign.Center" Width="120px" />
+                        <RadzenDataGridColumn Property="@nameof(Concepto.Credito)" Title="Credito" TextAlign="TextAlign.Center" Width="100px">
+                            <Template Context="fila">
+                                <RadzenCheckBox TValue="bool" Value="@fila.Credito" Disabled="true" />
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn Property="@nameof(Concepto.Mostrar)" Title="Mostrar" TextAlign="TextAlign.Center" Width="100px">
+                            <Template Context="fila">
+                                <RadzenCheckBox TValue="bool" Value="@fila.Mostrar" Disabled="true" />
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn Property="@nameof(Concepto.Id_Estatus)" Title="Id Estatus" TextAlign="TextAlign.Center" Width="100px" Visible="false" />
+                        <RadzenDataGridColumn Property="@nameof(Concepto.Costo_Estatico)" Title="Costo Estatico" TextAlign="TextAlign.Center" Width="120px">
+                            <Template Context="fila">
+                                <RadzenCheckBox TValue="bool" Value="@fila.Costo_Estatico" Disabled="true" />
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn Property="@nameof(Concepto.Estatus)" Title="Estatus" TextAlign="TextAlign.Center" Width="110px" />
+                        <RadzenDataGridColumn Title="Acciones" TextAlign="TextAlign.Left">
                             <Template>
                             @{
                                 var data = (context as Concepto);
@@ -105,7 +123,8 @@
                                         <div>Editar</div>
                                     </button>
 
-                                    @if(this.ConceptosModificados.Contains(data.Id_Concepto) ){
+                                    @if(this._conceptosModificados.Contains(data.Id_Concepto) )
+                                    {
                                         <button class="button px-3 bg-danger" @onclick="@(e => OnCancelEdit_Click(data))">
                                             <i class="fa fa-ban mr-2"></i>
                                             <div>Cancelar</div>
@@ -114,20 +133,22 @@
                                 </div>
                             }
                             </Template>
-                        </GridColumn>
-                    </GridColumns>
-                </SfGrid>
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
             </div>
         </div>
 
     </div>
 </div>
 
-@if(EditarConceptoVtn_Visible){
-    <EditarConceptoVtn Concepto="@ConceptoSeleccionado" Cerrar="OnEditarConcepto_Closed" CatEstatus="catConceptos" />
+@if(_editarConceptoVtn_Visible)
+{
+    <EditarConceptoVtn Concepto="@ConceptoSeleccionado" Cerrar="OnEditarConcepto_Closed" CatEstatus="_catConceptos" />
 }
-@if(PublicarConceptosVtn_Visible){
-    List<Concepto> _tmpDatos = datosGrid.Where(item => ConceptosModificados.Contains(item.Id_Concepto)).ToList();
+@if(_publicarConceptosVtn_Visible)
+{
+    List<Concepto> _tmpDatos = DatosGrid.Where(item => _conceptosModificados.Contains(item.Id_Concepto)).ToList();
     <PublicarConceptosVtn Oficina="OficinaSeleccionada" Conceptos="_tmpDatos" Cerrar="OnPublicar_Closed" />
 }
 
@@ -135,92 +156,111 @@
 
 
 
-@code {
+@code
+{
+    private string _textoBusquedaGrid = "";
     [Parameter] public RenderFragment ChildContent { get; set; }
 
-    private SfGrid<Concepto> dataGrid {get;set;}
-    private List<Concepto> datosGrid {get;set;}
-    private List<Concepto> datosConceptos {get;set;}
-    private List<IEnlace> catOficinas = new List<IEnlace>();
-    private Dictionary<int,string> catConceptos = new Dictionary<int,string>();
+    private RadzenDataGrid<Concepto> DataGrid {get;set;}
+    private List<Concepto> DatosGrid {get;set;}
+    private List<Concepto> DatosConceptos {get;set;}
+    private List<IEnlace> _catOficinas = new List<IEnlace>();
+    private Dictionary<int,string> _catConceptos = new Dictionary<int,string>();
 
     private bool cargando {get;set;} = true;
     private IEnlace OficinaSeleccionada {get;set;}
     private Concepto ConceptoSeleccionado {get;set;}
-    private bool EditarConceptoVtn_Visible = false;
-    private bool PublicarConceptosVtn_Visible = false;
-    private List<int> ConceptosModificados = new List<int>();
+    private bool _editarConceptoVtn_Visible = false;
+    private bool _publicarConceptosVtn_Visible = false;
+    private List<int> _conceptosModificados = new List<int>();
 
-    private string searchText {get;set;} = "";
+    private string SearchText {get;set;} = "";
 
-    protected override void OnParametersSet(){
-        catOficinas = sicemService.ObtenerOficinasDelUsuario().ToList();
+    protected override void OnParametersSet()
+    {
+        _catOficinas = sicemService.ObtenerOficinasDelUsuario().ToList();
         cargando = false;
     }
-    private async Task OnComboboxOficinas_SelectionChanged(ChangeEventArgs e){
+    private async Task OnComboboxOficinas_SelectionChanged(ChangeEventArgs e)
+    {
         cargando = true;
         await Task.Delay(200);
 
         var _idOficina = int.TryParse(e.Value.ToString(),out int tmpI)?tmpI:0;
-        var _tmpOfi = this.catOficinas.FirstOrDefault(item => item.Id == _idOficina);
-        if(_tmpOfi == null){
+        var _tmpOfi = this._catOficinas.FirstOrDefault(item => item.Id == _idOficina);
+        if(_tmpOfi == null)
+        {
             return;
         }
         this.OficinaSeleccionada = sicemService.ObtenerEnlaces(id_oficina:_tmpOfi.Id).FirstOrDefault();
 
-        ConceptosModificados.Clear();
+        _conceptosModificados.Clear();
         CargarCatalogoEstatus(); 
         CargarCatalogoConceptos();
 
-        this.dataGrid.Refresh();
+        _ = InvokeAsync(() => this.DataGrid.Reload());
         await Task.Delay(200);
         cargando = false;
         await Task.Delay(200);
 
     }
     
-    private void CargarCatalogoConceptos(){
-        datosConceptos = conceptosService.ObtenerCatalogoConceptos(OficinaSeleccionada).ToList();
-        datosGrid = conceptosService.ObtenerCatalogoConceptos(OficinaSeleccionada).ToList();
+    private void CargarCatalogoConceptos()
+    {
+        DatosConceptos = conceptosService.ObtenerCatalogoConceptos(OficinaSeleccionada).ToList();
+        DatosGrid = conceptosService.ObtenerCatalogoConceptos(OficinaSeleccionada).ToList();
     }
-    private void CargarCatalogoEstatus(){
-        catConceptos = conceptosService.ObtenerCatalogoEstatus(OficinaSeleccionada);
+    private void CargarCatalogoEstatus()
+    {
+        _catConceptos = conceptosService.ObtenerCatalogoEstatus(OficinaSeleccionada);
     }
 
 
+    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task OnExportExcel_Click(){
         var _name = $"Sicem_CatalogoConceptos_{OficinaSeleccionada.Nombre}_{Guid.NewGuid().ToString().Replace("-","").Substring(0,10)}.xlsx";
         var _options = new ExcelExportProperties(){
             IncludeHiddenColumn = true,
             FileName = _name
         };
-        await this.dataGrid.ExportToExcelAsync(_options);
+        await this.DataGrid.ExportToExcelAsync(_options);
     }
-    private void OnDataGrid_SelectionChanged(RowSelectEventArgs<Concepto> e){
-        ConceptoSeleccionado = e.Data;
+    */
+    private void OnDataGrid_SelectionChanged(Concepto fila)
+    {
+        ConceptoSeleccionado = fila;
     }
-    private void OnEditarConcepto_Click(Concepto c){
+    private void OnEditarConcepto_Click(Concepto c)
+    {
         
-        if(EditarConceptoVtn_Visible){
+        if(_editarConceptoVtn_Visible)
+        {
             return;
         }
 
-        if(this.ConceptoSeleccionado == null){
+        if(this.ConceptoSeleccionado == null)
+        {
             this.ConceptoSeleccionado = c;
-        }else{
-            if(this.ConceptoSeleccionado.Id_Concepto != c.Id_Concepto){
+        }
+        else
+        {
+            if(this.ConceptoSeleccionado.Id_Concepto != c.Id_Concepto)
+            {
                 this.ConceptoSeleccionado = c;
             }
         }
 
-        EditarConceptoVtn_Visible = true;
+        _editarConceptoVtn_Visible = true;
         
     }
-    private void OnEditarConcepto_Closed(Concepto result){
-        this.EditarConceptoVtn_Visible = false;
-        if(result != null){
-            ConceptosModificados.Add(result.Id_Concepto);
-            var _item = this.datosGrid.FirstOrDefault(item => item.Id_Concepto == result.Id_Concepto);
+    private void OnEditarConcepto_Closed(Concepto result)
+    {
+        this._editarConceptoVtn_Visible = false;
+        if(result != null)
+        {
+            _conceptosModificados.Add(result.Id_Concepto);
+            var _item = this.DatosGrid.FirstOrDefault(item => item.Id_Concepto == result.Id_Concepto);
             _item.Importe = result.Importe;
             _item.Id_Estatus = result.Id_Estatus;
             _item.Estatus = result.Estatus;
@@ -228,16 +268,20 @@
             _item.Mostrar = result.Mostrar;
             _item.Costo_Estatico = result.Costo_Estatico;
             _item.Inactivo = result.Inactivo;
-            dataGrid.Refresh();
+            _ = InvokeAsync(() => DataGrid.Reload());
         }
     }
-    private void OnCancelEdit_Click(Concepto c){
-        if(this.ConceptosModificados.Contains(c.Id_Concepto)){
-           this.ConceptosModificados.Remove(c.Id_Concepto);
-           var _conceptoOriginal = this.datosConceptos.FirstOrDefault(item => item.Id_Concepto == c.Id_Concepto);
-           if( _conceptoOriginal != null){
-               var _item = this.datosGrid.FirstOrDefault(item => item.Id_Concepto == c.Id_Concepto);
-               if(_item != null){
+    private void OnCancelEdit_Click(Concepto c)
+    {
+        if(this._conceptosModificados.Contains(c.Id_Concepto))
+        {
+           this._conceptosModificados.Remove(c.Id_Concepto);
+           var _conceptoOriginal = this.DatosConceptos.FirstOrDefault(item => item.Id_Concepto == c.Id_Concepto);
+           if( _conceptoOriginal != null)
+           {
+               var _item = this.DatosGrid.FirstOrDefault(item => item.Id_Concepto == c.Id_Concepto);
+               if(_item != null)
+               {
                     _item.Importe = _conceptoOriginal.Importe;
                     _item.Id_Estatus = _conceptoOriginal.Id_Estatus;
                     _item.Estatus = _conceptoOriginal.Estatus;
@@ -245,29 +289,33 @@
                     _item.Mostrar = _conceptoOriginal.Mostrar;
                     _item.Inactivo = _conceptoOriginal.Inactivo;
                     _item.Costo_Estatico = _conceptoOriginal.Costo_Estatico;
-                    dataGrid.Refresh();
+                    _ = InvokeAsync(() => DataGrid.Reload());
                }
            }
         }
     }
-    private void OnPublicar_Click(){
-        if(ConceptosModificados.Count <= 0 || OficinaSeleccionada == null){
+    private void OnPublicar_Click()
+    {
+        if(_conceptosModificados.Count <= 0 || OficinaSeleccionada == null)
+        {
             return;
         }
-        PublicarConceptosVtn_Visible = true;
+        _publicarConceptosVtn_Visible = true;
     }
-    private async Task OnPublicar_Closed(bool result){
-        PublicarConceptosVtn_Visible = false;
+    private async Task OnPublicar_Closed(bool result)
+    {
+        _publicarConceptosVtn_Visible = false;
         
-        if(result){
+        if(result)
+        {
             cargando = true;
             await Task.Delay(200);
 
-            ConceptosModificados.Clear();
+            _conceptosModificados.Clear();
             CargarCatalogoEstatus(); 
             CargarCatalogoConceptos();
 
-            this.dataGrid.Refresh();
+            _ = InvokeAsync(() => this.DataGrid.Reload());
             await Task.Delay(200);
             cargando = false;
             await Task.Delay(200);
@@ -275,13 +323,17 @@
         }
     }
 
-    private async Task OnGridSearch_KeyUp(KeyboardEventArgs e){
-        if(e.Key == "Enter") {
-            await dataGrid.SearchAsync(searchText);
+    private async Task OnGridSearch_KeyUp(KeyboardEventArgs e)
+    {
+        if(e.Key == "Enter")
+        {
+            _textoBusquedaGrid = SearchText; // SfGrid.SearchAsync -> filtro en memoria (Helpers/BusquedaGrid)
+            await DataGrid.FirstPage();
         }
     }
-    private async Task ClearSearch_Click(){
-        this.searchText = "";
+    private async Task ClearSearch_Click()
+    {
+        this.SearchText = "";
         await OnGridSearch_KeyUp( new KeyboardEventArgs(){Key = "Enter"});
     }
 

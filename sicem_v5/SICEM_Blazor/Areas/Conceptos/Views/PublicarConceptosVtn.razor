@@ -1,39 +1,55 @@
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Notifications
-@using Syncfusion.Blazor.Inputs
+@using Radzen
+@using Radzen.Blazor
 @using Sicem_Blazor.Conceptos.Models
 @using Sicem_Blazor.Conceptos.Data
 @inject ConceptosService conceptosService
 @inject IMatToaster Toaster
 
-<VentanaSecundaria Titulo="Publicar Conceptos Modificados" Filas="@filas" Columnas="@columnas" CerrarVentana="CerrarModal">
+<VentanaSecundaria Titulo="Publicar Conceptos Modificados" Filas="@_filas" Columnas="@_columnas" CerrarVentana="CerrarModal">
     <Content>
 
         <h4> Resumen Conceptos a publicar </h4>
 
-        <SfGrid DataSource="@Conceptos" TValue="Concepto" AllowResizing="true" AllowSorting="false" AllowFiltering="false" Height="100%" Width="100%" RowHeight="14">
-            <GridColumns>
-                <GridColumn Field="@nameof(Concepto.Id_Concepto)" HeaderText="Id Concepto" TextAlign="TextAlign.Center" Width="100" />
-                <GridColumn Field="@nameof(Concepto.Descripcion)" HeaderText="Concepto" TextAlign="TextAlign.Left" Width="160" />
-                <GridColumn Field="@nameof(Concepto.Importe)" HeaderText="Importe" TextAlign="TextAlign.Right" Width="100" Format="c2"/>
-                <GridColumn Field="@nameof(Concepto.Inactivo)" HeaderText="Inactivo" TextAlign="TextAlign.Center" Width="100" DisplayAsCheckBox="true"/>
-                <GridColumn Field="@nameof(Concepto.Credito)" HeaderText="Credito" TextAlign="TextAlign.Center" Width="100"  DisplayAsCheckBox="true"/>
-                <GridColumn Field="@nameof(Concepto.Mostrar)" HeaderText="Mostrar" TextAlign="TextAlign.Center" Width="100"  DisplayAsCheckBox="true"/>
-                <GridColumn Field="@nameof(Concepto.Costo_Estatico)" HeaderText="Costo Estatico" TextAlign="TextAlign.Center" Width="120" DisplayAsCheckBox="true"/>
-                <GridColumn Field="@nameof(Concepto.Estatus)" HeaderText="Estatus" TextAlign="TextAlign.Center" Width="110" />
-            </GridColumns>
-        </SfGrid>
+        <RadzenDataGrid TItem="Concepto" Data="@Conceptos" AllowColumnResize="true" AllowSorting="false" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:100%;">
+            <Columns>
+                <RadzenDataGridColumn Property="@nameof(Concepto.Id_Concepto)" Title="Id Concepto" TextAlign="TextAlign.Center" Width="100px" />
+                <RadzenDataGridColumn Property="@nameof(Concepto.Descripcion)" Title="Concepto" TextAlign="TextAlign.Left" Width="160px" />
+                <RadzenDataGridColumn Property="@nameof(Concepto.Importe)" Title="Importe" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                <RadzenDataGridColumn Property="@nameof(Concepto.Inactivo)" Title="Inactivo" TextAlign="TextAlign.Center" Width="100px">
+                    <Template Context="fila">
+                        <RadzenCheckBox TValue="bool" Value="@fila.Inactivo" Disabled="true" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Property="@nameof(Concepto.Credito)" Title="Credito" TextAlign="TextAlign.Center" Width="100px">
+                    <Template Context="fila">
+                        <RadzenCheckBox TValue="bool" Value="@fila.Credito" Disabled="true" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Property="@nameof(Concepto.Mostrar)" Title="Mostrar" TextAlign="TextAlign.Center" Width="100px">
+                    <Template Context="fila">
+                        <RadzenCheckBox TValue="bool" Value="@fila.Mostrar" Disabled="true" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Property="@nameof(Concepto.Costo_Estatico)" Title="Costo Estatico" TextAlign="TextAlign.Center" Width="120px">
+                    <Template Context="fila">
+                        <RadzenCheckBox TValue="bool" Value="@fila.Costo_Estatico" Disabled="true" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Property="@nameof(Concepto.Estatus)" Title="Estatus" TextAlign="TextAlign.Center" Width="110px" />
+            </Columns>
+        </RadzenDataGrid>
 
-        @if(Cargando){
+        @if(_cargando)
+        {
             <div class="d-flex align-items-center justify-content-center" style="grid-area: 3/1/4/2;">
                 <div class="spinner-border" role="status">
                     <span class="visually-hidden"></span>
                 </div>
             </div>
             
-        }else{
+        }
+        else
+        {
             <div class="d-flex align-items-center justify-content-center" style="grid-area: 3/1/4/2;">
                 <button class="button px-3 py-2" @onclick="Publicar_Click">
                     <i class="mr-3 fa fa-cloud-upload"></i>
@@ -46,38 +62,45 @@
     
 </VentanaSecundaria>
 
-@code {
+@code
+{
     [Parameter] public IEnlace Oficina {get;set;}
     [Parameter] public List<Concepto> Conceptos {get;set;}
     [Parameter] public EventCallback<bool> Cerrar {get;set;}
 
-    private double[] filas = new double[]{30, 400, 50};
-    private double[] columnas = new double[]{900};
+    private double[] _filas = new double[]{30, 400, 50};
+    private double[] _columnas = new double[]{900};
 
-    private bool Cargando = false;
+    private bool _cargando = false;
 
-    private async Task CerrarModal(){
+    private async Task CerrarModal()
+    {
         await Cerrar.InvokeAsync(false);
     }
 
-    private async Task Publicar_Click(){
-        if(Oficina == null || Conceptos == null){
+    private async Task Publicar_Click()
+    {
+        if(Oficina == null || Conceptos == null)
+        {
             return;
         }
         
-        this.Cargando = true;
+        this._cargando = true;
         await Task.Delay(200);
         
         var result = conceptosService.ModificarConceptos(Oficina, Conceptos);
 
-        if(result){
+        if(result)
+        {
             Toaster.Add($"Se modificaron correctamente los conceptos en la oficina {Oficina.Nombre}", MatToastType.Success, "Modificación Exitosa");
-        }else{
+        }
+        else
+        {
             Toaster.Add($"Error al modificar los conceptos en la oficina {Oficina.Nombre}", MatToastType.Danger, "Error al modificar los conceptos");
         }
         
         await Task.Delay(1000);
-        this.Cargando = false;
+        this._cargando = false;
         await Cerrar.InvokeAsync(result);
     }
 

@@ -1,15 +1,12 @@
-﻿@using Syncfusion.Blazor
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Buttons
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Calendars
+@using Radzen
+@using Radzen.Blazor
 @inject IMatToaster Toaster
 @inject IJSRuntime JSRuntime
 @inject SicemService sicemService
 @inject ConsultaGralService consultaGralService;
 
-@if (Show) {
+@if (Show)
+{
 
     <VentanaSecundaria Titulo="CONFIGURAR OFICINAS" CerrarVentana="@CerrarModal" Filas="@(new double[]{35, 525, 30, 40})" Columnas="@(new double[]{ 420 })">
         <Content>
@@ -17,33 +14,33 @@
             <div class="p-1 d-flex justify-content-start align-items-center " style="grid-area: 1/1/2/2; align-items: center;">
                 <div class="border rounded d-flex flex-row w-100 h-100 align-items-center bg-white">
                     <i class="mx-3 fa fa-search"></i>
-                    <input type="text" placeholder="Buscar oficina" style="border:none !important; outline:none !important; box-shadow:none !important; width:100%;" @bind="@searchText" @onkeyup="@onSearchKeyUp" />
+                    <input type="text" placeholder="Buscar oficina" style="border:none !important; outline:none !important; box-shadow:none !important; width:100%;" @bind="@_searchText" @onkeyup="@onSearchKeyUp" />
                 </div>                
             </div>
 
             <div class="p-1 d-flex flex-column align-items-center justify-content-center" style="grid-row: 2/3; grid-column: 1/2;">
-                @if (Busy) {
+                @if (_busy)
+                {
                     <div class="mb-2">Cargando oficinas...</div>
                     <div class="spinner-border" />
                 }
-                else {
+                else
+                {
 
-                    <SfGrid @ref="gridOficinas" DataSource="@catOficinas" AllowSorting="true" AllowFiltering="false" AllowSelection="true" AllowResizing="true"
-                            Height="100%" Width="100%" EnableHover="true" EnableAltRow="true">
-                        <GridSelectionSettings EnableToggle="false" Mode="Syncfusion.Blazor.Grids.SelectionMode.Row" Type="Syncfusion.Blazor.Grids.SelectionType.Single"></GridSelectionSettings>
-                        <GridColumns>
-                            <GridColumn Field="@nameof(OficinaModel.Id)" HeaderText="Id" TextAlign="TextAlign.Center" Width="60" />
-                            <GridColumn Field="@nameof(OficinaModel.Oficina)" HeaderText="Oficina" TextAlign="TextAlign.Left" Width="auto" />
-                            <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="50">
+                    <RadzenDataGrid TItem="OficinaModel" @ref="_gridOficinas" Data="@(Sicem_Blazor.Helpers.BusquedaGrid.Filtrar(CatOficinas, _textoBusquedaGrid))" AllowSorting="true" AllowFiltering="false" AllowColumnResize="true" AllowAlternatingRows="true" SelectionMode="DataGridSelectionMode.Single" Style="height:100%; width:100%;">
+                        <Columns>
+                            <RadzenDataGridColumn Property="@nameof(OficinaModel.Id)" Title="Id" TextAlign="TextAlign.Center" Width="60px" />
+                            <RadzenDataGridColumn Property="@nameof(OficinaModel.Oficina)" Title="Oficina" TextAlign="TextAlign.Left" Width="auto" />
+                            <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="50px">
                                 <Template>
                                     @{
                                         var ofi = (context as OficinaModel);
                                         <input type="checkbox" checked="@ofi.Select" @onchange="((e) => OficinaModel_Checkbox_Changed(ofi.Id, (bool) e.Value) )" />
                                     }
                                 </Template>
-                            </GridColumn>
-                        </GridColumns>
-                    </SfGrid>
+                            </RadzenDataGridColumn>
+                        </Columns>
+                    </RadzenDataGrid>
                 }
             </div>
 
@@ -63,98 +60,120 @@
 }
 
 
-@code {
+@code
+{
+    private string _textoBusquedaGrid = "";
     [Parameter] public EventCallback CerrarModal { get; set; }
     [Parameter] public bool Show { get; set; } = true;
 
-    private SfGrid<OficinaModel> gridOficinas;
-    private OficinaModel[] catOficinas { get; set; }
-    private bool Busy = false;
+    private RadzenDataGrid<OficinaModel> _gridOficinas;
+    private OficinaModel[] CatOficinas { get; set; }
+    private bool _busy = false;
 
-    private string searchText = "";
+    private string _searchText = "";
 
-    public async Task Inicializar() {
+    public async Task Inicializar()
+    {
 
         // Generar Catalogo de oficinas model
-        try {
+        try
+        {
             var tmpOfi = sicemService.ObtenerEnlaces().Where(item => item.Inactivo != true).ToArray();
             GenerarCatalogoOficinas(tmpOfi);
         }
-        catch (Exception){
+        catch (Exception)
+        {
             Toaster.Add("Error al conectarse con el servidor, inténtelo más tarde.", MatToastType.Warning);
             await Task.Delay(100);
             await Cerrar_Modal();
         }
 
         await Task.Delay(100);
-        this.Busy = false;
+        this._busy = false;
     }
-    private void GenerarCatalogoOficinas(IEnumerable<IEnlace> oficinas) {
+    private void GenerarCatalogoOficinas(IEnumerable<IEnlace> oficinas)
+    {
         var tmpList = new List<OficinaModel>();
-        foreach (var o in oficinas) {
+        foreach (var o in oficinas)
+        {
             tmpList.Add(OficinaModel.GenerarOficina(o));
         }
 
         //***Obtener las oficinas seleccionadas del usuario
         IEnumerable<IEnlace> oficinasUsuario = sicemService.ObtenerOficinasDelUsuario();
         int[] tmpIdOfi = oficinasUsuario.Select(item => item.Id).ToArray<int>();
-        foreach (var o in tmpList) {
-            if (tmpIdOfi.Contains(o.Id)) {
+        foreach (var o in tmpList)
+        {
+            if (tmpIdOfi.Contains(o.Id))
+            {
                 o.Select = true;
             }
         }
 
-        this.catOficinas = tmpList.ToArray();
+        this.CatOficinas = tmpList.ToArray();
     }
 
-    protected async Task GuardarCambios_Click() {
-        var idEnlaces = this.catOficinas.Where(item => item.Select).Select( item => item.Id).ToList();
+    protected async Task GuardarCambios_Click()
+    {
+        var idEnlaces = this.CatOficinas.Where(item => item.Select).Select( item => item.Id).ToList();
         var tmpEnalces = sicemService.ObtenerEnlaces().Where(item => idEnlaces.Contains(item.Id)).ToList();  
         sicemService.Usuario.SetEnlaces(tmpEnalces);
         var res = await sicemService.GuardarCambiosUsuario();
-        if (res) {
+        if (res)
+        {
             Toaster.Add("Los cambios se guardaron con éxito.", MatToastType.Success, "");
             await Task.Delay(1000);
             await Cerrar_Modal();
         }
-        else {
+        else
+        {
             Toaster.Add("Error al guardar cambios, inténtelo mas tarde.", MatToastType.Danger, "");
         }
     }
-    protected async Task Cerrar_Modal() {
-        this.catOficinas = new OficinaModel[] { };
+    protected async Task Cerrar_Modal()
+    {
+        this.CatOficinas = new OficinaModel[] { };
         await CerrarModal.InvokeAsync(null);
     }
-    private void OficinaModel_Checkbox_Changed(int idOfi, bool val) {
+    private void OficinaModel_Checkbox_Changed(int idOfi, bool val)
+    {
         Console.WriteLine($">> Oficinas changed id:{idOfi} val:{val}");
-        var tmpList = catOficinas;
-        foreach (var item in tmpList){
-            if (item.Id == idOfi) {
+        var tmpList = CatOficinas;
+        foreach (var item in tmpList)
+        {
+            if (item.Id == idOfi)
+            {
                 item.Select = val;
             }
         }
-        this.catOficinas = tmpList;
+        this.CatOficinas = tmpList;
     }
-    private void SeleccinarTodos_Click(){
-        var tmpSelect = this.catOficinas.First().Select;
-        var tmpList = this.catOficinas;
-        foreach(var item in tmpList) {
+    private void SeleccinarTodos_Click()
+    {
+        var tmpSelect = this.CatOficinas.First().Select;
+        var tmpList = this.CatOficinas;
+        foreach(var item in tmpList)
+        {
             item.Select = !tmpSelect;
         }
-        this.catOficinas = tmpList;
+        this.CatOficinas = tmpList;
     }
 
-    private void onSearchKeyUp(KeyboardEventArgs e){
-        if(e.Key == "Enter"){
-            gridOficinas.SearchAsync(this.searchText);
+    private void onSearchKeyUp(KeyboardEventArgs e)
+    {
+        if(e.Key == "Enter")
+        {
+            _textoBusquedaGrid = this._searchText; // SfGrid.SearchAsync -> filtro en memoria (Helpers/BusquedaGrid)
         }
     }
-    class OficinaModel {
+    class OficinaModel
+    {
         public int Id { get; set; }
         public string Oficina { get; set; }
         public bool Select { get; set; }
 
-        public static OficinaModel GenerarOficina(IEnlace r) {
+        public static OficinaModel GenerarOficina(IEnlace r)
+        {
             var of = new OficinaModel();
             of.Id = r.Id;
             of.Oficina = r.Nombre;
