@@ -1,21 +1,20 @@
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Notifications
-@using Syncfusion.Blazor.Inputs
+@using Radzen
+@using Radzen.Blazor
 @using Sicem_Blazor.ControlRezago.Models
 
 <div class="d-flex align-itenms-center my-2">
+    @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
     <div class="button bg-success px-3 py-1" @onclick="OnExportExcel_Click">
         <i class="fa fa-file-excel mr-2"></i>
         <span>Exportar Datos</span>
     </div>
+    *@
 </div>
 
 <div style="height: calc(100% - 3.5rem);" >
-    <SfGrid @ref="DataGrid" DataSource="@DatosGrid" TValue="ResumenTarifa" AllowResizing="true" AllowSorting="true"  AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true">
-        <GridColumns> 
-            <GridColumn HeaderText="" TextAlign="TextAlign.Left" Width="40">
+    <RadzenDataGrid TItem="ResumenTarifa" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" Style="height:100%; width:100%;">
+        <Columns> 
+            <RadzenDataGridColumn Title="" TextAlign="TextAlign.Left" Width="40px">
                 <Template>
                     @{
                         var data = (context as ResumenTarifa);
@@ -26,24 +25,28 @@
                         </div>
                     }
                 </Template>
-            </GridColumn>
-            <GridColumn Field="@nameof(ResumenTarifa.Tarifa)" HeaderText="Tarifa" TextAlign="TextAlign.Left" Width="170" />
-            <GridColumn Field="@nameof(ResumenTarifa.Usuarios)" HeaderText="Usuarios" TextAlign="TextAlign.Center" Width="115" Format="n0" />
-            <GridColumn Field="@nameof(ResumenTarifa.Subtotal)" HeaderText="Subtotal" TextAlign="TextAlign.Right" Width="125" Format="c2" />
-            <GridColumn Field="@nameof(ResumenTarifa.IVA)" HeaderText="IVA" TextAlign="TextAlign.Right" Width="125" Format="c2" />
-            <GridColumn Field="@nameof(ResumenTarifa.Total)" HeaderText="Total" TextAlign="TextAlign.Right" Width="125" Format="c2" />
-        </GridColumns>
-    </SfGrid>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Property="@nameof(ResumenTarifa.Tarifa)" Title="Tarifa" TextAlign="TextAlign.Left" Width="170px" />
+            <RadzenDataGridColumn Property="@nameof(ResumenTarifa.Usuarios)" Title="Usuarios" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />
+            <RadzenDataGridColumn Property="@nameof(ResumenTarifa.Subtotal)" Title="Subtotal" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" />
+            <RadzenDataGridColumn Property="@nameof(ResumenTarifa.IVA)" Title="IVA" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" />
+            <RadzenDataGridColumn Property="@nameof(ResumenTarifa.Total)" Title="Total" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" />
+        </Columns>
+    </RadzenDataGrid>
 </div>
 
 
-@code {
-    public SfGrid<ResumenTarifa> DataGrid {get;set;}
+@code
+{
+    public RadzenDataGrid<ResumenTarifa> DataGrid {get;set;}
     [Parameter] public List<ResumenTarifa> DatosGrid {get;set;}
     [Parameter] public EventCallback<string> OnDetailClick {get;set;}
-    private async Task OnClick(ResumenTarifa e){
+    private async Task OnClick(ResumenTarifa e)
+    {
         await OnDetailClick.InvokeAsync(e.Tarifa);
     }
+    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task OnExportExcel_Click(){
         var _properties = new ExcelExportProperties(){
             IncludeHiddenColumn = true,
@@ -51,4 +54,5 @@
         };
         await DataGrid.ExportToExcelAsync(_properties);
     }
+    */
 }

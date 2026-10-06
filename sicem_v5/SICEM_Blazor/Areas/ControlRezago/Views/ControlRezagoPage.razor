@@ -1,9 +1,6 @@
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Notifications
-@using Syncfusion.Blazor.Inputs
 @page "/ControlRezago"
+@using Radzen
+@using Radzen.Blazor
 @using Sicem_Blazor.ControlRezago.Models
 @inject IMatToaster Toaster
 @inject SicemService sicemService
@@ -16,23 +13,27 @@
     <div class="title-page ">ANTIGUEDAD DE SALDOS</div>
 
     <div class="border rounded bg-white px-2 d-flex align-items-center" style="grid-area:2/1/3/2;">
-        <SeleccionarFecha ProcesarParam="@Procesar" MostrarPeriodos="false" fecha1="@FechaDesde" fecha2="@FechaHasta" FiltroEstatus="true" />
+        <SeleccionarFecha ProcesarParam="@Procesar" MostrarPeriodos="false" fecha1="@_fechaDesde" fecha2="@_fechaHasta" FiltroEstatus="true" />
     </div>
 
     <div class="border rounded bg-white d-flex align-items-center p-1" style="grid-area:3/1/4/2;">
+        @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
         <MatButton Class="ml-2 mr-2 bg-success" Raised="true" OnClick="@GenerarExcel">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
+        *@
     </div>
 
     @* *** DataGrid *** *@
     <div class="border rounded bg-white p-2 d-flex" style="grid-area:4/1/5/2;">
-        <SfGrid @ref="DataGrid" DataSource="@DatosGrid" AllowSorting="false" AllowResizing="true" AllowFiltering="false" AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true">
-            <GridColumns>
-                <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="40">
+        <RadzenDataGrid TItem="ResumenOficina" @ref="DataGrid" Data="@DatosGrid" AllowSorting="false" AllowColumnResize="true" AllowFiltering="false" Style="height:100%; width:100%;">
+            <Columns>
+                <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="40px">
                     <Template>
                         @{
                             var data = (context as ResumenOficina);
-                            if(data.Id > 0 && data.Id < 900){
-                                switch (data.Estatus) {
+                            if(data.Id > 0 && data.Id < 900)
+                            {
+                                switch (data.Estatus)
+                                {
                                     case Data.Contracts.ResumenOficinaEstatus.Completado:
                                         <i class="fas fa-check-circle" style="color:green; font-size:1.5rem;"></i>
                                         break;
@@ -49,10 +50,10 @@
                             
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn Field="@nameof(ResumenOficina.Oficina)" HeaderText="Tipo de Usuario" TextAlign="TextAlign.Left" Width="110" />
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Property="@nameof(ResumenOficina.Oficina)" Title="Tipo de Usuario" TextAlign="TextAlign.Left" Width="110px" />
 
-                <GridColumn TextAlign="TextAlign.Center" Width="140">
+                <RadzenDataGridColumn TextAlign="TextAlign.Center" Width="140px">
                     <HeaderTemplate>
                         <div class="color1">M.A. 0</div>
                     </HeaderTemplate>
@@ -65,8 +66,8 @@
                             </div>
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn TextAlign="TextAlign.Center" Width="140">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TextAlign="TextAlign.Center" Width="140px">
                     <HeaderTemplate>
                         <div class="color1">M.A. 1-2</div>
                     </HeaderTemplate>
@@ -79,8 +80,8 @@
                             </div>
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn TextAlign="TextAlign.Center" Width="140">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TextAlign="TextAlign.Center" Width="140px">
                     <HeaderTemplate>
                         <div class="color1">M.A. 3-5</div>
                     </HeaderTemplate>
@@ -93,8 +94,8 @@
                             </div>
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn TextAlign="TextAlign.Center" Width="140">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TextAlign="TextAlign.Center" Width="140px">
                     <HeaderTemplate>
                         <div class="color1">M.A. 6-10</div>
                     </HeaderTemplate>
@@ -107,8 +108,8 @@
                             </div>
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn TextAlign="TextAlign.Center" Width="140">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TextAlign="TextAlign.Center" Width="140px">
                     <HeaderTemplate>
                         <div class="color1">M.A. >11</div>
                     </HeaderTemplate>
@@ -121,8 +122,8 @@
                             </div>
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn TextAlign="TextAlign.Center" Width="140">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TextAlign="TextAlign.Center" Width="140px">
                     <HeaderTemplate>
                         <div class="">Total</div>
                     </HeaderTemplate>
@@ -135,27 +136,28 @@
                             </div>
                         }
                     </Template>
-                </GridColumn>
+                </RadzenDataGridColumn>
             
-                <GridColumn Field="@nameof(ResumenOficina.Usu_0)" HeaderText="Usu M.A. 0" TextAlign="TextAlign.Center" Width="90" Format="n0" Visible="false" />
-                <GridColumn Field="@nameof(ResumenOficina.Imp_0)" HeaderText="Imp M.A. 0" TextAlign="TextAlign.Right" Width="90" Format="c2" Visible="false"/>
-                <GridColumn Field="@nameof(ResumenOficina.Usu_1_2)" HeaderText="Usu M.A. 1-2" TextAlign="TextAlign.Center" Width="90" Format="n0" Visible="false" />
-                <GridColumn Field="@nameof(ResumenOficina.Imp_1_2)" HeaderText="Imp M.A. 1-2" TextAlign="TextAlign.Right" Width="90" Format="c2" Visible="false"/>
-                <GridColumn Field="@nameof(ResumenOficina.Usu_3_5)" HeaderText="Usu M.A. 3-5" TextAlign="TextAlign.Center" Width="90" Format="n0" Visible="false" />
-                <GridColumn Field="@nameof(ResumenOficina.Imp_3_5)" HeaderText="Imp M.A. 3-5" TextAlign="TextAlign.Right" Width="90" Format="c2" Visible="false"/>
-                <GridColumn Field="@nameof(ResumenOficina.Usu_6_10)" HeaderText="Usu M.A. 6-10" TextAlign="TextAlign.Center" Width="90" Format="n0" Visible="false" />
-                <GridColumn Field="@nameof(ResumenOficina.Imp_6_10)" HeaderText="Imp M.A. 6-10" TextAlign="TextAlign.Right" Width="90" Format="c2" Visible="false"/>
-                <GridColumn Field="@nameof(ResumenOficina.Usu_11)" HeaderText="Usu M.A. >11" TextAlign="TextAlign.Center" Width="90" Format="n0" Visible="false" />
-                <GridColumn Field="@nameof(ResumenOficina.Imp_11)" HeaderText="Imp M.A. >11" TextAlign="TextAlign.Right" Width="90" Format="c2" Visible="false"/>
+                <RadzenDataGridColumn Property="@nameof(ResumenOficina.Usu_0)" Title="Usu M.A. 0" TextAlign="TextAlign.Center" Width="90px" FormatString="{0:n0}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(ResumenOficina.Imp_0)" Title="Imp M.A. 0" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(ResumenOficina.Usu_1_2)" Title="Usu M.A. 1-2" TextAlign="TextAlign.Center" Width="90px" FormatString="{0:n0}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(ResumenOficina.Imp_1_2)" Title="Imp M.A. 1-2" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(ResumenOficina.Usu_3_5)" Title="Usu M.A. 3-5" TextAlign="TextAlign.Center" Width="90px" FormatString="{0:n0}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(ResumenOficina.Imp_3_5)" Title="Imp M.A. 3-5" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(ResumenOficina.Usu_6_10)" Title="Usu M.A. 6-10" TextAlign="TextAlign.Center" Width="90px" FormatString="{0:n0}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(ResumenOficina.Imp_6_10)" Title="Imp M.A. 6-10" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(ResumenOficina.Usu_11)" Title="Usu M.A. >11" TextAlign="TextAlign.Center" Width="90px" FormatString="{0:n0}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(ResumenOficina.Imp_11)" Title="Imp M.A. >11" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" Visible="false" />
 
-                <GridColumn Field="@nameof(ResumenOficina.Usuarios)" HeaderText="Total Usuarios" TextAlign="TextAlign.Center" Width="90" Format="n0" Visible="false"/>
-                <GridColumn Field="@nameof(ResumenOficina.Total)" HeaderText="Total Importe" TextAlign="TextAlign.Right" Width="90" Format="c2" Visible="false"/>
+                <RadzenDataGridColumn Property="@nameof(ResumenOficina.Usuarios)" Title="Total Usuarios" TextAlign="TextAlign.Center" Width="90px" FormatString="{0:n0}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(ResumenOficina.Total)" Title="Total Importe" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" Visible="false" />
 
-                <GridColumn HeaderText="Acciones" TextAlign="TextAlign.Left" Width="90">
+                <RadzenDataGridColumn Title="Acciones" TextAlign="TextAlign.Left" Width="90px">
                     <Template>
                         @{
                             var data = (context as ResumenOficina);
-                            if (data.Id > 0 && data.Id < 999) {
+                            if (data.Id > 0 && data.Id < 999)
+                            {
                                 <div class="d-flex p-1">
                                     <button type="button" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="top" title="Resumen Tarifas" disabled="@(data.Estatus != Sicem_Blazor.Data.Contracts.ResumenOficinaEstatus.Completado)" @onclick="@(e => RezagoTarifasClick(data))">
                                         <i class="fa fa-bookmark" aria-hidden="true"></i>
@@ -167,53 +169,61 @@
                             }
                         }
                     </Template>
-                </GridColumn>
+                </RadzenDataGridColumn>
 
-            </GridColumns>
-        </SfGrid>
+            </Columns>
+        </RadzenDataGrid>
     </div>
     
     @* *** Graficas *** *@
     <div class=" p-1 my-2 border rounded bg-white w-100">
-         <SfChart @ref="GraficaUsuarios" Height="100%" Width="100%" Title="Grafica Usuarios">
-            <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-            <ChartPrimaryYAxis Visible="false" LabelFormat="n0" />
-            <ChartTooltipSettings Enable="true" Header="Ingresos" Format="<b>${series.name}</b> : ${point.y}" Shared="true"></ChartTooltipSettings>
-            <ChartLegendSettings Visible="true" Position="LegendPosition.Right"></ChartLegendSettings>
-            <ChartSeriesCollection>
-
-                <ChartSeries DataSource="@DatosGrafica" Name="Usuarios Rango 1" XName="Descripcion" YName="Valor1" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Middle" />
-                    </ChartMarker>
-                </ChartSeries>
-
-                <ChartSeries DataSource="@DatosGrafica" Name="Usuarios Rango 2" XName="Descripcion" YName="Valor2" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Middle" />
-                    </ChartMarker>
-                </ChartSeries>
-
-                <ChartSeries DataSource="@DatosGrafica" Name="Usuarios Rango 3" XName="Descripcion" YName="Valor3" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Middle" />
-                    </ChartMarker>
-                </ChartSeries>
-
-                <ChartSeries DataSource="@DatosGrafica" Name="Usuarios Rango 4" XName="Descripcion" YName="Valor4" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Middle" />
-                    </ChartMarker>
-                </ChartSeries>
-
-                <ChartSeries DataSource="@DatosGrafica" Name="Usuarios Rango 5" XName="Descripcion" YName="Valor5" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Middle" />
-                    </ChartMarker>
-                </ChartSeries>
-
-            </ChartSeriesCollection>
-        </SfChart>
+         <div class="text-center font-weight-bold">Grafica Usuarios</div>
+         <RadzenChart @ref="GraficaUsuarios" Style="height:100%; width:100%;">
+             <RadzenCategoryAxis />
+             <RadzenValueAxis Visible="false" FormatString="{0:n0}" />
+             <RadzenChartTooltipOptions Shared="true" />
+             <RadzenLegend Visible="true" Position="LegendPosition.Right" />
+             <RadzenStackedBarSeries Data="@DatosGrafica" Title="Usuarios Rango 1" CategoryProperty="Descripcion" ValueProperty="Valor1">
+                 <TooltipTemplate Context="item">
+                     <b>Usuarios Rango 1</b> : @item.Valor1
+                 </TooltipTemplate>
+                 <ChildContent>
+                     <RadzenSeriesDataLabels Visible="true" />
+                 </ChildContent>
+             </RadzenStackedBarSeries>
+             <RadzenStackedBarSeries Data="@DatosGrafica" Title="Usuarios Rango 2" CategoryProperty="Descripcion" ValueProperty="Valor2">
+                 <TooltipTemplate Context="item">
+                     <b>Usuarios Rango 2</b> : @item.Valor2
+                 </TooltipTemplate>
+                 <ChildContent>
+                     <RadzenSeriesDataLabels Visible="true" />
+                 </ChildContent>
+             </RadzenStackedBarSeries>
+             <RadzenStackedBarSeries Data="@DatosGrafica" Title="Usuarios Rango 3" CategoryProperty="Descripcion" ValueProperty="Valor3">
+                 <TooltipTemplate Context="item">
+                     <b>Usuarios Rango 3</b> : @item.Valor3
+                 </TooltipTemplate>
+                 <ChildContent>
+                     <RadzenSeriesDataLabels Visible="true" />
+                 </ChildContent>
+             </RadzenStackedBarSeries>
+             <RadzenStackedBarSeries Data="@DatosGrafica" Title="Usuarios Rango 4" CategoryProperty="Descripcion" ValueProperty="Valor4">
+                 <TooltipTemplate Context="item">
+                     <b>Usuarios Rango 4</b> : @item.Valor4
+                 </TooltipTemplate>
+                 <ChildContent>
+                     <RadzenSeriesDataLabels Visible="true" />
+                 </ChildContent>
+             </RadzenStackedBarSeries>
+             <RadzenStackedBarSeries Data="@DatosGrafica" Title="Usuarios Rango 5" CategoryProperty="Descripcion" ValueProperty="Valor5">
+                 <TooltipTemplate Context="item">
+                     <b>Usuarios Rango 5</b> : @item.Valor5
+                 </TooltipTemplate>
+                 <ChildContent>
+                     <RadzenSeriesDataLabels Visible="true" />
+                 </ChildContent>
+             </RadzenStackedBarSeries>
+         </RadzenChart>
     </div>
 
 </div>
@@ -237,55 +247,60 @@
 
 
 @* ****** Dialogos y ventanas secundarias ****** *@
-@if(VentanaResumenVisible){
-    <ResumenVtn Datos="@DatosDetalleRezago" OnClosed="@(e => VentanaResumenVisible = false)" Titulo="@TituloResumen" Enlace="@enlaceSeleccionado" FechaDesde="@FechaDesde" FechaHasta="@FechaHasta" Subsistema="@Subsistema" Sector="@Sector" />
+@if(VentanaResumenVisible)
+{
+    <ResumenVtn Datos="@DatosDetalleRezago" OnClosed="@(e => VentanaResumenVisible = false)" Titulo="@_tituloResumen" Enlace="@EnlaceSeleccionado" FechaDesde="@_fechaDesde" FechaHasta="@_fechaHasta" Subsistema="@_subsistema" Sector="@_sector" />
 }
 
-<ResumenLocalidadesGlobalVtn @ref="resumenLocalidadesGlobalVtn" Visible="@resumenLocalidadesGlobalVisible" CerrarModal="@(e => resumenLocalidadesGlobalVisible = false)" />
-<ResumenTarifasGlobalVtn @ref="resumenTarifasGlobalVtn"  Visible="@resumenTarifasGlobalVisible" CerrarModal="@(e => resumenTarifasGlobalVisible = false)" />
+<ResumenLocalidadesGlobalVtn @ref="_resumenLocalidadesGlobalVtn" Visible="@resumenLocalidadesGlobalVisible" CerrarModal="@(e => resumenLocalidadesGlobalVisible = false)" />
+<ResumenTarifasGlobalVtn @ref="_resumenTarifasGlobalVtn"  Visible="@resumenTarifasGlobalVisible" CerrarModal="@(e => resumenTarifasGlobalVisible = false)" />
 
-<BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
+<BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
 
-@code{
-    private SfGrid<ResumenOficina> DataGrid {get;set;}
+@code
+{
+    private RadzenDataGrid<ResumenOficina> DataGrid {get;set;}
     private List<ResumenOficina> DatosGrid {get;set;}
-    private SfChart GraficaUsuarios {get;set;} 
+    private RadzenChart GraficaUsuarios {get;set;} 
     public List<ChartItem> DatosGrafica {get;set;}
 
-    private DateTime FechaDesde, FechaHasta;
-    private int Subsistema, Sector, IdEstatus;
-    private bool busyDialog = false, VentanaResumenVisible = false, resumenLocalidadesGlobalVisible = false, resumenTarifasGlobalVisible = false ;
-    private IEnlace enlaceSeleccionado {get;set;}
+    private DateTime _fechaDesde, _fechaHasta;
+    private int _subsistema, _sector, _idEstatus;
+    private bool _busyDialog = false, VentanaResumenVisible = false, resumenLocalidadesGlobalVisible = false, resumenTarifasGlobalVisible = false ;
+    private IEnlace EnlaceSeleccionado {get;set;}
     private List<DetalleRezago> DatosDetalleRezago {get;set;}
-    private string TituloResumen = "";
+    private string _tituloResumen = "";
     
-    private ResumenLocalidadesGlobalVtn resumenLocalidadesGlobalVtn;
-    private ResumenTarifasGlobalVtn resumenTarifasGlobalVtn;
+    private ResumenLocalidadesGlobalVtn _resumenLocalidadesGlobalVtn;
+    private ResumenTarifasGlobalVtn _resumenTarifasGlobalVtn;
 
 
     //********* Funciones  *********
-    protected override void OnInitialized() {
+    protected override void OnInitialized()
+    {
         // Validar si se cuenta con la opcion
-        if(!sicemService.Usuario.OpcionSistemas.Select(item => item.Id).Contains(OpcionesSistema.CONTROL_REZAGO)){
+        if(!sicemService.Usuario.OpcionSistemas.Select(item => item.Id).Contains(OpcionesSistema.CONTROL_REZAGO))
+        {
             navigationManager.NavigateTo("/");
             return;
         }
 
         var _now = DateTime.Now.AddMonths(-1);
-        this.FechaDesde = new DateTime(_now.Year, _now.Month, 1);
-        this.FechaHasta = new DateTime(_now.Year, _now.Month, DateTime.DaysInMonth(_now.Year, _now.Month));
-        this.Subsistema = 0;
-        this.Sector = 0;
+        this._fechaDesde = new DateTime(_now.Year, _now.Month, 1);
+        this._fechaHasta = new DateTime(_now.Year, _now.Month, DateTime.DaysInMonth(_now.Year, _now.Month));
+        this._subsistema = 0;
+        this._sector = 0;
     }
 
-    public void Procesar(SeleccionarFechaEventArgs e) {
+    public void Procesar(SeleccionarFechaEventArgs e)
+    {
         Console.WriteLine("Id Estatus Seleccionado: " + e.IdEstatus);
 
-        this.FechaDesde = e.Fecha1;
-        this.FechaHasta = e.Fecha2;
-        this.Subsistema = e.Subsistema;
-        this.Sector = e.Sector;
-        this.IdEstatus = e.IdEstatus;
+        this._fechaDesde = e.Fecha1;
+        this._fechaHasta = e.Fecha2;
+        this._subsistema = e.Subsistema;
+        this._sector = e.Sector;
+        this._idEstatus = e.IdEstatus;
 
         var enlaces = sicemService.ObtenerOficinasDelUsuario();
 
@@ -296,13 +311,15 @@
         var Tareas = new List<Task>();
 
         //****** Prepara Filas
-        foreach (var enlace in enlaces) {
+        foreach (var enlace in enlaces)
+        {
             var oficinaModel = new ResumenOficina();
             oficinaModel.Enlace  = enlace;
             DatosGrid.Add(oficinaModel);
             Tareas.Add(new Task(() => ConsultarOficina(enlace)) );
 
-            var _itemGraf = new ChartItem() {
+            var _itemGraf = new ChartItem()
+            {
                 Id = enlace.Id,
                 Descripcion = enlace.Nombre
             };
@@ -310,31 +327,49 @@
         }
 
         //*** Agregar fila total
-        if (enlaces.Count() > 1) {
+        if (enlaces.Count() > 1)
+        {
             var oficinaModel = new ResumenOficina();
             DatosGrid.Add(oficinaModel);
         }
 
         //****** Iniciar tareas
-        foreach (var tarea in Tareas) { tarea.Start(); }
+        foreach (var tarea in Tareas)
+        {
+            tarea.Start();
+        }
 
     }
-    private void ConsultarOficina(IEnlace enlace) {
+    private void ConsultarOficina(IEnlace enlace)
+    {
 
         //*** Realizar consulta
-        ResumenOficina tmpDatos = controlRezagoService.ObtenerRezagoResumenOficina(enlace, FechaDesde.Year, FechaDesde.Month, Subsistema, Sector, IdEstatus);
+        // Un error en esta oficina no debe detener a las demás (CLAUDE.md)
+        ResumenOficina tmpDatos;
+        try
+        {
+            tmpDatos = controlRezagoService.ObtenerRezagoResumenOficina(enlace, _fechaDesde.Year, _fechaDesde.Month, _subsistema, _sector, _idEstatus);
+        }
+        catch (Exception)
+        {
+            tmpDatos = null;
+        }
+        tmpDatos ??= new ResumenOficina() { Estatus = Data.Contracts.ResumenOficinaEstatus.Error };
 
         var _random = new Random();
         var sleep = _random.Next(2000);
         System.Threading.Thread.Sleep(sleep);
 
         //*** Refrescar datos grid
-        lock(DatosGrid){
+        lock(DatosGrid)
+        {
 
             //*** Actualizar fila grid
             var item = DatosGrid.Where(item => item.Id == enlace.Id).FirstOrDefault();
-            if (item != null) {
-                if (tmpDatos.Estatus == Data.Contracts.ResumenOficinaEstatus.Completado) {
+            if (item != null)
+            {
+                if (tmpDatos.Estatus == Data.Contracts.ResumenOficinaEstatus.Completado)
+                {
                     item.Estatus =  tmpDatos.Estatus;
                     item.Usu_0 = tmpDatos.Usu_0;
                     item.Usu_1_2 = tmpDatos.Usu_1_2;
@@ -349,35 +384,37 @@
                     item.Imp_11 = tmpDatos.Imp_11;
                     item.Total = tmpDatos.Total;
                 }
-                else {
+                else
+                {
                     item.Estatus = Data.Contracts.ResumenOficinaEstatus.Error;
                 }
             }
 
             RecalcularFilaTotal();
-            DataGrid.Refresh();
         }
+        _ = InvokeAsync(() => DataGrid.Reload());
 
-        lock(DatosGrafica){
+        lock(DatosGrafica)
+        {
             var _itemGrafica = this.DatosGrafica.Where(item => item.Id == enlace.Id).FirstOrDefault();
-            if( _itemGrafica != null) {
+            if( _itemGrafica != null)
+            {
                 _itemGrafica.Valor1 = (decimal)tmpDatos.Usu_0;
                 _itemGrafica.Valor2 = (decimal)tmpDatos.Usu_1_2;
                 _itemGrafica.Valor3 = (decimal)tmpDatos.Usu_3_5;
                 _itemGrafica.Valor4 = (decimal)tmpDatos.Usu_6_10;
                 _itemGrafica.Valor5 = (decimal)tmpDatos.Usu_11;
             }
-            try {
-                this.GraficaUsuarios.RefreshLiveData();
-            }
-            catch (Exception) { }
+            _ = InvokeAsync(() => this.GraficaUsuarios.Reload());
         }
 
     }
-    private void RecalcularFilaTotal() {
+    private void RecalcularFilaTotal()
+    {
         //*** Recalcular fila total
         var itemTotal = DatosGrid.Where(item => item.Id == 999).FirstOrDefault();
-        if (itemTotal != null) {
+        if (itemTotal != null)
+        {
             var _tmpData = DatosGrid.Where(item => item.Id != 999).ToList();
             itemTotal.Usu_0 = _tmpData.Sum(item => item.Usu_0);
             itemTotal.Usu_1_2 = _tmpData.Sum(item => item.Usu_1_2);
@@ -394,90 +431,104 @@
         }
     }
 
+    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task GenerarExcel() {
         await this.DataGrid.ExcelExport(new ExcelExportProperties {
             IncludeHiddenColumn = true,
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
+    */
 
-    private async Task DetalleRezago(ResumenOficina context, int opcion){
+    private async Task DetalleRezago(ResumenOficina context, int opcion)
+    {
         await Task.Delay(100);
         /*
         if(VentanaResumenVisible){
             return;
         }
         
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(100);
 
-        this.enlaceSeleccionado = context.Enlace;
+        this.EnlaceSeleccionado = context.Enlace;
 
         // Generar el titulo de la ventana de detalle
-        this.TituloResumen = "USUARIOS CON REZAGO";
+        this._tituloResumen = "USUARIOS CON REZAGO";
         switch(opcion){
             case 1:
-                TituloResumen = "USUARIOS REGULARES CON REZAGO";
+                _tituloResumen = "USUARIOS REGULARES CON REZAGO";
                 break;
             
             case 2:
-                TituloResumen = "USUARIOS RECUPERABLES CON REZAGO";
+                _tituloResumen = "USUARIOS RECUPERABLES CON REZAGO";
                 break;
                 
             case 3:
-                TituloResumen = "USUARIOS MOROSOS CON REZAGO";
+                _tituloResumen = "USUARIOS MOROSOS CON REZAGO";
                 break;
 
         }
-        TituloResumen = TituloResumen + $" DE {FechaDesde.ToString("MMMM").ToUpper()} DEL {FechaDesde.Year}";
-        DatosDetalleRezago = controlRezagoService.ObtenerDetalle(enlaceSeleccionado, FechaDesde.Year, FechaDesde.Month, Subsistema, Sector, opcion).ToList();
+        _tituloResumen = _tituloResumen + $" DE {_fechaDesde.ToString("MMMM").ToUpper()} DEL {_fechaDesde.Year}";
+        DatosDetalleRezago = controlRezagoService.ObtenerDetalle(EnlaceSeleccionado, _fechaDesde.Year, _fechaDesde.Month, _subsistema, _sector, opcion).ToList();
 
         VentanaResumenVisible = true;
 
         await Task.Delay(100);
-        this.busyDialog = false;
+        this._busyDialog = false;
 
         */
     }
     
-    private async Task RezagoTarifasClick(ResumenOficina context){
-        if(resumenTarifasGlobalVisible){
+    private async Task RezagoTarifasClick(ResumenOficina context)
+    {
+        if(resumenTarifasGlobalVisible)
+        {
             return;
         }
 
-        busyDialog = true;
+        _busyDialog = true;
         await Task.Delay(100);
 
-        var datos = controlRezagoService.ObtenerHistorialSaldosTarifa(context.Enlace, FechaDesde.Year, FechaDesde.Month, Subsistema, Sector, IdEstatus);
-        if(datos.Count() <= 0){
+        var datos = controlRezagoService.ObtenerHistorialSaldosTarifa(context.Enlace, _fechaDesde.Year, _fechaDesde.Month, _subsistema, _sector, _idEstatus);
+        if(datos.Count() <= 0)
+        {
             Toaster.Add("No hay datos disponibles", MatToastType.Info);
-        }else{
+        }
+        else
+        {
             resumenTarifasGlobalVisible = true;
-            resumenTarifasGlobalVtn.Inicializar(context.Enlace, datos);
+            _resumenTarifasGlobalVtn.Inicializar(context.Enlace, datos);
         }
 
         await Task.Delay(100);
-        busyDialog = false;
+        _busyDialog = false;
         
     }
-    private async Task RezagoLocalidadesClick(ResumenOficina context){
-        if(resumenLocalidadesGlobalVisible){
+    private async Task RezagoLocalidadesClick(ResumenOficina context)
+    {
+        if(resumenLocalidadesGlobalVisible)
+        {
             return;
         }
 
-        busyDialog = true;
+        _busyDialog = true;
         await Task.Delay(100);
 
-        var datos = controlRezagoService.ObtenerHistorialSaldosLocalidad(context.Enlace, FechaDesde.Year, FechaDesde.Month, Subsistema, Sector, IdEstatus);
-        if(datos.Count() <= 0){
+        var datos = controlRezagoService.ObtenerHistorialSaldosLocalidad(context.Enlace, _fechaDesde.Year, _fechaDesde.Month, _subsistema, _sector, _idEstatus);
+        if(datos.Count() <= 0)
+        {
             Toaster.Add("No hay datos disponibles", MatToastType.Info);
-        }else{
+        }
+        else
+        {
             resumenLocalidadesGlobalVisible = true;
-            resumenLocalidadesGlobalVtn.Inicializar(context.Enlace, datos);
+            _resumenLocalidadesGlobalVtn.Inicializar(context.Enlace, datos);
         }
 
         await Task.Delay(100);
-        busyDialog = false;
+        _busyDialog = false;
     }
 
 }

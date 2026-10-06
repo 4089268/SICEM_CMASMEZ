@@ -1,12 +1,10 @@
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Notifications
-@using Syncfusion.Blazor.Inputs
+@using Radzen
+@using Radzen.Blazor
 @using Sicem_Blazor.ControlRezago.Models
 @inject IJSRuntime JSRuntime
 
-@if (Visible) {
+@if (Visible)
+{
     <div class="busy-control">
 
         <div id="draggable" class="SicemDialog-control" style="width:auto; height:auto;">
@@ -23,41 +21,44 @@
                 @**** Inputs*@
                 <div class="d-flex align-items-center m-1 p-2 border rounded bg-white" style="grid-row: 1/2; grid-column: 1/2;">
                     <div class="w-100 d-flex align-items-center">
+                        @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                         <MatButton Class="ml-1 mr-2" Raised="true" Style="height:2.5rem;" OnClick="@GenerarExcel">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
+                        *@
                     </div>
                 </div>
 
                 @**** DataGrid*@
                 <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                    <SfGrid @ref="dataGrid" DataSource="@datosGrid" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true">
-                        <GridColumns>
-                            <GridColumn Field="@nameof(ControlRezago_Eficacia_Resumen.Trabajo)" HeaderText="Trabajo" TextAlign="TextAlign.Left" Width="180" />
-                            <GridColumn Field="@nameof(ControlRezago_Eficacia_Resumen.PENDIENTES)" HeaderText="Pendientes" TextAlign="TextAlign.Center" Width="100" />
-                            <GridColumn Field="@nameof(ControlRezago_Eficacia_Resumen.EN_EJECUCION)" HeaderText="En Ejecucion" TextAlign="TextAlign.Center" Width="100" />
-                            <GridColumn Field="@nameof(ControlRezago_Eficacia_Resumen.REAL_EJEC)" HeaderText="Real Ejecutadas" TextAlign="TextAlign.Center" Width="100" />
-                            <GridColumn Field="@nameof(ControlRezago_Eficacia_Resumen.REAL_NO_EJEC)" HeaderText="Real No Ejecutadas" TextAlign="TextAlign.Center" Width="100" />
-                            <GridColumn Field="@nameof(ControlRezago_Eficacia_Resumen.REALIZADAS)" HeaderText="Realizadas" TextAlign="TextAlign.Center" Width="100" />
-                            <GridColumn Field="@nameof(ControlRezago_Eficacia_Resumen.CANCELADAS)" HeaderText="Canceladas" TextAlign="TextAlign.Center" Width="100" />
-                            <GridColumn Field="@nameof(ControlRezago_Eficacia_Resumen.TOTALES)" HeaderText="Total" TextAlign="TextAlign.Center" Width="100" />
-                        </GridColumns>
-                    </SfGrid>
+                    <RadzenDataGrid TItem="ControlRezago_Eficacia_Resumen" @ref="_dataGrid" Data="@datosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                        <Columns>
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_Eficacia_Resumen.Trabajo)" Title="Trabajo" TextAlign="TextAlign.Left" Width="180px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_Eficacia_Resumen.PENDIENTES)" Title="Pendientes" TextAlign="TextAlign.Center" Width="100px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_Eficacia_Resumen.EN_EJECUCION)" Title="En Ejecucion" TextAlign="TextAlign.Center" Width="100px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_Eficacia_Resumen.REAL_EJEC)" Title="Real Ejecutadas" TextAlign="TextAlign.Center" Width="100px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_Eficacia_Resumen.REAL_NO_EJEC)" Title="Real No Ejecutadas" TextAlign="TextAlign.Center" Width="100px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_Eficacia_Resumen.REALIZADAS)" Title="Realizadas" TextAlign="TextAlign.Center" Width="100px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_Eficacia_Resumen.CANCELADAS)" Title="Canceladas" TextAlign="TextAlign.Center" Width="100px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_Eficacia_Resumen.TOTALES)" Title="Total" TextAlign="TextAlign.Center" Width="100px" />
+                        </Columns>
+                    </RadzenDataGrid>
                 </div>
 
                 @**** Grafica*@
                 <div class="m-1 p-2 border rounded bg-white" style="grid-row: 3/4; grid-column: 1/2;">
-                    <SfChart Title="" Height="185">
-                        <ChartPrimaryXAxis Title="" ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-                        <ChartPrimaryYAxis Title="Usuarios"></ChartPrimaryYAxis>
-                        <ChartTooltipSettings Enable="true" Header="${point.x}" Shared="true" Format="${series.name}: ${point.y}"></ChartTooltipSettings>
-                        <ChartLegendSettings Visible="false" Position="LegendPosition.Right"></ChartLegendSettings>
-                        <ChartSeriesCollection>
-                            <ChartSeries DataSource="@datosGrafica" Name="Ordenes De Trabajo" XName="Descripcion" YName="Valor1" Type="ChartSeriesType.Column">
-                                <ChartMarker>
-                                    <ChartDataLabel Visible="true"></ChartDataLabel>
-                                </ChartMarker>
-                            </ChartSeries>
-                        </ChartSeriesCollection>
-                    </SfChart>
+                    <RadzenChart Style="height:185px; width:100%;">
+                        <RadzenCategoryAxis />
+                        <RadzenValueAxis ><RadzenAxisTitle Text="Usuarios" /></RadzenValueAxis>
+                        <RadzenChartTooltipOptions Shared="true" />
+                        <RadzenLegend Visible="false" Position="LegendPosition.Right" />
+                        <RadzenColumnSeries Data="@datosGrafica" Title="Ordenes De Trabajo" CategoryProperty="Descripcion" ValueProperty="Valor1">
+                            <TooltipTemplate Context="item">
+                                Ordenes De Trabajo: @item.Valor1
+                            </TooltipTemplate>
+                            <ChildContent>
+                                <RadzenSeriesDataLabels Visible="true" />
+                            </ChildContent>
+                        </RadzenColumnSeries>
+                    </RadzenChart>
                 </div>
             
             </div>
@@ -68,7 +69,8 @@
     
 }
 
-@code {
+@code
+{
 
     #region  "******** Parametros ********"
     [Parameter]
@@ -85,26 +87,30 @@
     [Parameter]
     public int Sector { get; set; }
 
-    List<int> GridFilas = new List<int>() { 50, 400, 200 };
-    List<int> GridColumnas = new List<int>() { 1020 };
+    List<int> _gridFilas = new List<int>() { 50, 400, 200 };
+    List<int> _gridColumnas = new List<int>() { 1020 };
     #endregion
     #region "******** Funciones Base ********"
-    private async Task Cerrar_Modal() {
+    private async Task Cerrar_Modal()
+    {
         this.datosGrid = new ControlRezago_Eficacia_Resumen[] { };
         await CerrarModal.InvokeAsync("");
     }
-    private string ObtnerDimensiones() {
+    private string ObtnerDimensiones()
+    {
         var xB = new System.Text.StringBuilder();
         xB.Append("height: 100%; width:100%; ");
         xB.Append("display:grid; ");
         xB.Append("grid-template-rows: ");
-        foreach (int FilaH in GridFilas) {
+        foreach (int FilaH in _gridFilas)
+        {
             xB.Append(string.Format("{0}px ", FilaH));
         }
         xB.Append("; ");
 
         xB.Append("grid-template-columns: ");
-        foreach (int ColW in GridColumnas) {
+        foreach (int ColW in _gridColumnas)
+        {
             xB.Append(string.Format("{0}px ", ColW));
         }
         xB.Append("; ");
@@ -115,13 +121,14 @@
 
 
     //"******** Variables ********"
-    SfGrid<ControlRezago_Eficacia_Resumen> dataGrid;
+    RadzenDataGrid<ControlRezago_Eficacia_Resumen> _dataGrid;
     public ControlRezago_Eficacia_Resumen[] datosGrid;
     public CharItem[] datosGrafica = new CharItem[] { };
 
 
     //"******** Funciones Generales ********"
-    public async Task Inicializar(ControlRezago_Eficacia_Resumen[] datos) {
+    public async Task Inicializar(ControlRezago_Eficacia_Resumen[] datos)
+    {
         await JSRuntime.InvokeVoidAsync("ConfigurateDragg", null);
         this.datosGrid = datos;
 
@@ -134,7 +141,8 @@
         int tot_canceladas = 0;
 
         var tmpList = new List<CharItem>();
-        foreach (var item in datosGrid) {
+        foreach (var item in datosGrid)
+        {
             tot_pendientes += item.PENDIENTES;
             tot_enEjecucion += item.EN_EJECUCION;
             tot_realizadaEjecutadas += item.REAL_EJEC;
@@ -151,11 +159,16 @@
     }
 
 
+    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task GenerarExcel() {
-        await this.dataGrid.ExcelExport(new ExcelExportProperties {
+        await this._dataGrid.ExcelExport(new ExcelExportProperties {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
+    */
+    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task GenerarPdf() {
         string titulo = string.Format("Ingresos por Conceptos del {0} al {1}", this.Fecha1.ToString("dd/MM/yyyy"), this.Fecha2.ToString("dd/MM/yyyy"));
         List<PdfHeaderFooterContent> xconts = new List<PdfHeaderFooterContent>();
@@ -171,7 +184,7 @@
             }
         );
 
-        await this.dataGrid.PdfExport(new PdfExportProperties {
+        await this._dataGrid.PdfExport(new PdfExportProperties {
             PageOrientation = PageOrientation.Landscape,
             Header = new PdfHeader {
                 Contents = xconts
@@ -179,8 +192,10 @@
             FileName = string.Format("sicem_IngresosxDias{0}.pdf", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
+    */
 
-    public class CharItem {
+    public class CharItem
+    {
         public string Descripcion { get; set; }
         public int Valor1 { get; set; }
     }

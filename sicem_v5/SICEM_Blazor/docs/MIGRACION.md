@@ -147,6 +147,7 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | `ChartTooltipSettings Format="${point.x} : ${point.y}"` | `TooltipTemplate Context="item"` con `@item.<XName> : @item.<YName>` (`$${point.y}` → `.ToString("c2")`) |
 | `chart.RefreshLiveData()` | `chart.Reload()` |
 | `SfTab` + `TabItem` / `TabHeader` / `ContentTemplate` | `RadzenTabs` + `<Tabs>` + `RadzenTabsItem Text=".."` |
+| `SfNumericTextBox` + `NumericTextBoxEvents ValueChange="X"` (`ChangeEventArgs<T> args`, `args.Value`) | `RadzenNumeric Change="X"`; el manejador recibe el valor (`T valor`) |
 | `AccumulationChartSeries StartAngle="270" EndAngle="90"` (semicírculo) | `RadzenDonutSeries StartAngle="180" TotalAngle="180"` |
 | `CaptionTemplate` con `var order = (context as CaptionTemplateContext)` | `GroupHeaderTemplate` con `var order = new { Key = context.Data.Key?.ToString() ?? "", Count = context.Data.Count }` (el resto del template no cambia) |
 | `ChartSeriesType.Bar` | `RadzenBarSeries` |
@@ -173,7 +174,7 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | 8 | Micromedición | `/micromedicion` | ✅ Migrado (2026-10-06) |
 | 9 | Padrón de Usuarios | `/padron` | ✅ Migrado (2026-10-06) |
 | 10 | Órdenes de Trabajo | `/ordenes` | ✅ Migrado (2026-10-06) |
-| 11 | Antigüedad de Saldos | `/controlRezago` | Pendiente |
+| 11 | Antigüedad de Saldos | `/controlRezago` | ✅ Migrado (2026-10-06) |
 | 12 | Lecturas | `/lecturas` | Pendiente |
 | 13 | Pago en Línea | `/PagoLineaAnalitycs` | Pendiente |
 | 14 | Configuración | `/configuracion` | Pendiente |
@@ -334,6 +335,22 @@ Exportación comentada (`TODO-EXPORT-RADZEN`) en los archivos con exportación. 
 Allman y renombres de miembros privados.
 
 - [ ] Prueba manual: consulta multi-oficina con gráfica; página por oficina; ventanas Colonias, Trabajos, Realización, Capturación y Detalle.
+
+### Módulo 11 – Antigüedad de Saldos (2026-10-06)
+
+13 archivos en `Areas/ControlRezago/Views/`: 12 `SfGrid`, 3 `SfChart`, 5 `SfNumericTextBox`, 1 `SfTab` → Radzen.
+
+| Archivo | Cambios específicos |
+|---|---|
+| `ControlRezagoPage.razor` | **Patrón multi-oficina:** `try/catch` propio por oficina y refresco con `InvokeAsync(() => ...Reload())`. |
+| `ControlRezago_AnalisisCarteraVtn.razor`, `ControlRezago_AnalisisCarteraDetalleVtn.razor`, `ControlRezago_EficienciaOrdenesTrabajoVtn.razor` | Filtros numéricos (meses/saldo morosos, días) → `RadzenNumeric Change=..`. Los manejadores reciben el valor; si se borra el campo (`null`) ahora se toma `0` (antes `(int)args.Value` lanzaba excepción). |
+| `ResumenVtn.razor` | `SfTab` → `RadzenTabs`; se quitó la variable `sfTab` (`@ref`), que no se usaba. |
+| `ResumenLocalidadesGlobalVtn.razor` | Agrupación inicial convertida. |
+| Resto | Grids y gráficas convertidos. |
+
+Exportación comentada (`TODO-EXPORT-RADZEN`) en los archivos con exportación. Allman y renombres de miembros privados.
+
+- [ ] Prueba manual: consulta multi-oficina con gráfica; Resumen (pestañas y detalle de rezago); Análisis de Cartera y su detalle (cambiar meses/saldo); Eficiencia de Órdenes (global y por trabajo, cambiar días); Situación de Toma.
 
 ### Pendientes de la Fase 2
 
