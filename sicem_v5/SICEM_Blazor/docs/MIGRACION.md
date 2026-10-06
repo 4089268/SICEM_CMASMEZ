@@ -166,7 +166,7 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | 4 | Recaudación | `/recaudacion` | ✅ Migrado (2026-10-06) |
 | 5 | Descuentos | `/descuentos` | ✅ Migrado (2026-10-06) |
 | 6 | Facturación | `/facturacion` | ✅ Migrado (2026-10-06) |
-| 7 | Eficiencia | `/Eficiencia` | Pendiente |
+| 7 | Eficiencia | `/Eficiencia` | ✅ Migrado (2026-10-06) |
 | 8 | Micromedición | `/micromedicion` | Pendiente |
 | 9 | Padrón de Usuarios | `/padron` | Pendiente |
 | 10 | Órdenes de Trabajo | `/ordenes` | Pendiente |
@@ -272,6 +272,20 @@ Exportación comentada (`TODO-EXPORT-RADZEN`) en 4 archivos. Allman y renombres 
 Exportación comentada (`TODO-EXPORT-RADZEN`) en 7 archivos. Allman y renombres de miembros privados (p. ej. `Fecha1` → `_fecha1`, `datosFacturacion` → `DatosFacturacion`).
 
 - [ ] Prueba manual: consulta multi-oficina con gráfica, y las ventanas Conceptos, Anual (cambio de gráfica), Localidades, Colonias, Usuarios y Detalle.
+
+### Módulo 7 – Eficiencia (2026-10-06)
+
+6 archivos en `Areas/Eficiencia/Views/`: 6 `SfGrid`, 5 `SfChart` → Radzen.
+
+| Archivo | Cambios específicos |
+|---|---|
+| `EficienciaPage.razor` | **Patrón multi-oficina:** `try/catch` propio por oficina y refresco con `InvokeAsync(() => ...Reload())`. |
+| `Eficiencia_AnualVtn.razor` | El `SfChart` tenía `title="EFICIENCIA ANUAL"` en minúscula (atributo HTML, se mostraba como tooltip del navegador, no como título); se conservó igual en `RadzenChart`. |
+| Resto (Conceptos, Sectores, Colonias, Detalle) | Grid + gráfica de columnas convertidos. |
+
+Exportación comentada (`TODO-EXPORT-RADZEN`) en los archivos con exportación. Allman y renombres de miembros privados.
+
+- [ ] Prueba manual: consulta multi-oficina con gráfica; ventanas Anual, Conceptos, Sectores, Colonias y su Detalle.
 
 ### Pendientes de la Fase 2
 

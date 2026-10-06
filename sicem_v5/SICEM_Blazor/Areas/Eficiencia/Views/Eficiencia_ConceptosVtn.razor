@@ -1,15 +1,11 @@
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Notifications
-@using Syncfusion.Blazor.Inputs
+@using Radzen
+@using Radzen.Blazor
 @using Sicem_Blazor.Eficiencia.Data
 @using Sicem_Blazor.Eficiencia.Models
-@using Syncfusion.Blazor.Calendars
-@using Syncfusion.Blazor.DropDowns
 @inject IJSRuntime JSRuntime
 
-@if (Visible) {
+@if (Visible)
+{
     <div class="busy-control">
 
         <div id="draggable" class="SicemDialog-control" style="width:auto; height:auto;">
@@ -25,68 +21,68 @@
 
                 <div class="m-1 p-2 border rounded bg-white" style="grid-row: 1/2; grid-column: 1/2;">
                     <div class="w-100 d-flex align-items-center">
+                        @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                         <MatButton Class="ml-1 mr-2" Raised="true" Style="height:2.5rem;" OnClick="@GenerarExcel">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
+                        *@
                         <MatButton Class="mr-2" Raised="true" Style="height:2.5rem;" Disabled="true">Generar Reporte <i class="fa fa-file-pdf-o ml-2" aria-hidden="true"></i></MatButton>
                     </div>
                 </div>
 
                 <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                    <SfGrid @ref="dataGrid" DataSource="@datosGrid" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true">
-                        <GridColumns>
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Tipo_Usuario)" HeaderText="Tipo_Usuario" TextAlign="TextAlign.Left" Width="120" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Facturacion)" HeaderText="Facturado" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Cobrado)" HeaderText="Cobrado" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Por_Cob)" HeaderText="% Cob." TextAlign="TextAlign.Center" Width="80" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Descontado)" HeaderText="Descontado" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Por_Des)" HeaderText="% Desc." TextAlign="TextAlign.Center" Width="80" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Anticipado)" HeaderText="Anticipado" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Por_Ant)" HeaderText="% Ant." TextAlign="TextAlign.Center" Width="80" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Por_Efi)" HeaderText="Eficiencia" TextAlign="TextAlign.Center" Width="90" />
+                    <RadzenDataGrid TItem="Eficiencia_Conceptos" @ref="_dataGrid" Data="@datosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                        <Columns>
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Tipo_Usuario)" Title="Tipo_Usuario" TextAlign="TextAlign.Left" Width="120px" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Facturacion)" Title="Facturado" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Cobrado)" Title="Cobrado" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Por_Cob)" Title="% Cob." TextAlign="TextAlign.Center" Width="80px" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Descontado)" Title="Descontado" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Por_Des)" Title="% Desc." TextAlign="TextAlign.Center" Width="80px" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Anticipado)" Title="Anticipado" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Por_Ant)" Title="% Ant." TextAlign="TextAlign.Center" Width="80px" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Por_Efi)" Title="Eficiencia" TextAlign="TextAlign.Center" Width="90px" />
 
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Fac_Agua)" HeaderText="Fac. Agua" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Fac_Dren)" HeaderText="Fac. Drenaje" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Fac_Sane)" HeaderText="Fac. Sanea." TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Cob_Agua)" HeaderText="Cob. Agua" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Cob_Dren)" HeaderText="Cob. Drenaje" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Cob_Sane)" HeaderText="Cob. Sanea." TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Ant_Agua)" HeaderText="Ant. Agua" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Ant_Dren)" HeaderText="Ant. Drenaje" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Ant_Sane)" HeaderText="Ant. Sanea." TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Des_Agua)" HeaderText="Des. Agua" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Des_Dren)" HeaderText="Des. Drenaje" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Conceptos.Des_Sane)" HeaderText="Des. Sanea." TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                        </GridColumns>
-                    </SfGrid>
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Fac_Agua)" Title="Fac. Agua" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Fac_Dren)" Title="Fac. Drenaje" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Fac_Sane)" Title="Fac. Sanea." TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Cob_Agua)" Title="Cob. Agua" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Cob_Dren)" Title="Cob. Drenaje" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Cob_Sane)" Title="Cob. Sanea." TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Ant_Agua)" Title="Ant. Agua" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Ant_Dren)" Title="Ant. Drenaje" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Ant_Sane)" Title="Ant. Sanea." TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Des_Agua)" Title="Des. Agua" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Des_Dren)" Title="Des. Drenaje" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Des_Sane)" Title="Des. Sanea." TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                        </Columns>
+                    </RadzenDataGrid>
                 </div>
 
                 <div class="m-1 p-2 border rounded bg-white" style="grid-row: 3/4; grid-column: 1/2;">
-                    <SfChart Title="" SubTitle="" @ref="grafiaIngresos" Width="auto" Height="280">
-                        <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category" Interval="1" Visible="true" LabelFormat="c">
-                        </ChartPrimaryXAxis>
-                        <ChartPrimaryYAxis Title="" Visible="false" />
-                        <ChartTooltipSettings Enable="true" Header="" Shared="true" Format="${series.name} ${point.x} : ${point.y}%"></ChartTooltipSettings>
-                        <ChartLegendSettings Visible="false" Position="LegendPosition.Right"></ChartLegendSettings>
-                        <ChartZoomSettings EnableMouseWheelZooming="false" EnablePinchZooming="false" EnableSelectionZooming="true"></ChartZoomSettings>
-                        <ChartArea>
-                            <ChartAreaBorder Width="0"></ChartAreaBorder>
-                        </ChartArea>
-                        <ChartSeriesCollection>
-                            <ChartSeries XName="X" DataSource="@itemsGrafica" YName="Y1" Name="Eficiencia" Type="ChartSeriesType.Column">
-                                <ChartMarker Visible="true">
-                                </ChartMarker>
-                            </ChartSeries>
-                        </ChartSeriesCollection>
-                    </SfChart>
+                    <RadzenChart AllowZoom="true" @ref="_grafiaIngresos" Style="width:auto; height:280px;">
+                        <RadzenCategoryAxis Visible="true" />
+                        <RadzenValueAxis Visible="false" />
+                        <RadzenChartTooltipOptions Shared="true" />
+                        <RadzenLegend Visible="false" Position="LegendPosition.Right" />
+                        <RadzenColumnSeries CategoryProperty="X" Data="@itemsGrafica" ValueProperty="Y1" Title="Eficiencia">
+                            <TooltipTemplate Context="item">
+                                Eficiencia @item.X : @item.Y1%
+                            </TooltipTemplate>
+                            <ChildContent>
+                                <RadzenMarkers MarkerType="MarkerType.Circle" />
+                            </ChildContent>
+                        </RadzenColumnSeries>
+                    </RadzenChart>
                 </div>
 
             </div>
         </div>
     </div>
 
-    <BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
+    <BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
 }
 
-@code {
+@code
+{
 
     #region  "******** Parametros ********"
     [Parameter]
@@ -103,26 +99,30 @@
     [Parameter]
     public int Sector { get; set; }
 
-    List<int> GridFilas = new List<int>() { 50, 240, 300 };
-    List<int> GridColumnas = new List<int>() { 1180 };
+    List<int> _gridFilas = new List<int>() { 50, 240, 300 };
+    List<int> _gridColumnas = new List<int>() { 1180 };
     #endregion
     #region "******** Funciones Base ********"
-    private async Task Cerrar_Modal() {
+    private async Task Cerrar_Modal()
+    {
         this.datosGrid = new Eficiencia_Conceptos[] { };
         await CerrarModal.InvokeAsync("");
     }
-    private string ObtnerDimensiones() {
+    private string ObtnerDimensiones()
+    {
         var xB = new System.Text.StringBuilder();
         xB.Append("height: 100%; width:100%; ");
         xB.Append("display:grid; ");
         xB.Append("grid-template-rows: ");
-        foreach (int FilaH in GridFilas) {
+        foreach (int FilaH in _gridFilas)
+        {
             xB.Append(string.Format("{0}px ", FilaH));
         }
         xB.Append("; ");
 
         xB.Append("grid-template-columns: ");
-        foreach (int ColW in GridColumnas) {
+        foreach (int ColW in _gridColumnas)
+        {
             xB.Append(string.Format("{0}px ", ColW));
         }
         xB.Append("; ");
@@ -134,41 +134,51 @@
 
     //"******** Variables ********"
 
-    SfGrid<Eficiencia_Conceptos> dataGrid;
-    SfChart grafiaIngresos;
+    RadzenDataGrid<Eficiencia_Conceptos> _dataGrid;
+    RadzenChart _grafiaIngresos;
 
     public Eficiencia_Conceptos[] datosGrid;
     public List<ChartData> itemsGrafica = new List<ChartData>();
-    private bool busyDialog = false;
+    private bool _busyDialog = false;
 
 
     //"******** Funciones Generales ********"
-    public async Task Inicializar(Eficiencia_Conceptos[] datos) {
+    public async Task Inicializar(Eficiencia_Conceptos[] datos)
+    {
         await JSRuntime.InvokeVoidAsync("ConfigurateDragg", null);
         this.datosGrid = datos;
-        if (datosGrid.Length > 0) {
+        if (datosGrid.Length > 0)
+        {
             ProcesarDatosGrafica();
         }
     }
 
-    private void ProcesarDatosGrafica() {
+    private void ProcesarDatosGrafica()
+    {
         itemsGrafica = new List<ChartData>();
-        foreach (Eficiencia_Conceptos xItem in this.datosGrid) {
-            if( !xItem.Tipo_Usuario.Contains("TOTAL") ){
-                itemsGrafica.Add(new ChartData() {
+        foreach (Eficiencia_Conceptos xItem in this.datosGrid)
+        {
+            if( !xItem.Tipo_Usuario.Contains("TOTAL") )
+            {
+                itemsGrafica.Add(new ChartData()
+                {
                     X = xItem.Tipo_Usuario,
                     Y1 = (decimal)xItem.Por_Efi
                 });
             }
         }
     }
+    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task GenerarExcel() {
-        await this.dataGrid.ExcelExport(new ExcelExportProperties {
+        await this._dataGrid.ExcelExport(new ExcelExportProperties {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
+    */
 
-    public class ChartData {
+    public class ChartData
+    {
         public string X;
         public decimal Y1;
         public decimal Y2;
