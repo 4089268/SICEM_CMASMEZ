@@ -403,11 +403,28 @@ Allman y renombres de miembros privados.
 
 **Verificación:** `dotnet build` sin errores ni advertencias. La app arranca y responden 200 las rutas de los 14 módulos del menú (solo prueba que cargan sin errores de servidor; falta la prueba manual con datos de cada módulo).
 
+### Búsqueda Avanzada – filtros con `RadzenDropDown` (2026-10-06)
+
+`Pages/AnalisisInformacion/FiltroDatosComponent.razor` (+ `AnalisisInformacionPage.razor`):
+
+- **Oficinas** (cambio hecho por el usuario): `NsMultiselectBox` → `RadzenDropDown` múltiple; `CatOficinas` pasó de `Dictionary<int, string>` a `List<IEnlace>` (`TextProperty="Nombre"`, `ValueProperty="Id"`). Se cambió `Console.WriteLine` por `ILogger`.
+- **Estatus, Servicio, Tarifa, Tipo Cálculo, Anomalía, Clase de Usuario y Giro**: `NsMultiselectBox` → `RadzenDropDown` con `Multiple=true AllowClear=true`, sobre los mismos `Dictionary<int, string>` (`TextProperty="Value"`, `ValueProperty="Key"`), enlazados a las mismas listas de `AnalisysInfoFilter`. Sin selección = "TODOS", igual que antes.
+- **Corrección:** `OnParametersSetAsync` agregaba la primera oficina a `Id_Oficinas` cada vez que cambiaban los parámetros (podía duplicar el ID); ahora solo si la lista está vacía.
+- Allman en los bloques `@if` del markup.
+- `Shared/Components/NsMultiselectBox.razor` ya no se usa en ninguna parte (se puede eliminar).
+- **Selects Si/No** (Tiene Ubicación, Teléfono Registrado, Es Alto Consumidor, Es Draef, Tiene Pozo): `<select>` → `RadzenDropDown TValue="int"` sobre una lista compartida `_opcionesSiNo` (0 = Cualquiera, 1 = Si, 2 = No); mismos valores enlazados.
+- El `<select>` de "Cargando oficinas...." → `RadzenDropDown` deshabilitado con ese placeholder.
+- **Etiquetas y cajas de texto** (29 campos): cada `div.item` (se conserva por el grid CSS del filtro) contiene ahora un `RadzenStack Orientation="Orientation.Vertical" Gap="0.25rem"` con `RadzenLabel Text=".." Component="X"` + el control con `Name="X"` (el nombre de la propiedad enlazada). `<input type="text">` → `RadzenTextBox @bind-Value=..`; los campos de "Cargando..." → `RadzenTextBox Disabled="true"`. Los campos con `NsRangeNumeric` llevan `RadzenLabel` sin `Component`. Las reglas CSS existentes (`.item label`, `.item input[type="text"]`) siguen aplicando porque Radzen genera `<label>` e `<input type="text">`.
+- **Filtros compactos:** en `wwwroot/css/radzen-ajustes.css` se sobrescriben los estilos `.filtro` de `site.css` (márgenes y padding de `.filtro`/`.item`, sin separación entre filas, etiquetas a `.9rem` con alto automático, cajas y dropdowns de `2.1rem`, títulos de sección a `1.1rem`). En el componente: `Gap` del `RadzenStack` a `0.1rem`, se quitó el `min-height: 3rem` de los dropdowns y se redujo el padding de las filas de Oficinas / Seleccionar cuentas. La clase `.filtro` solo se usa en este componente.
+- **`Shared/Components/NsRangeNumeric.razor`** (Subsistema, Sector, Saldo, Consumo, Meses Adeudo) reescrito con Radzen, conservando sus parámetros (`Format`, `@bind-OpcionSeleccionado`, `@bind-Valor1`, `@bind-Valor2`): operador → `RadzenDropDown TValue="int"` con los mismos valores numéricos (0 Cualquiera, 1 Mayor que, 2 Menor que, 3 Entre, 4 Igual); valores → `RadzenNumeric TValue="decimal"` (ya no se hace `decimal.TryParse` del texto). Nuevo parámetro `Name` para enlazar el `RadzenLabel`. Se quitaron `Width`/`Height`, que no se usaban. **Corrección:** los getters de `Valor1`/`Valor2` devolvían `_opcionSeleccionado`, por lo que la caja mostraba el número de la opción en lugar del valor escrito; ahora usa el patrón estándar de parámetros + `EventCallback`.
+
+- [ ] Prueba manual: seleccionar y limpiar opciones en cada filtro y realizar la consulta. Verificar que la selección múltiple se guarde en las listas `List<int>` del filtro (si Radzen marcara error de conversión al seleccionar, cambiar esas propiedades a `IEnumerable<int>`).
+
 ### Pendientes de la Fase 2
 
 - [ ] **Exportación Excel/PDF** (`TODO-EXPORT-RADZEN`): elegir librería (EPPlus/Aspose requieren licencia comercial; alternativas: ClosedXML [MIT] + QuestPDF [Community]) e implementar un servicio reutilizable que reciba las columnas visibles del `RadzenDataGrid` y los datos.
 - [x] CSS de Syncfusion en `site.css` trasladado a `radzen-ajustes.css`. Pendiente: borrar las reglas `.e-*` de `site.css`/`site.min.css` y `consultaGeneral.css` al quitar Syncfusion.
-- [ ] **`Pages/Maps/SicemMaps.razor`** (ruta `/SicemMaps`, fuera del menú): único uso de `SfMaps`; Radzen no tiene un componente de mapas equivalente. Parece una página de prueba (oficinas fijas de otro organismo, lista de marcadores vacía) y tiene una **llave de Bing Maps escrita en el código**. Decidir: eliminarla o reimplementarla.
+- [x] **`Pages/Maps/SicemMaps.razor`** eliminada (2026-10-06): era el único uso de `SfMaps`, ruta `/SicemMaps` sin enlaces desde el menú ni desde otro componente (página de prueba con oficinas fijas de otro organismo, sin marcadores y con una llave de Bing Maps en el código). No confundir con la función JS `inicializarSicemMaps` de `wwwroot/js/map.js`, que sí usa `MapaComponent` y se conserva.
 - [ ] Al terminar todos los módulos: quitar `Syncfusion.Blazor` del `.csproj`, `AddSyncfusionBlazor()` y el registro de licencia en `Startup.cs`, los CSS/JS de Syncfusion en `_Host.cshtml`, la clave `SyncfusionLicense`, y mover los `@using` de Radzen a `_Imports.razor`.
 
 ---
