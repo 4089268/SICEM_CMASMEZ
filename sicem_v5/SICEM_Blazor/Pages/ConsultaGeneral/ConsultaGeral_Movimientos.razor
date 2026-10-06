@@ -1,5 +1,6 @@
 @inject IJSRuntime JSRuntime
 @inject ConsultaGralService consultaGralService
+@inject ExportacionExcelService ExportacionExcel
 
 @if (Show)
 {
@@ -21,8 +22,8 @@
 
                 <div style="margin-left:30px;" />
 
-                @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                 <MatButton Unelevated="true" TrailingIcon="attachment" @onclick="@ExcelExport" Class="mr-1">Exportar Excel</MatButton>
+                @* TODO-EXPORT-RADZEN: exportación a PDF pendiente (ver docs/MIGRACION.md)
                 <MatButton Unelevated="true" TrailingIcon="poll" @onclick="PdfExport">Exportar Pdf</MatButton>
                 *@
 
@@ -132,16 +133,16 @@
         }
     }
 
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
     public async Task ExcelExport()
     {
-        await this.MyDataGrid.ExcelExport(new ExcelExportProperties
+        await ExportacionExcel.ExportarAsync(this.MyDataGrid, new ExcelExportProperties
         {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
 
+    // TODO-EXPORT-RADZEN: exportación a PDF pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     public async Task PdfExport()
     {
         List<PdfHeaderFooterContent> xconts = new List<PdfHeaderFooterContent>();

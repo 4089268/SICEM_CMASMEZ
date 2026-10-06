@@ -1,6 +1,7 @@
 @using Sicem_Blazor.Facturacion.Models
 @inject FacturacionService facturacionService
 @inject IMatToaster MatToaster
+@inject ExportacionExcelService ExportacionExcel
 
 @if(Visible)
 {
@@ -8,12 +9,10 @@
         <Content>
 
             <div class="d-flex align-items-center border rounded p-2 mb-2 bg-white">
-                @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                 <div class="button bg-success px-3 py-2" @onclick="OnExportExcel_Click" >
                     <i class="fa fa-file-excel mr-2"></i>
                     <span>Exportar Historial</span>
                 </div>
-                *@
             </div>
 
             <div class="border rounded p-2 mb-2 bg-white">
@@ -125,18 +124,17 @@
     {
         await OnClose.InvokeAsync(null);
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task OnExportExcel_Click(){
+    private async Task OnExportExcel_Click()
+    {
         var _guid = Guid.NewGuid().ToString().Replace("-","").Substring(0,10);
         var _titulo = Titulo.Replace(" - ",".").Replace(" ","_").ToString();
-        var _p = new ExcelExportProperties(){
+        var _p = new ExcelExportProperties()
+        {
             FileName = $"{_titulo}-{_guid}.xlsx",
             IncludeHiddenColumn = true
         };
-        await DataGrid.ExportToExcelAsync(_p);
+        await ExportacionExcel.ExportarAsync(DataGrid, _p);
     }
-    */
 
     private async Task MostrarDetalles(FacturacionAnual e)
     {

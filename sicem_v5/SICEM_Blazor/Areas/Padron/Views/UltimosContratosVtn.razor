@@ -2,6 +2,7 @@
 @inject IJSRuntime JSRuntime
 @inject PadronService padronService
 @inject NavigationManager NavManager
+@inject ExportacionExcelService ExportacionExcel
 
 @if (Visible)
 {
@@ -20,9 +21,7 @@
                 <InputLabel Value="Tarifa:" />
                 <ComboBox InitValue="0" Options="@_cat_tarifas" OnSelected="@(val => FiltrarDatos(val))" Width="260" CustomClass="mx-2" />
                 
-                @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                 <ExportExcelButton OnClick="GenerarExcel" />
-                *@
             </Content>
             </Panel>
 
@@ -121,14 +120,13 @@
         this._cuentaActual = e.Cuenta.ToString();
         _datosGenerales_visible = true;
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task GenerarExcel() {
-        await this._dataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this._dataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    */
     private void FiltrarDatos(int id_tarifa_seleccionada)
     {
         this._idTarifaSeleccionada = id_tarifa_seleccionada;

@@ -19,6 +19,9 @@ namespace Sicem_Blazor.PagoLinea.Views
 {
     public partial class PagoLineaPage
     {
+        [Inject]
+        public ExportacionExcelService ExportacionExcel { get; set; }
+
 
         [Inject]
         public NavigationManager NavManager {get;set;} = default!;
@@ -90,16 +93,14 @@ namespace Sicem_Blazor.PagoLinea.Views
             // StateHasChanged();
         }
         
-        // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-        /*
-        private async Task ExportarExcel_Click(){
+        private async Task ExportarExcel_Click()
+        {
             var _options = new ExcelExportProperties()
             {
                 IncludeHiddenColumn = true
             };
-            await this.DataGrid.ExportToExcelAsync(_options);
+            await ExportacionExcel.ExportarAsync(this.DataGrid, _options);
         }
-        */
 
         private async Task HandleShowDetails(ResumeOffice office)
         {

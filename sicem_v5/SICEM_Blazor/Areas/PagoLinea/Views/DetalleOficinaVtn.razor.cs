@@ -22,6 +22,9 @@ namespace Sicem_Blazor.PagoLinea.Views;
 public partial class DetalleOficinaVtn
 {
     [Inject]
+    public ExportacionExcelService ExportacionExcel { get; set; }
+
+    [Inject]
     public IMatToaster Toaster {get;set;} = default!;
     
     [Inject]
@@ -60,14 +63,12 @@ public partial class DetalleOficinaVtn
         StateHasChanged();
         await CerrarModal.InvokeAsync("");
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
     private async Task ExportData()
     {
-        await this.DataGrid.ExcelExport(new ExcelExportProperties {
+        await ExportacionExcel.ExportarAsync(this.DataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_ingresosxConceptos_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    */
 
 }

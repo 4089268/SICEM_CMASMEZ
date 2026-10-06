@@ -3,6 +3,7 @@
 @inject IMatToaster Toaster
 @inject PadronService padronService
 @inject NavigationManager NavManager
+@inject ExportacionExcelService ExportacionExcel
 
 @if (Visible)
 {
@@ -22,9 +23,7 @@
                             <option style="font-size: 1.2rem;" value="@itemKey">@cat_personal[itemKey]</option>
                         }
                     </select>
-                    @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                     <ExportExcelButton OnClick="GenerarExcel" />
-                    *@
             </Content>
             </Panel>
 
@@ -147,14 +146,13 @@
         this._cuentaActual = e.Cuenta.ToString();
         _datosGenerales_visible = true;
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task GenerarExcel() {
-        await this._dataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this._dataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    */
     private void FiltrarDatos(ChangeEventArgs e)
     {
 

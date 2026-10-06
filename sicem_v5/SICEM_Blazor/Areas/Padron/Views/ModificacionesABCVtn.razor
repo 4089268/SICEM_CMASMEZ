@@ -2,6 +2,7 @@
 @inject IJSRuntime JSRuntime
 @inject IMatToaster Toaster
 @inject PadronService padronService
+@inject ExportacionExcelService ExportacionExcel
 
 
 @if (Visible)
@@ -33,9 +34,7 @@
                     />
                 </div>
 
-                @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                 <ExportExcelButton OnClick="@GenerarExcel" />
-                *@
             </div>
 
             <!-- ****** DataGrid ****** -->
@@ -236,14 +235,13 @@
         this._cuentaActual = e.Id_Cuenta.ToString();
         this._datosGenerales_visible = true;
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task GenerarExcel() {
-        await this._dataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this._dataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    */
     private void DataGrid_SelectedRow(Padron_ModifABC tmpData)
     {
         this.ObservacionTemp = tmpData.Observacion;

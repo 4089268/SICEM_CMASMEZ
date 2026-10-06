@@ -1,6 +1,7 @@
 @using Sicem_Blazor.ControlRezago.Models
 @inject IJSRuntime JSRuntime
 @inject ControlRezagoService controlRezService 
+@inject ExportacionExcelService ExportacionExcel
 
 
 @if(Visible)
@@ -68,9 +69,7 @@
                     <div style="width:4rem;" />
 
                     <div class="w-100 d-flex align-items-center">
-                        @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                         <MatButton Class="ml-1 mr-2" Raised="true" Style="height:2.5rem;" OnClick="@GenerarExcel">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
-                        *@
                         <MatButton Class="mr-2" Raised="true" Style="height:2.5rem;" Disabled="true">Generar Reporte <i class="fa fa-file-pdf-o ml-2" aria-hidden="true"></i></MatButton>
                     </div>
                 </div>
@@ -273,15 +272,14 @@
         StateHasChanged();
     }
 
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task GenerarExcel(){
-        await this._dataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this._dataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    */
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    // TODO-EXPORT-RADZEN: exportación a PDF pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
     /*
     private async Task GenerarPdf(){
         string titulo = string.Format("Ingresos por Conceptos del {0} al {1}", this.Fecha1.ToString("dd/MM/yyyy"), this.Fecha2.ToString("dd/MM/yyyy"));

@@ -1,6 +1,7 @@
 @using Sicem_Blazor.Recaudacion.Data
 @using Sicem_Blazor.Recaudacion.Models
 @inject IJSRuntime JSRuntime
+@inject ExportacionExcelService ExportacionExcel
 
 @if (MostrarVentana)
 {
@@ -20,9 +21,7 @@
                                         <button type="button" class="btn btn-secondary" @onclick="@(() => GrupoBotonesClick(13))">Semanal</button>
                                     </div>
 
-                                    @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                                     <MatButton Class="mr-2" Raised="true" Style="height:2.5rem;" OnClick="@(() => GenerarExcel(0))">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
-                                    *@
                                     <MatButton Class="mr-2" Raised="true" Style="height:2.5rem;" Disabled="true">Generar Reporte <i class="fa fa-file-pdf-o ml-2" aria-hidden="true"></i></MatButton>
                                 </div>
                             </div>
@@ -193,9 +192,7 @@
                                         <button type="button" class="btn btn-secondary" @onclick="@(() => GrupoBotonesClick(22))">Quincenal</button>
                                         <button type="button" class="btn btn-secondary" @onclick="@(() => GrupoBotonesClick(23))">Semanal</button>
                                     </div>
-                                    @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                                     <MatButton Class="mr-2" Raised="true" Style="height:2.5rem;" OnClick="@(() => GenerarExcel(1))">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
-                                    *@
                                 </div>
                             </div>
 
@@ -813,48 +810,60 @@
             this.itemsGrafica_analiticoRez = tmpListChart;
         }
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task GenerarExcel(int tabIndex){
+    private async Task GenerarExcel(int tabIndex)
+    {
 
-        if(tabIndex == 0) {
-            if(visibles[0, 0]){
-                await this._dataGrid_analitico_mensual.ExcelExport(new ExcelExportProperties {
+        if(tabIndex == 0)
+        {
+            if(visibles[0, 0])
+            {
+                await ExportacionExcel.ExportarAsync(this._dataGrid_analitico_mensual, new ExcelExportProperties
+                {
                     FileName = string.Format("sicem_analiticoMensual_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
                 });
             }
-            if(visibles[0, 1]){
-                await this._dataGrid_analitico_quincenal.ExcelExport(new ExcelExportProperties {
+            if(visibles[0, 1])
+            {
+                await ExportacionExcel.ExportarAsync(this._dataGrid_analitico_quincenal, new ExcelExportProperties
+                {
                     FileName = string.Format("sicem_analiticoQuincenal_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
                 });
             }
-            if (visibles[0, 2]) {
-                await this._dataGrid_analitico_semanal.ExcelExport(new ExcelExportProperties {
+            if (visibles[0, 2])
+            {
+                await ExportacionExcel.ExportarAsync(this._dataGrid_analitico_semanal, new ExcelExportProperties
+                {
                     FileName = string.Format("sicem_analiticoSemanal_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
                 });
             }
         }
 
-        if(tabIndex == 1) {
-            if (visibles[1, 0]) {
-                await this._dataGrid_analiticoRez_mensual.ExcelExport(new ExcelExportProperties {
+        if(tabIndex == 1)
+        {
+            if (visibles[1, 0])
+            {
+                await ExportacionExcel.ExportarAsync(this._dataGrid_analiticoRez_mensual, new ExcelExportProperties
+                {
                     FileName = string.Format("sicem_analiticoRezMensual_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
                 });
             }
-            if (visibles[1, 1]) {
-                await this._dataGrid_analiticoRez_quincenal.ExcelExport(new ExcelExportProperties {
+            if (visibles[1, 1])
+            {
+                await ExportacionExcel.ExportarAsync(this._dataGrid_analiticoRez_quincenal, new ExcelExportProperties
+                {
                     FileName = string.Format("sicem_analiticoRezQuincenal_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
                 });
             }
-            if (visibles[1, 2]) {
-                await this._dataGrid_analiticoRez_semanal.ExcelExport(new ExcelExportProperties {
+            if (visibles[1, 2])
+            {
+                await ExportacionExcel.ExportarAsync(this._dataGrid_analiticoRez_semanal, new ExcelExportProperties
+                {
                     FileName = string.Format("sicem_analiticoRezSemanal_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
                 });
             }
         }
     }
-    */
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    // TODO-EXPORT-RADZEN: exportación a PDF pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
     /*
     private async Task GenerarPdf(int tabIndex) {
 

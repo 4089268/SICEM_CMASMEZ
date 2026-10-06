@@ -4,6 +4,7 @@
 @inject IMatToaster Toaster
 @inject SicemService sicemService
 @inject ConceptosService conceptosService
+@inject ExportacionExcelService ExportacionExcel
 
 <div class="tarifasLayout">
     <div style="grid-area:1/1/2/2;">
@@ -35,12 +36,10 @@
         @**** Boton Exportar Excel ****@
         @if(DatosConceptos != null)
         {
-            @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
             <div class="button px-3 py-2 bg-success mr-3" @onclick="OnExportExcel_Click" >
                 <i class="fa fa-file-excel mr-2"></i>
                 <span>Exportar Catalogo</span>
             </div>
-            *@
         }
 
         @* *** Boton Publicar Cambios ****@
@@ -214,17 +213,16 @@
     }
 
 
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task OnExportExcel_Click(){
+    private async Task OnExportExcel_Click()
+    {
         var _name = $"Sicem_CatalogoConceptos_{OficinaSeleccionada.Nombre}_{Guid.NewGuid().ToString().Replace("-","").Substring(0,10)}.xlsx";
-        var _options = new ExcelExportProperties(){
+        var _options = new ExcelExportProperties()
+        {
             IncludeHiddenColumn = true,
             FileName = _name
         };
-        await this.DataGrid.ExportToExcelAsync(_options);
+        await ExportacionExcel.ExportarAsync(this.DataGrid, _options);
     }
-    */
     private void OnDataGrid_SelectionChanged(Concepto fila)
     {
         ConceptoSeleccionado = fila;

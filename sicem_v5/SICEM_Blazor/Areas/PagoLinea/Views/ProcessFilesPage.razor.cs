@@ -28,6 +28,9 @@ namespace Sicem_Blazor.PagoLinea.Views
     public partial class ProcessFilesPage : ComponentBase, IDisposable
     {
         [Inject]
+        public ExportacionExcelService ExportacionExcel { get; set; }
+
+        [Inject]
         public NavigationManager NavManager { get; set; } = default!;
 
         [Inject]
@@ -277,13 +280,10 @@ namespace Sicem_Blazor.PagoLinea.Views
 
             await MatDialogService.AlertAsync("Finalizado la aplicación de pagos.");
         }
-        // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-        /*
         private async Task DownloadExcel()
         {
-            await DataGridRecords.ExportToExcelAsync();
+            await ExportacionExcel.ExportarAsync(DataGridRecords);
         }
-        */
 
         private async Task OnSoloPendientesChanged(bool value)
         {

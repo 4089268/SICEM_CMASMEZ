@@ -18,6 +18,9 @@ namespace Sicem_Blazor.OrdenesTrabajos.Views;
 public partial class OrdenesPage : ComponentBase
 {
     [Inject]
+    public ExportacionExcelService ExportacionExcel { get; set; }
+
+    [Inject]
     private NavigationManager navigationManager { get; set; }
 
     [Inject]
@@ -397,8 +400,6 @@ public partial class OrdenesPage : ComponentBase
         }
     }
 
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
     private async Task ExportarExcel_Click()
     {
         var p = new ExcelExportProperties
@@ -406,7 +407,6 @@ public partial class OrdenesPage : ComponentBase
             FileName = $"Sicem_{Guid.NewGuid().ToString().Replace("-", "")}.xlsx",
             IncludeHiddenColumn = true
         };
-        await DataGrid.ExportToExcelAsync(excelExportProperties: p);
+        await ExportacionExcel.ExportarAsync(DataGrid, p);
     }
-    */
 }

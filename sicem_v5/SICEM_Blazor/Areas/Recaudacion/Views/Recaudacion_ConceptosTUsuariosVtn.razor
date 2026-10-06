@@ -2,6 +2,7 @@
 @using Sicem_Blazor.Recaudacion.Data
 @inject IRecaudacionService recaudacionService
 @inject IJSRuntime JSRuntime
+@inject ExportacionExcelService ExportacionExcel
 
 @if(Visible)
 {
@@ -10,9 +11,7 @@
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 1/2; grid-column: 1/2;">
                 <div class="w-100 d-flex align-items-center">
-                    @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                     <MatButton Class="mr-2" Raised="true" Style="height:2.5rem;" @onclick="@GenerarExcel">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
-                    *@
                 </div>
             </div>
 
@@ -206,17 +205,15 @@
         this._oficinaActual = oficina;
         this._datosGrid = datos.ToList();
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task GenerarExcel(){
+    private async Task GenerarExcel()
+    {
         var _name = $"{Titulo.Replace(" ","_")}-{Guid.NewGuid().ToString().Replace("-","")}.xlsx";
 
         var p = new ExcelExportProperties();
         p.IncludeHiddenColumn = true;
         p.FileName = _name;
-        await this.DataGrid.ExcelExport(p);
+        await ExportacionExcel.ExportarAsync(this.DataGrid, p);
     }
-    */
     private async Task CerrarVentana()
     {
         await CerrarModal.InvokeAsync("");

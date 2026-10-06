@@ -1,13 +1,12 @@
 @using Sicem_Blazor.Lecturas.Models
 @using Sicem_Blazor.Lecturas.Data
 @inject IMatToaster Toaster
+@inject ExportacionExcelService ExportacionExcel
 
 <VentanaSecundaria Titulo="@Title" Filas="@(new double[]{40, 750})" Columnas="@(new double[]{.85})" CerrarVentana="CerrarModal">
     <Content>
         <div role="actions">
-            @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
             <MatButton Class="mx-2" style="min-width: 130px;" Raised="true" @onclick="ExportarExcel_Click">Exportar Excel</MatButton>
-            *@
         </div>
 
         <RadzenDataGrid TItem="DetalleLecturista" @ref="DataGrid" Data="@Datos" AllowColumnResize="true" AllowSorting="false" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:100%;">
@@ -46,15 +45,13 @@
         await Cerrar.InvokeAsync(false);
     }
 
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
     private async Task ExportarExcel_Click()
     {
-        var _options = new ExcelExportProperties(){
+        var _options = new ExcelExportProperties()
+        {
             IncludeHiddenColumn = true
         };
-        await this.DataGrid.ExportToExcelAsync(_options);
+        await ExportacionExcel.ExportarAsync(this.DataGrid, _options);
     }
-    */
 
 }

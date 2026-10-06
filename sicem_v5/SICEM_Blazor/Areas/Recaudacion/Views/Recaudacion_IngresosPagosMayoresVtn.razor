@@ -4,6 +4,7 @@
 @inject IRecaudacionService recaudacionService
 @inject IJSRuntime JSRuntime
 @inject IMatToaster Toaster
+@inject ExportacionExcelService ExportacionExcel
 
 @if (MostrarVentana)
 {
@@ -19,9 +20,7 @@
 
                     <MatButton Class="ml-2 mr-2" Raised="true" Style="height:2.4rem;" OnClick="@ProcesarDatos">Procesar</MatButton>
 
-                    @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                     <MatButton Class="ml-5 mr-2" Raised="true" Style="height:2.4rem;" OnClick="@GenerarExcel">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
-                    *@
 
                 </div>
             </div>
@@ -274,14 +273,13 @@
         _busyDialog = false;
     }
 
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task GenerarExcel() {
-        await this.DataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this.DataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_ingresosxDias_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    */
 
     private void MostrarEnConsultaGeneral(Recaudacion_PagosMayores e)
     {

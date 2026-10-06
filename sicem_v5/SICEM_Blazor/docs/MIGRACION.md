@@ -442,9 +442,30 @@ Syncfusion quedó **eliminado por completo** del proyecto.
 
 `wwwroot/css/radzen-ajustes.css`: los colores primario y secundario de Radzen (por defecto índigo `#4340D2` y rosa `#e31c65` en el tema *material*) ahora toman los del tema de la aplicación definidos en `site.css` — `--rz-primary: var(--mdc-theme-primary)` (`#49b2c7`) y `--rz-secondary: var(--mdc-theme-secondary)` (`#2c8ea2`), los mismos de MatBlazor. Los tonos `-light`, `-lighter`, `-dark` y `-darker` se calculan con `color-mix()`, por lo que cambiar el color en `site.css` actualiza también Radzen. La pestaña activa usa `--rz-secondary`. Los colores de las series de las gráficas no cambian (son la paleta propia de Radzen).
 
+### Exportación a Excel e importación (2026-10-06)
+
+**Decisión:** ExcelDataReader (MIT) para **leer** Excel y ClosedXML (MIT) para **escribirlo**. Se quitaron Aspose.Cells (comercial, sin licencia cargada: modo evaluación) y EPPlus (licencia no comercial; sin `LicenseContext` lanzaba excepción, por lo que "Exportar Resultados" de Búsqueda Avanzada probablemente fallaba).
+
+| Archivo | Cambio |
+|---|---|
+| **Nuevo:** `Services/ExportacionExcelService.cs` | `ExportarAsync(grid, ExcelExportProperties)`: exporta un `RadzenDataGrid` tal como se ve — columnas visibles (con `Property`) con su título, todas las filas filtradas y ordenadas (`grid.View`, sin paginar). Conserva tipos (número, fecha, booleano; texto con ceros a la izquierda) y traduce `FormatString` a formato de Excel (`{0:c2}` → `$#,##0.00`, `{0:n0}` → `#,##0`, fechas, `000000000`). Encabezado en negritas con fondo gris, primera fila fija, ancho ajustado. Descarga por `DotNetStreamReference`. Registrado como `AddScoped` en `Startup.cs`. |
+| `ExcelExportProperties` (en el mismo archivo) | Clase propia con los nombres que usaba Syncfusion (`FileName`, `IncludeHiddenColumn`) + `SheetName`, para conservar el código existente. |
+| `wwwroot/js/utilities.js` | Nueva función `descargarArchivoDesdeStream(nombreArchivo, streamReference, contentType)`. |
+| 80 componentes (85 llamadas) | Se restauró la exportación comentada con `TODO-EXPORT-RADZEN`: el método original se conserva (nombres de archivo, `IncludeHiddenColumn`, validaciones, indicadores de carga) y solo cambia `grid.ExcelExport(p)` / `grid.ExportToExcelAsync(p)` → `ExportacionExcel.ExportarAsync(grid, p)`. Se descomentaron sus botones y se inyectó el servicio (`@inject ExportacionExcelService ExportacionExcel`, o `[Inject]` en los `.razor.cs`). Allman. |
+| `Data/ProcesarExcel.cs` | Aspose.Cells → ExcelDataReader (misma API: `ToDataTable`, `ToDataTableFirstCol`). `ToDataTable` (sin uso) omitía la última fila y columna; ya no. |
+| `Data/ExportarExcel.cs` | EPPlus → ClosedXML con la misma API y flujo (archivo en `TempFolder` + descarga por `Direccion_Api/download/{guid}`). Allman y campos `_camelCase`. |
+| `Sicem_Blazor.csproj` | + `ClosedXML` 0.105.1; − `Aspose.Cells`, − `EPPlus`. + `System.Drawing.Common` 6.0.0 explícito: es la versión que ya se resolvía; sin fijarla, Aspose.PDF bajaba a la 5.0.2, con vulnerabilidad crítica (NU1904). |
+
+**Se conserva Aspose.PDF:** no se usa para Excel sino para imágenes/PDF en `DefaultController` y notificaciones (también es comercial; revisar su licencia).
+
+**Verificación:** compilación sin errores ni advertencias; prueba de consola: exportación con tipos y formatos correctos, lectura con `ProcesarExcel` de un archivo generado, y `ExportarExcel` omitiendo `id_oficina`; la app arranca y las rutas responden 200.
+
+- [ ] Prueba manual: exportar desde varias páginas (con filtros/orden aplicados, con columnas ocultas en las que usan `IncludeHiddenColumn`), cargar cuentas desde Excel en Búsqueda Avanzada, "Exportar Resultados", e incorporar pagos (Pago en Línea).
+
 ### Pendientes de la Fase 2
 
-- [ ] **Exportación Excel/PDF** (`TODO-EXPORT-RADZEN`): elegir librería (EPPlus/Aspose requieren licencia comercial; alternativas: ClosedXML [MIT] + QuestPDF [Community]) e implementar un servicio reutilizable que reciba las columnas visibles del `RadzenDataGrid` y los datos.
+- [x] Exportación a Excel con ClosedXML (ver *Exportación a Excel e importación*).
+- [ ] **Exportación a PDF**: 10 métodos y sus botones siguen comentados con `TODO-EXPORT-RADZEN: exportación a PDF pendiente` (`grep -rn "PDF pendiente"`).
 - [x] CSS de Syncfusion trasladado a `radzen-ajustes.css` y reglas `.e-*` eliminadas.
 - [x] **`Pages/Maps/SicemMaps.razor`** eliminada (2026-10-06): era el único uso de `SfMaps`, ruta `/SicemMaps` sin enlaces desde el menú ni desde otro componente (página de prueba con oficinas fijas de otro organismo, sin marcadores y con una llave de Bing Maps en el código). No confundir con la función JS `inicializarSicemMaps` de `wwwroot/js/map.js`, que sí usa `MapaComponent` y se conserva.
 - [x] Quitar Syncfusion (paquete, registro, licencia, CSS/JS, `@using` de Radzen a `_Imports.razor`) — ver *Remoción de Syncfusion*.

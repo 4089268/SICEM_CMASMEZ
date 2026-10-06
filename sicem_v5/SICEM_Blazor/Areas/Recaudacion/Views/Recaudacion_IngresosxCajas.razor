@@ -3,6 +3,7 @@
 @inject IJSRuntime JSRuntime
 @inject SicemService sicemService
 @inject IRecaudacionService recaudacionService
+@inject ExportacionExcelService ExportacionExcel
 
 @if (MostrarVentana)
 {
@@ -17,9 +18,7 @@
                         <option style="font-size: 1.2rem;" value="-1" selected>No Implementado</option>
                     </select>
                     *@
-                    @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                     <MatButton Class="mr-2" Raised="true" Style="height:2.5rem;" OnClick="@GenerarExcel">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
-                    *@
                 </div>
             </div>
 
@@ -104,14 +103,13 @@
         this._catalogoSucursales = sicemService.ObtenerCatalogoSucursales(Enlace.Id).ToList();
     }
 
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task GenerarExcel() {
-        await this.DataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this.DataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_ingresosxDias_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    */
     private void FiltrarDatos(ChangeEventArgs e)
     {
         /*

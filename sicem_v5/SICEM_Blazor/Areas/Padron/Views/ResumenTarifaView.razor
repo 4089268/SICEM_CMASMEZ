@@ -1,8 +1,7 @@
 @using Sicem_Blazor.Padron.Models
+@inject ExportacionExcelService ExportacionExcel
 <div class="border rounded bg-white d-flex align-itenms-center p-2">
-    @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
     <button class="button px-4" @onclick="ExportarExcel" ><i class="fa fa-file-excel mr-3"></i> Exportar Excel</button>
-    *@
 </div>
 
 <div class="div_grid" style="height: calc(100% - 35px);">
@@ -39,13 +38,12 @@
     {
         await OnDetailClick.InvokeAsync(e.Tarifa);
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    public async Task ExportarExcel(){
-        var properties = new ExcelExportProperties(){
+    public async Task ExportarExcel()
+    {
+        var properties = new ExcelExportProperties()
+        {
             FileName = "ResumenxTarifa.xlsx"
         };
-        await DataGrid.ExportToExcelAsync(properties);
+        await ExportacionExcel.ExportarAsync(DataGrid, properties);
     }
-    */
 }

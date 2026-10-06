@@ -1,13 +1,12 @@
 @using Sicem_Blazor.ControlRezago.Models
 @inject IJSRuntime JSRuntime
+@inject ExportacionExcelService ExportacionExcel
 
     <VentanaSecundaria Titulo="@Titulo" Columnas="@_gridColumnas" Filas="@_gridFilas" CerrarVentana="@( e => Cerrar_Modal() )">
         <Content>
 
             <div class="p-2 border rounded bg-white" style="grid-row: 1/2; grid-column: 1/2;">
-                @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                 <MatButton Class="mx-1 bg-success" Raised="true" OnClick="@GenerarExcel">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
-                *@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
@@ -91,14 +90,13 @@
     {
        await CerrarModal.InvokeAsync(null);
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task GenerarExcel() {
-        await this._dataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this._dataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    */
     private void MostrarDatosGenerales(DetalleRezago e)
     {
         Console.WriteLine("Cuenta seleccionado:" + e.Cuenta + "  Enlace Seleccionado: " + EnlaceSeleccionado.Nombre);

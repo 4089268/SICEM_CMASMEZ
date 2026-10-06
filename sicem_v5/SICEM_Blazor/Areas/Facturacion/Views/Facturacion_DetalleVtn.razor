@@ -1,15 +1,14 @@
 @using Sicem_Blazor.Facturacion.Models
+@inject ExportacionExcelService ExportacionExcel
 @if(Visible)
 {
     <VentanaSecundaria Titulo="@Titulo" Filas="@_filasTemplate" Columnas="@_columnasTemplate" CerrarVentana="@CerrarClick">
         <Content>
             <div class="d-flex align-items-center p-2 mb-2 border bg-white runded">
-                @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                 <div class="button bg-success px-3 py-2" @onclick="OnExportExcel_Click" >
                     <i class="fa fa-file-excel mr-2"></i>
                     <span>Exportar Datos</span>
                 </div>
-                *@
             </div>
 
             <div class="p-2 border bg-white runded">
@@ -73,26 +72,26 @@
     {
         await this.OnClose.InvokeAsync(null);
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task OnExportExcel_Click(){
+    private async Task OnExportExcel_Click()
+    {
         _isBusy = true;
         await Task.Delay(100);
 
-        if(DataGrid == null){
+        if(DataGrid == null)
+        {
             return;
         }
         var _guid = Guid.NewGuid().ToString().Replace("-","").Substring(0,10);
         var _titulo = Titulo.Replace(" - ",".").Replace(" ","_").ToString();
-        var _p = new ExcelExportProperties(){
+        var _p = new ExcelExportProperties()
+        {
             FileName = $"{_titulo}-{_guid}.xlsx",
             IncludeHiddenColumn = true
         };
-        await DataGrid.ExportToExcelAsync(_p);
+        await ExportacionExcel.ExportarAsync(DataGrid, _p);
 
         await Task.Delay(100);
         _isBusy = false;
     }
-    */
 
 }

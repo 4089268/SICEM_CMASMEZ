@@ -2,6 +2,7 @@
 @inject IJSRuntime JSRuntime
 @inject PadronService padronService
 @inject NavigationManager NavManager
+@inject ExportacionExcelService ExportacionExcel
 
 @if (Visible)
 {
@@ -11,9 +12,7 @@
 
             <!-- ****** Filtro y Exportar ****** -->
             <div class="d-flex align-items-center m-1 p-2 border rounded bg-white">
-                @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                 <MatButton Raised="true" Style="height:2.5rem;" OnClick="@GenerarExcel">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
-                *@
             </div>
 
             <!-- ****** DataGrid ****** -->
@@ -58,13 +57,12 @@
         this.DatosGrid = datos.ToList();
         this.OficinaActual = enlace;
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task GenerarExcel() {
-        await this.DataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this.DataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    */
 
 }

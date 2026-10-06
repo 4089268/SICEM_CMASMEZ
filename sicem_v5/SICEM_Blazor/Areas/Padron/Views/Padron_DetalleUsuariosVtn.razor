@@ -1,6 +1,7 @@
 @using Sicem_Blazor.Padron.Models
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavManager
+@inject ExportacionExcelService ExportacionExcel
 
 @if (Visible)
 {
@@ -9,9 +10,7 @@
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 1/2; grid-column: 1/2;">
                 <div class="w-100 d-flex align-items-center">
-                    @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                     <MatButton Class="mr-2" Raised="true" Style="height:2.5rem;" OnClick="@GenerarExcel">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
-                    *@
                 </div>
             </div>
 
@@ -109,13 +108,12 @@
         this.CuentaActual = e.Cuenta.ToString();
         _datosGenerales_visible = true;
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task GenerarExcel() {
-        await this._dataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this._dataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    */
 
 }

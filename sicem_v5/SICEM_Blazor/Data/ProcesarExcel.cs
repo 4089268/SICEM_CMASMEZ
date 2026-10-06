@@ -1,61 +1,66 @@
 using System;
 using System.Data;
-using System.Collections.Generic;
-using System.Linq;
-using Aspose.Cells;
+using System.IO;
+using System.Text;
+using ExcelDataReader;
 
-namespace Sicem_Blazor.Data {
-    public class ProcesarExcel {
+namespace Sicem_Blazor.Data
+{
+    /// <summary>
+    /// Lectura de archivos de Excel (.xlsx / .xls) con ExcelDataReader.
+    /// </summary>
+    public class ProcesarExcel
+    {
+        static ProcesarExcel()
+        {
+            // Requerido por ExcelDataReader para leer archivos .xls (codificaciones de Windows)
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        }
 
-        public DataTable ToDataTable(string fileName){
-            var workbook = new Workbook(fileName);
-            WorksheetCollection collections = workbook.Worksheets;
+        /// <summary>Lee todas las filas y columnas de la primera hoja (columnas "column0", "column1", …).</summary>
+        public DataTable ToDataTable(string fileName)
+        {
+            return LeerPrimeraHoja(fileName, null);
+        }
 
-            var _workSheets1 = collections[0];
+        /// <summary>Lee únicamente la primera columna de la primera hoja (columna "column0").</summary>
+        public DataTable ToDataTableFirstCol(string fileName)
+        {
+            return LeerPrimeraHoja(fileName, 1);
+        }
 
-            int _totalFilas = _workSheets1.Cells.MaxDataRow;
-            int _totalColumnas = _workSheets1.Cells.MaxDataColumn;
-
-            // Generar dataTable
+        private static DataTable LeerPrimeraHoja(string fileName, int? maxColumnas)
+        {
             var dataTableResponse = new DataTable();
-            for(int i = 0; i < _totalColumnas; i++){
-                dataTableResponse.Columns.Add(new DataColumn($"column{i}"));
-            }
 
-            //Poblar dataTable
-            for( int fila = 0; fila < _totalFilas; fila++){
-                var _tmpRow = dataTableResponse.NewRow();
-                for(int columna = 0; columna < _totalColumnas; columna ++){
-                    _tmpRow[columna] = _workSheets1.Cells[fila, columna].Value.ToString();
+            using (var stream = File.Open(fileName, FileMode.Open, FileAccess.Read))
+            {
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    while (reader.Read())
+                    {
+                        int totalColumnas = maxColumnas.HasValue ? Math.Min(maxColumnas.Value, reader.FieldCount) : reader.FieldCount;
+                        while (dataTableResponse.Columns.Count < totalColumnas)
+                        {
+                            dataTableResponse.Columns.Add(new DataColumn($"column{dataTableResponse.Columns.Count}"));
+                        }
+
+                        var _tmpRow = dataTableResponse.NewRow();
+                        for (int columna = 0; columna < totalColumnas; columna++)
+                        {
+                            _tmpRow[columna] = reader.GetValue(columna)?.ToString() ?? string.Empty;
+                        }
+                        dataTableResponse.Rows.Add(_tmpRow);
+                    }
                 }
-                dataTableResponse.Rows.Add(_tmpRow);
+            }
+
+            if (maxColumnas.HasValue && dataTableResponse.Columns.Count == 0)
+            {
+                dataTableResponse.Columns.Add(new DataColumn("column0"));
             }
 
             return dataTableResponse;
         }
-        public DataTable ToDataTableFirstCol(string fileName){
-            Console.WriteLine($"Procesar Archivo {fileName}");
-            var workbook = new Workbook(fileName);
-            WorksheetCollection collections = workbook.Worksheets;
-
-            var _workSheets1 = collections.First();
-
-            int _totalFilas = _workSheets1.Cells.MaxDataRow;
-
-            // Generar dataTable
-            var dataTableResponse = new DataTable();
-            dataTableResponse.Columns.Add(new DataColumn($"column0"));
-
-            //Poblar dataTable
-            for( int fila = 0; fila <= _totalFilas; fila++){
-                var _tmpRow = dataTableResponse.NewRow();
-                _tmpRow[0] = _workSheets1.Cells[fila, 0].Value.ToString();
-                dataTableResponse.Rows.Add(_tmpRow);
-            }
-
-            return dataTableResponse;
-        }
-
-        
     }
 }

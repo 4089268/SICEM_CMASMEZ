@@ -6,6 +6,7 @@
 @inject IMatToaster Toaster
 @inject IDescuentosService descuentosService
 @inject SicemService sicemService
+@inject ExportacionExcelService ExportacionExcel
 
 <div class="layout-page1">
     
@@ -17,9 +18,7 @@
 
     @* ****** Acciones ****** *@
     <div class="border rounded bg-white p-2 d-flex align-items-center" style="grid-area: 3/1/4/2;">
-        @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
         <MatButton Class="mx-2" style="min-width: 130px;" Raised="true" @onclick="ExportarExcel">Exportar Excel</MatButton>
-        *@
         <MatButton Class="mx-2" style="min-width: 130px;" Raised="true" Disabled="true">Generar Reporte</MatButton>
     </div>
 
@@ -343,12 +342,10 @@
             _itemGrid.Usuarios = _datos.Sum(item => item.Usuarios);
         }
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task ExportarExcel(){
-        await this.dataGrid.ExportToExcelAsync();
+    private async Task ExportarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this.dataGrid);
     }
-    */
 
     //********* Funciones Ventanas Secundarias  *********
     private async Task DescuentosPorConceptos_Click(DescuentosTotal data)

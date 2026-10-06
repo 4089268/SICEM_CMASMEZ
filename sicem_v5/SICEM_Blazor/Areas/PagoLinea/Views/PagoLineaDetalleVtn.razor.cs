@@ -20,6 +20,9 @@ namespace Sicem_Blazor.PagoLinea.Views;
 public partial class PagoLineaDetalleVtn
 {
     [Inject]
+    public ExportacionExcelService ExportacionExcel { get; set; }
+
+    [Inject]
     public IMatToaster Toaster {get;set;} = default!;
     
     [Inject]
@@ -70,16 +73,13 @@ public partial class PagoLineaDetalleVtn
         await CerrarModal.InvokeAsync("");
     }
     
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
     private async Task ExportData()
     {
-        await this.DataGrid.ExcelExport(new ExcelExportProperties
+        await ExportacionExcel.ExportarAsync(this.DataGrid, new ExcelExportProperties
         {
             FileName = string.Format("sicem_detallePagoLinea_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    */
 
     private async Task AplicarPagoClick(PagoLineaDetalle detallePago)
     {

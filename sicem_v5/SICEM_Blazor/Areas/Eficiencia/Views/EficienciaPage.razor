@@ -6,6 +6,7 @@
 @inject IEficienciaService eficienciaService
 @inject SicemService sicemService
 @inject NavigationManager navigationManager
+@inject ExportacionExcelService ExportacionExcel
 
 
 <div class="layout-page1">
@@ -18,9 +19,7 @@
 
     @* ****** Acciones ****** *@
     <div class="border rounded bg-white d-flex align-items-center" style="grid-area:3/1/4/2;">
-        @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
         <MatButton Class="mx-2" style="min-width: 130px;" Raised="true" @onclick="ExportarExcel_Click">Exportar Excel</MatButton>
-        *@
     </div>
 
     @* ****** DataGrid ****** *@
@@ -302,14 +301,12 @@
             filaTotal.Porcentaje = _tmpDatos.Average( item => item.Porcentaje);
         }
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task ExportarExcel_Click(){
+    private async Task ExportarExcel_Click()
+    {
         var p = new ExcelExportProperties();
         p.IncludeHiddenColumn = true;
-        await this.dataGrid.ExportToExcelAsync(p);
+        await ExportacionExcel.ExportarAsync(this.dataGrid, p);
     }
-    */
 
 
     //*** Funciones Ventanas Secundarias

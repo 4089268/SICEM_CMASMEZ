@@ -1,4 +1,5 @@
 @using Sicem_Blazor.ControlRezago.Models
+@inject ExportacionExcelService ExportacionExcel
 @if(Visible)
 {
     <VentanaSecundaria Titulo="@Titulo" CerrarVentana="@CerrarModalClick" Filas="@(new double[] {.85 })" Columnas="@(new double[]{.85})">
@@ -7,9 +8,7 @@
 
                 <div class="m-1 p-2 border rounded bg-white" style="">
                     <div class="w-100 d-flex align-items-center">
-                        @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                         <MatButton Class="ml-1 mr-2" Raised="true" Style="height:2.5rem;" OnClick="@GenerarExcel">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
-                        *@
                     </div>
                 </div>
 
@@ -60,12 +59,10 @@
     {
         await CerrarModal.InvokeAsync(null);
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task GenerarExcel(){
-        await DataGrid.ExcelExport();
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(DataGrid);
     }
-    */
 
 
 }

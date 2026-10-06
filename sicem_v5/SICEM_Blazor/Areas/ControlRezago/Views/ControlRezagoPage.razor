@@ -4,6 +4,7 @@
 @inject SicemService sicemService
 @inject ControlRezagoService controlRezagoService
 @inject NavigationManager navigationManager
+@inject ExportacionExcelService ExportacionExcel
 
 
 <div class="layout-page1">
@@ -15,9 +16,7 @@
     </div>
 
     <div class="border rounded bg-white d-flex align-items-center p-1" style="grid-area:3/1/4/2;">
-        @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
         <MatButton Class="ml-2 mr-2 bg-success" Raised="true" OnClick="@GenerarExcel">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
-        *@
     </div>
 
     @* *** DataGrid *** *@
@@ -429,15 +428,14 @@
         }
     }
 
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task GenerarExcel() {
-        await this.DataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this.DataGrid, new ExcelExportProperties
+        {
             IncludeHiddenColumn = true,
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    */
 
     private async Task DetalleRezago(ResumenOficina context, int opcion)
     {

@@ -1,5 +1,6 @@
 @page "/HistorialConexiones"
 @inject SicemService sicemService
+@inject ExportacionExcelService ExportacionExcel
 
 <div class="histLayout">
     <div style="grid-area:1/1/2/3;">
@@ -21,12 +22,10 @@
         @**** Boton Exportar Excel ****@
         @if(DatosGrid != null)
         {
-            @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
             <div class="button px-3 py-2 bg-success mx-3" @onclick="OnExportExcel_Click" >
                 <i class="fa fa-file-excel mr-2"></i>
                 <span>Exportar Historial</span>
             </div>
-            *@
         }
 
         @**** COMBO BOX FILTRO ****@
@@ -117,17 +116,16 @@
         await Task.Delay(200);
         _cargando = false;
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task OnExportExcel_Click(){
+    private async Task OnExportExcel_Click()
+    {
         var _name = $"Sicem_HistorialConexiones_{fecha1.ToString("ddMMyyyy")}-{fecha2.ToString("ddMMyyyy")}_{Guid.NewGuid().ToString().Replace("-","").Substring(0,10)}.xlsx";
-        var _options = new ExcelExportProperties(){
+        var _options = new ExcelExportProperties()
+        {
             IncludeHiddenColumn = true,
             FileName = _name
         };
-        await this.DataGrid.ExportToExcelAsync(_options);
+        await ExportacionExcel.ExportarAsync(this.DataGrid, _options);
     }
-    */
     private async Task OnGridSearch_KeyUp(KeyboardEventArgs e)
     {
         if(e.Key == "Enter")

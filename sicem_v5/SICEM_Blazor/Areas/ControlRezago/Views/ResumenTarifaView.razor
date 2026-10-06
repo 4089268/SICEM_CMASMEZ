@@ -1,12 +1,11 @@
 @using Sicem_Blazor.ControlRezago.Models
+@inject ExportacionExcelService ExportacionExcel
 
 <div class="d-flex align-itenms-center my-2">
-    @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
     <div class="button bg-success px-3 py-1" @onclick="OnExportExcel_Click">
         <i class="fa fa-file-excel mr-2"></i>
         <span>Exportar Datos</span>
     </div>
-    *@
 </div>
 
 <div style="height: calc(100% - 3.5rem);" >
@@ -43,14 +42,13 @@
     {
         await OnDetailClick.InvokeAsync(e.Tarifa);
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task OnExportExcel_Click(){
-        var _properties = new ExcelExportProperties(){
+    private async Task OnExportExcel_Click()
+    {
+        var _properties = new ExcelExportProperties()
+        {
             IncludeHiddenColumn = true,
             FileName = $"REZAGO_POR_TARIFAS_{Guid.NewGuid().ToString().Replace("-","")}.xlsx"
         };
-        await DataGrid.ExportToExcelAsync(_properties);
+        await ExportacionExcel.ExportarAsync(DataGrid, _properties);
     }
-    */
 }

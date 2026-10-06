@@ -1,5 +1,6 @@
 @using Sicem_Blazor.Micromedicion.Models
 @inject IJSRuntime JSRuntime
+@inject ExportacionExcelService ExportacionExcel
 @if(Visible)
 {
     <VentanaSecundaria Titulo="@Titulo" CerrarVentana="@CerrarModalClick" Filas="@(new double[] { 50, 610 })" Columnas="@(new double[]{1100})">
@@ -7,9 +8,7 @@
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 1/2; grid-column: 1/2;">
                 <div class="w-100 d-flex align-items-center">
-                    @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                     <MatButton Class="ml-1 mr-2" Raised="true" Style="height:2.5rem;" OnClick="@GenerarExcel">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
-                    *@
                 </div>
             </div>
 
@@ -53,14 +52,13 @@
         Titulo = $"{Enlace.Nombre.ToUpper()} - RESUMEN TOMAS POR SECTORES";
         this.DatosGrid = datos.ToList();
     }
-    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
-    /*
-    private async Task GenerarExcel() {
-        await this.DataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this.DataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    */
     private async Task CerrarModalClick()
     {
         await CerrarModal.InvokeAsync(null);
