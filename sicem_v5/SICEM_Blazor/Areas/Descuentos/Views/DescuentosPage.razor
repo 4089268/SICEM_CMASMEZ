@@ -1,6 +1,6 @@
 @page "/Descuentos"
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
+@using Radzen
+@using Radzen.Blazor
 @using Sicem_Blazor.Descuentos.Data 
 @using Sicem_Blazor.Descuentos.Models
 @using Sicem_Blazor.Data.Contracts
@@ -19,22 +19,25 @@
 
     @* ****** Acciones ****** *@
     <div class="border rounded bg-white p-2 d-flex align-items-center" style="grid-area: 3/1/4/2;">
+        @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
         <MatButton Class="mx-2" style="min-width: 130px;" Raised="true" @onclick="ExportarExcel">Exportar Excel</MatButton>
+        *@
         <MatButton Class="mx-2" style="min-width: 130px;" Raised="true" Disabled="true">Generar Reporte</MatButton>
     </div>
 
     @* ****** DataGrid ****** *@
     <div class="border rounded bg-white p-2 d-flex" style="grid-area: 4/1/5/2;">
-        <SfGrid @ref="dataGrid" DataSource="@datosGrid" TValue="DescuentosTotal" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" 
-                Height="99%" Width="100%" EnableHover="true">
-            <GridColumns>
-                <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="40">
+        <RadzenDataGrid TItem="DescuentosTotal" @ref="dataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:99%; width:100%;">
+            <Columns>
+                <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="40px">
                     <Template>
                         @{
                             var data = (context as DescuentosTotal);
-                            if(data.Id_Oficina > 0 && data.Id_Oficina < 999) {
+                            if(data.Id_Oficina > 0 && data.Id_Oficina < 999)
+                            {
                         
-                                @switch (data.Estatus) {
+                                @switch (data.Estatus)
+                                {
 
                                     case ResumenOficinaEstatus.Completado:
                                         <i class="fas fa-check-circle" style="color:green; font-size:1.5rem;"></i>
@@ -51,19 +54,20 @@
                             }
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn Field="@nameof(DescuentosTotal.Oficina)" HeaderText="Oficina" TextAlign="TextAlign.Left" Width="140" />
-                <GridColumn Field="@nameof(DescuentosTotal.Conc_Sin_Iva)" HeaderText="Descuentos Sin IVA" TextAlign="TextAlign.Right" Width="150" Format="c2" />
-                <GridColumn Field="@nameof(DescuentosTotal.Iva)" HeaderText="IVA" TextAlign="TextAlign.Right" Width="115" Format="c2" />
-                <GridColumn Field="@nameof(DescuentosTotal.Conc_Con_Iva)" HeaderText="Descuentos con IVA" TextAlign="TextAlign.Right" Width="150" Format="c2" />
-                <GridColumn Field="@nameof(DescuentosTotal.Aplicado_Con_Iva)" HeaderText="Aplicado con IVA" TextAlign="TextAlign.Right" Width="150" Format="c2" />
-                <GridColumn Field="@nameof(DescuentosTotal.Total_Aplicado)" HeaderText="Total Aplicado" TextAlign="TextAlign.Right" Width="150" Format="c2" />
-                <GridColumn Field="@nameof(DescuentosTotal.Usuarios)" HeaderText="Usuarios" TextAlign="TextAlign.Center" Width="115" Format="n0" />
-                <GridColumn HeaderText="Acciones" TextAlign="TextAlign.Left" Width="auto">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Property="@nameof(DescuentosTotal.Oficina)" Title="Oficina" TextAlign="TextAlign.Left" Width="140px" />
+                <RadzenDataGridColumn Property="@nameof(DescuentosTotal.Conc_Sin_Iva)" Title="Descuentos Sin IVA" TextAlign="TextAlign.Right" Width="150px" FormatString="{0:c2}" />
+                <RadzenDataGridColumn Property="@nameof(DescuentosTotal.Iva)" Title="IVA" TextAlign="TextAlign.Right" Width="115px" FormatString="{0:c2}" />
+                <RadzenDataGridColumn Property="@nameof(DescuentosTotal.Conc_Con_Iva)" Title="Descuentos con IVA" TextAlign="TextAlign.Right" Width="150px" FormatString="{0:c2}" />
+                <RadzenDataGridColumn Property="@nameof(DescuentosTotal.Aplicado_Con_Iva)" Title="Aplicado con IVA" TextAlign="TextAlign.Right" Width="150px" FormatString="{0:c2}" />
+                <RadzenDataGridColumn Property="@nameof(DescuentosTotal.Total_Aplicado)" Title="Total Aplicado" TextAlign="TextAlign.Right" Width="150px" FormatString="{0:c2}" />
+                <RadzenDataGridColumn Property="@nameof(DescuentosTotal.Usuarios)" Title="Usuarios" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Title="Acciones" TextAlign="TextAlign.Left" Width="auto">
                     <Template>
                         @{
                             var data = (context as DescuentosTotal);
-                            if (data.Id_Oficina > 0 && data.Id_Oficina < 999) {
+                            if (data.Id_Oficina > 0 && data.Id_Oficina < 999)
+                            {
                                 <div class="d-flex p-1">
                                     <button type="button" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="top" title="Descuentos por Conceptos" disabled="@(data.Estatus != ResumenOficinaEstatus.Completado )" @onclick=@( e => DescuentosPorConceptos_Click(data) )>
                                         <i class="fa fa-tag" aria-hidden="true"></i>
@@ -75,116 +79,127 @@
                             }
                         }
                     </Template>
-                </GridColumn>
-            </GridColumns>
-        </SfGrid>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
     </div>
 
     <!--- ****** Graficas ****** -->
     <div class="d-flex" style="grid-area: 5/1/6/2;">
         <div class="border rounded bg-white mr-1 d-flex flex-column align-items-center" style="width:50%; height:100%;">
-            <SfChart @ref="graficaImportes" Title="DESCUENTOS" Width="100%" Height="100%">
-                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-                <ChartPrimaryYAxis Visible="false" LabelFormat="c2" />
-                <ChartTooltipSettings Enable="true" Header="Ingresos" Format="<b>${series.name}</b> : ${point.y}" Shared="true"></ChartTooltipSettings>
-                <ChartLegendSettings Visible="false"></ChartLegendSettings>
-                <ChartSeriesCollection>
-                    <ChartSeries DataSource="@DatosGrafica_Moneda" Name="Propios" XName="Descripcion" YName="Valor1" Type="ChartSeriesType.StackingColumn">
-                        <ChartMarker>
-                            <ChartDataLabel Visible="true" />
-                        </ChartMarker>
-                    </ChartSeries>
-                </ChartSeriesCollection>
-            </SfChart>
+            <div class="text-center font-weight-bold">DESCUENTOS</div>
+            <RadzenChart @ref="GraficaImportes" Style="width:100%; height:100%;">
+                <RadzenCategoryAxis />
+                <RadzenValueAxis Visible="false" FormatString="{0:c2}" />
+                <RadzenChartTooltipOptions Shared="true" />
+                <RadzenLegend Visible="false" />
+                <RadzenStackedColumnSeries Data="@DatosGrafica_Moneda" Title="Propios" CategoryProperty="Descripcion" ValueProperty="Valor1">
+                    <TooltipTemplate Context="item">
+                        <b>Propios</b> : @item.Valor1
+                    </TooltipTemplate>
+                    <ChildContent>
+                        <RadzenSeriesDataLabels Visible="true" />
+                    </ChildContent>
+                </RadzenStackedColumnSeries>
+            </RadzenChart>
         </div>
 
         <div class="border rounded bg-white ml-1 d-flex flex-column align-items-center" style="width:50%; height:100%">
-            <SfChart @ref="graficaMovimientos" Title="MOVIMIENTOS" Width="100%" Height="100%">
-                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-                <ChartPrimaryYAxis Visible="false" LabelFormat="n0" />
-                <ChartTooltipSettings Enable="true" Header="Usuarios" Format="<b>${series.name}</b> : ${point.y}" Shared="true"></ChartTooltipSettings>
-                <ChartLegendSettings Visible="false"></ChartLegendSettings>
-                <ChartSeriesCollection>
-                    <ChartSeries DataSource="@DatosGrafica_Usuarios" Name="Propios" XName="Descripcion" YName="Valor1" Type="ChartSeriesType.StackingColumn">
-                        <ChartMarker>
-                            <ChartDataLabel Visible="true" />
-                        </ChartMarker>
-                    </ChartSeries>
-                </ChartSeriesCollection>
-            </SfChart>
+            <div class="text-center font-weight-bold">MOVIMIENTOS</div>
+            <RadzenChart @ref="GraficaMovimientos" Style="width:100%; height:100%;">
+                <RadzenCategoryAxis />
+                <RadzenValueAxis Visible="false" FormatString="{0:n0}" />
+                <RadzenChartTooltipOptions Shared="true" />
+                <RadzenLegend Visible="false" />
+                <RadzenStackedColumnSeries Data="@DatosGrafica_Usuarios" Title="Propios" CategoryProperty="Descripcion" ValueProperty="Valor1">
+                    <TooltipTemplate Context="item">
+                        <b>Propios</b> : @item.Valor1
+                    </TooltipTemplate>
+                    <ChildContent>
+                        <RadzenSeriesDataLabels Visible="true" />
+                    </ChildContent>
+                </RadzenStackedColumnSeries>
+            </RadzenChart>
         </div>
     </div>
 
 </div>
 
 @* ****** Dialogos y ventanas secundarias ****** *@
-<BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
-<Descuentos_ConceptosVtn @ref="VtnConceptos" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" Visible="@VtnConceptos_Visible" CerrarModal="@( e => VtnConceptos_Visible = false )" />
-<Descuentos_AutorizoVtn @ref="VtnAutorizo" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" Visible="@VtnAutorizo_Visible" CerrarModal="@(e => VtnAutorizo_Visible = false)" />
+<BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
+<Descuentos_ConceptosVtn @ref="_vtnConceptos" Fecha1="@_f1" Fecha2="@_f2" Subsistema="@_subsistema" Sector="@_sector" Visible="@_vtnConceptos_Visible" CerrarModal="@( e => _vtnConceptos_Visible = false )" />
+<Descuentos_AutorizoVtn @ref="_vtnAutorizo" Fecha1="@_f1" Fecha2="@_f2" Subsistema="@_subsistema" Sector="@_sector" Visible="@_vtnAutorizo_Visible" CerrarModal="@(e => _vtnAutorizo_Visible = false)" />
 
 
-@code{
-    private SfGrid<DescuentosTotal> dataGrid { get; set; }
-    private SfChart graficaImportes {get;set;}
-    private SfChart graficaMovimientos {get;set;}
+@code
+{
+    private RadzenDataGrid<DescuentosTotal> dataGrid { get; set; }
+    private RadzenChart GraficaImportes {get;set;}
+    private RadzenChart GraficaMovimientos {get;set;}
 
-    private bool busyDialog = false;
-    private DateTime f1, f2;
-    private int Subsistema, Sector;
-    private List<DescuentosTotal> datosGrid { get; set; }
+    private bool _busyDialog = false;
+    private DateTime _f1, _f2;
+    private int _subsistema, _sector;
+    private List<DescuentosTotal> DatosGrid { get; set; }
     public List<ChartItem> DatosGrafica_Moneda { get; set; }
     public List<ChartItem> DatosGrafica_Usuarios { get; set; }
 
-    private Descuentos_ConceptosVtn VtnConceptos;
-    private bool VtnConceptos_Visible = false;
-    private Descuentos_AutorizoVtn VtnAutorizo;
-    private bool VtnAutorizo_Visible = false;
+    private Descuentos_ConceptosVtn _vtnConceptos;
+    private bool _vtnConceptos_Visible = false;
+    private Descuentos_AutorizoVtn _vtnAutorizo;
+    private bool _vtnAutorizo_Visible = false;
 
 
     //********* Funciones  *********
-    protected override void OnInitialized() {
+    protected override void OnInitialized()
+    {
         var _now = DateTime.Now;
-        this.f1 = new DateTime(_now.Year, _now.Month, 1);
-        this.f2 = new DateTime(_now.Year, _now.Month, DateTime.DaysInMonth(_now.Year, _now.Month));
-        this.Subsistema = 0;
-        this.Sector = 0;
+        this._f1 = new DateTime(_now.Year, _now.Month, 1);
+        this._f2 = new DateTime(_now.Year, _now.Month, DateTime.DaysInMonth(_now.Year, _now.Month));
+        this._subsistema = 0;
+        this._sector = 0;
 
-        this.datosGrid = new List<DescuentosTotal>();
+        this.DatosGrid = new List<DescuentosTotal>();
         this.DatosGrafica_Moneda = new List<ChartItem>();
         this.DatosGrafica_Usuarios = new List<ChartItem>();
     }
-    public void Procesar(SeleccionarFechaEventArgs e) {
+    public void Procesar(SeleccionarFechaEventArgs e)
+    {
         
-        this.f1 = e.Fecha1;
-        this.f2 = e.Fecha2;
-        this.Subsistema = e.Subsistema;
-        this.Sector = e.Sector;
+        this._f1 = e.Fecha1;
+        this._f2 = e.Fecha2;
+        this._subsistema = e.Subsistema;
+        this._sector = e.Sector;
 
 
         var enlaces = sicemService.ObtenerOficinasDelUsuario();
 
-        datosGrid = new List<DescuentosTotal>();
+        DatosGrid = new List<DescuentosTotal>();
         this.DatosGrafica_Moneda = new List<ChartItem>();
         this.DatosGrafica_Usuarios = new List<ChartItem>();
         var tareas = new List<Task>();
 
         //*** Preparar filas
-        foreach (var enlace in enlaces ){
+        foreach (var enlace in enlaces )
+        {
 
-            var datosModel = new DescuentosTotal() {
+            var datosModel = new DescuentosTotal()
+            {
                 Estatus = ResumenOficinaEstatus.Pendiente,
                 Enlace = enlace
             };
-            this.datosGrid.Add(datosModel);
+            this.DatosGrid.Add(datosModel);
 
-            var itemGrafica1 = new ChartItem() {
+            var itemGrafica1 = new ChartItem()
+            {
                 Id = enlace.Id,
                 Descripcion = enlace.Nombre,
                 Valor1 = 0m
             };
             this.DatosGrafica_Moneda.Add(itemGrafica1);
 
-            var itemGrafica2 = new ChartItem() {
+            var itemGrafica2 = new ChartItem()
+            {
                 Id = enlace.Id,
                 Descripcion = enlace.Nombre,
                 Valor1 = 0m
@@ -197,20 +212,25 @@
         }
 
         //*** Agregar fila total
-        if (enlaces.Count() > 1) {
-            var datosModel = new DescuentosTotal() {
+        if (enlaces.Count() > 1)
+        {
+            var datosModel = new DescuentosTotal()
+            {
                 Estatus = Data.Contracts.ResumenOficinaEstatus.Pendiente
             };
-            this.datosGrid.Add(datosModel);
+            this.DatosGrid.Add(datosModel);
         }
 
         tareas.ForEach(item => item.Start());
 
     }
-    private void Procesar_Datos_Grafica(){
+    private void Procesar_Datos_Grafica()
+    {
         var tmpList1 = new List<ChartItem>();
-        foreach (var item in this.datosGrid) {
-            if (item.Id_Oficina > 0 && item.Id_Oficina < 999) {
+        foreach (var item in this.DatosGrid)
+        {
+            if (item.Id_Oficina > 0 && item.Id_Oficina < 999)
+            {
                 var newItem = new ChartItem();
                 newItem.Id = item.Id_Oficina;
                 newItem.Descripcion = item.Oficina;
@@ -222,8 +242,10 @@
 
 
         var tmpList2 = new List<ChartItem>();
-        foreach (var item in this.datosGrid) {
-            if (item.Id_Oficina > 0 && item.Id_Oficina < 999) {
+        foreach (var item in this.DatosGrid)
+        {
+            if (item.Id_Oficina > 0 && item.Id_Oficina < 999)
+            {
                 var newItem = new ChartItem();
                 newItem.Id = item.Id_Oficina;
                 newItem.Descripcion = item.Oficina;
@@ -234,9 +256,20 @@
         DatosGrafica_Usuarios = tmpList2;
 
     }
-    private void ProcesarConsulta(IEnlace enlace){
-        var dateRange = new Sicem_Blazor.Data.DateRange(f1, f2, Subsistema, Sector);
-        var tmpDatos = descuentosService.ObtenerDescuentosTotal(enlace, dateRange);
+    private void ProcesarConsulta(IEnlace enlace)
+    {
+        var dateRange = new Sicem_Blazor.Data.DateRange(_f1, _f2, _subsistema, _sector);
+        // Un error en esta oficina no debe detener a las demás (CLAUDE.md)
+        DescuentosTotal tmpDatos;
+        try
+        {
+            tmpDatos = descuentosService.ObtenerDescuentosTotal(enlace, dateRange);
+        }
+        catch (Exception)
+        {
+            tmpDatos = null;
+        }
+        tmpDatos ??= new DescuentosTotal() { Estatus = ResumenOficinaEstatus.Error };
 
         //**** Esperar
         var _random = new Random();
@@ -244,10 +277,13 @@
         System.Threading.Thread.Sleep(_sleepTime);
 
         //*** Actualizar data grid
-        lock(datosGrid){
-            var _itemGrid = this.datosGrid.Where(item => item.Id_Oficina == enlace.Id).FirstOrDefault();
-            if(_itemGrid != null) {
-                if (tmpDatos.Estatus == ResumenOficinaEstatus.Completado) {
+        lock(DatosGrid)
+        {
+            var _itemGrid = this.DatosGrid.Where(item => item.Id_Oficina == enlace.Id).FirstOrDefault();
+            if(_itemGrid != null)
+            {
+                if (tmpDatos.Estatus == ResumenOficinaEstatus.Completado)
+                {
                     _itemGrid.Estatus = tmpDatos.Estatus;
                     _itemGrid.Conc_Con_Iva = tmpDatos.Conc_Con_Iva;
                     _itemGrid.Iva = tmpDatos.Iva;
@@ -256,7 +292,8 @@
                     _itemGrid.Total_Aplicado = tmpDatos.Total_Aplicado;
                     _itemGrid.Usuarios = tmpDatos.Usuarios;
                 }
-                else {
+                else
+                {
                     _itemGrid.Estatus = ResumenOficinaEstatus.Error;
                     _itemGrid.Conc_Con_Iva = 0m;
                     _itemGrid.Iva = 0m;
@@ -267,38 +304,39 @@
                 }
             }
             RecalcularFilaTotal();
-            dataGrid.Refresh();
         }
+        _ = InvokeAsync(() => dataGrid.Reload());
         
 
         //*** Actualizar grafica Importes
-        lock(DatosGrafica_Moneda){
+        lock(DatosGrafica_Moneda)
+        {
             var _itemG1 = this.DatosGrafica_Moneda.Where(item => item.Id == enlace.Id).FirstOrDefault();
-            if(_itemG1 != null) {
+            if(_itemG1 != null)
+            {
                 _itemG1.Valor1 = tmpDatos.Total_Aplicado;
             }
-            try{
-                graficaImportes.RefreshLiveData();
-            }catch(Exception){}
+            _ = InvokeAsync(() => GraficaImportes.Reload());
         }
 
         //*** Actualizar grafica Movimientos
-        lock(DatosGrafica_Usuarios){
+        lock(DatosGrafica_Usuarios)
+        {
             var _itemG2 = this.DatosGrafica_Usuarios.Where(item => item.Id == enlace.Id).FirstOrDefault();
-            if (_itemG2 != null) {
+            if (_itemG2 != null)
+            {
                 _itemG2.Valor1 = tmpDatos.Usuarios;
             }
-            try {
-                graficaMovimientos.RefreshLiveData();
-            }
-            catch (Exception){}
+            _ = InvokeAsync(() => GraficaMovimientos.Reload());
         }
 
     }
-    private void RecalcularFilaTotal() {
-        var _itemGrid = this.datosGrid.Where(item => item.Id_Oficina  >= 999).FirstOrDefault();
-        if(_itemGrid != null) {
-            var _datos = this.datosGrid.Where(item => item.Id_Oficina > 0 && item.Id_Oficina < 999).ToList();
+    private void RecalcularFilaTotal()
+    {
+        var _itemGrid = this.DatosGrid.Where(item => item.Id_Oficina  >= 999).FirstOrDefault();
+        if(_itemGrid != null)
+        {
+            var _datos = this.DatosGrid.Where(item => item.Id_Oficina > 0 && item.Id_Oficina < 999).ToList();
             _itemGrid.Conc_Con_Iva = _datos.Sum(item => item.Conc_Con_Iva);
             _itemGrid.Iva = _datos.Sum(item => item.Iva);
             _itemGrid.Aplicado_Con_Iva = _datos.Sum(item => item.Aplicado_Con_Iva);
@@ -307,51 +345,62 @@
             _itemGrid.Usuarios = _datos.Sum(item => item.Usuarios);
         }
     }
+    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task ExportarExcel(){
         await this.dataGrid.ExportToExcelAsync();
     }
+    */
 
     //********* Funciones Ventanas Secundarias  *********
-    private async Task DescuentosPorConceptos_Click(DescuentosTotal data){
-        if (VtnConceptos_Visible) {
+    private async Task DescuentosPorConceptos_Click(DescuentosTotal data)
+    {
+        if (_vtnConceptos_Visible)
+        {
             return;
         }
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(200);
-        var dateRange = new Sicem_Blazor.Data.DateRange(f1, f2);
+        var dateRange = new Sicem_Blazor.Data.DateRange(_f1, _f2);
         var tmpdata = descuentosService.ObtenerDescuentosPorConceptos(data.Enlace, dateRange).ToArray();
         
-        if(tmpdata == null) {
+        if(tmpdata == null)
+        {
             Toaster.Add("Error al realizar la consulta, inténtelo más tarde.", MatToastType.Warning );
         }
-        else {
-            VtnConceptos_Visible = true;
+        else
+        {
+            _vtnConceptos_Visible = true;
             var tmpOfi = sicemService.ObtenerEnlaces(data.Id_Oficina).FirstOrDefault();
-            VtnConceptos.Titulo = $"{tmpOfi.Oficina.ToUpper()} - DESCUENTOS POR CONCEPTOS";
-            await VtnConceptos.Inicializar(tmpdata, data.Enlace);
+            _vtnConceptos.Titulo = $"{tmpOfi.Oficina.ToUpper()} - DESCUENTOS POR CONCEPTOS";
+            await _vtnConceptos.Inicializar(tmpdata, data.Enlace);
         }
         await Task.Delay(200);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
-    private async Task DescuentosPorAutorizo_Click(DescuentosTotal data) {
-        if (VtnAutorizo_Visible) {
+    private async Task DescuentosPorAutorizo_Click(DescuentosTotal data)
+    {
+        if (_vtnAutorizo_Visible)
+        {
             return;
         }
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(200);
-        var dateRange = new Sicem_Blazor.Data.DateRange(f1, f2);
+        var dateRange = new Sicem_Blazor.Data.DateRange(_f1, _f2);
         var tmpdata = descuentosService.ObtenerDescuentosPorUsuarioAutorizo(data.Enlace, dateRange);
-        if (tmpdata == null) {
+        if (tmpdata == null)
+        {
             Toaster.Add("Error al realizar la consulta, inténtelo más tarde.", MatToastType.Warning);
         }
-        else {
-            VtnAutorizo_Visible = true;
+        else
+        {
+            _vtnAutorizo_Visible = true;
             var tmpOfi = sicemService.ObtenerEnlaces(data.Id_Oficina).FirstOrDefault();
-            VtnAutorizo.Titulo = $"{tmpOfi.Oficina.ToUpper()} - DESCUENTOS POR AUTORIZACION";
-            await VtnAutorizo.Inicializar(tmpdata, data.Enlace);
+            _vtnAutorizo.Titulo = $"{tmpOfi.Oficina.ToUpper()} - DESCUENTOS POR AUTORIZACION";
+            await _vtnAutorizo.Inicializar(tmpdata, data.Enlace);
         }
         await Task.Delay(200);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
 
 }

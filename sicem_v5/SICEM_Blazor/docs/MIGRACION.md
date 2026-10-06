@@ -143,6 +143,9 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | `grid.Refresh()` / `chart.Refresh()` desde un `Timer` | `await InvokeAsync(...)` + `Reload()` (hilo de render) |
 | CSS `.e-rowcell` | `.rz-cell-data` |
 | `ChartSeriesType.StackingBar` | `RadzenStackedBarSeries` |
+| `ChartSeriesType.StackingColumn` / `Column` | `RadzenStackedColumnSeries` / `RadzenColumnSeries` |
+| `ChartTooltipSettings Format="${point.x} : ${point.y}"` | `TooltipTemplate Context="item"` con `@item.<XName> : @item.<YName>` (`$${point.y}` → `.ToString("c2")`) |
+| `chart.RefreshLiveData()` | `chart.Reload()` |
 | `ChartSeriesType.Bar` | `RadzenBarSeries` |
 | `ChartSeriesType.Line` + `DashArray` | `RadzenLineSeries LineType="LineType.Dashed"` |
 | `ChartMarker Visible` | `RadzenMarkers MarkerType="MarkerType.Circle"` |
@@ -161,7 +164,7 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | 2 | Búsqueda Avanzada | `/analisisInfo` | ✅ Migrado (2026-10-06) |
 | 3 | Seguimiento Pagos | `/seguimiento_cobros` | ✅ Migrado (2026-10-06) |
 | 4 | Recaudación | `/recaudacion` | ✅ Migrado (2026-10-06) |
-| 5 | Descuentos | `/descuentos` | Pendiente |
+| 5 | Descuentos | `/descuentos` | ✅ Migrado (2026-10-06) |
 | 6 | Facturación | `/facturacion` | Pendiente |
 | 7 | Eficiencia | `/Eficiencia` | Pendiente |
 | 8 | Micromedición | `/micromedicion` | Pendiente |
@@ -240,6 +243,21 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 **Estilo (`CLAUDE.md`):** Allman en los 17 archivos; campos privados → `_camelCase` (p. ej. `busyDialog` → `_busyDialog`, `f1` → `_f1`, `VtnDias` → `_vtnDias`) y propiedades privadas → PascalCase (`datosRecaudacion` → `DatosRecaudacion`). En `RecaudacionOficinaPage`, `dataGrid` no se renombró a `DataGrid` porque ese nombre ya existe.
 
 - [ ] Prueba manual: consulta con varias oficinas (spinner/✓/✗ por fila y fila TOTAL), gráficas de ingresos/usuarios, cada botón de acción por oficina (Analítico con sus pestañas y gráficas con zoom, Días y su detalle, Cajas, Localidades/Colonias, Rezago y su detalle, Conceptos, Conceptos y Tipos de Usuario, Pagos Mayores) y la página por oficina.
+
+### Módulo 5 – Descuentos (2026-10-06)
+
+5 archivos en `Areas/Descuentos/Views/`: 6 `SfGrid`, 5 `SfChart`, 2 `SfAccumulationChart`, 5 `SfTextBox` → Radzen.
+
+| Archivo | Cambios específicos |
+|---|---|
+| `DescuentosPage.razor` | 2 gráficas de columnas apiladas. **Patrón multi-oficina:** `try/catch` propio por oficina y refresco con `InvokeAsync(() => ...Reload())` (antes `Refresh()` / `RefreshLiveData()` desde otro hilo). |
+| `DescuentosOficinaPage.razor` | 2 donas con tooltip `Descripción : valor%`; barras de conceptos; 5 `SfTextBox` de solo lectura. |
+| `Descuentos_AutorizoVtn.razor`, `Descuentos_ConceptosVtn.razor` | Grid + gráfica de columnas con zoom; tooltip con el formato original. |
+| `Descuentos_AutorizoDetalleVtn.razor` | `OnDataGrid_SelectionChanged` recibe la fila en lugar de `RowSelectEventArgs`. |
+
+Exportación comentada (`TODO-EXPORT-RADZEN`) en 4 archivos. Allman y renombres de miembros privados en los 5 archivos.
+
+- [ ] Prueba manual: consulta multi-oficina, gráficas, página por oficina, ventanas de Autorizó (y su detalle con selección) y Conceptos.
 
 ### Pendientes de la Fase 2
 
