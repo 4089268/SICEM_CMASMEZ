@@ -1,7 +1,7 @@
 @page "/PagoLinea"
+@using Radzen
+@using Radzen.Blazor
 @namespace Sicem_Blazor.PagoLinea.Views
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
 @using Sicem_Blazor.Models.PagoLinea
 
 <div class="layoutPage">
@@ -14,13 +14,13 @@
 
     @* ****** Acciones ****** *@
     <div class="d-flex align-items-center" style="grid-area: 3/1/4/2;">
-        @if(resumeIncomeMonth != null)
+        @if(_resumeIncomeMonth != null)
         {
             <div class="border rounded bg-white d-flex flex-column align-items-center justify-content-start p-4 mr-4">
                 <div> Total importe cobrado</div>
                 <div class="d-flex align-items-center justify-content-around">
-                    <div class="fa-3x text-center w-100">@resumeIncomeMonth.TotalIncome.ToString("c2", currentCultueInfo )</div>
-                    @if(resumeIncomeMonth.TotalIncome > resumeIncomeMonth.TotalIncomePrev )
+                    <div class="fa-3x text-center w-100">@_resumeIncomeMonth.TotalIncome.ToString("c2", _currentCultueInfo )</div>
+                    @if(_resumeIncomeMonth.TotalIncome > _resumeIncomeMonth.TotalIncomePrev )
                     {
                         <i>
                             <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24">
@@ -37,14 +37,14 @@
                         </i>
                     }
                 </div>
-                <div class="text-muted">Importe cobrado mes anterior: @resumeIncomeMonth.TotalIncomePrev.ToString("c2", currentCultueInfo )</div>
+                <div class="text-muted">Importe cobrado mes anterior: @_resumeIncomeMonth.TotalIncomePrev.ToString("c2", _currentCultueInfo )</div>
             </div>
 
             <div class="border rounded bg-white d-flex flex-column align-items-center justify-content-around p-4 mr-4">
                 <div> Pagos realizados</div>
                 <div class="d-flex align-items-center justify-content-around">
-                    <div class="fa-3x text-center w-100">@resumeIncomeMonth.TotalMovements.ToString("n0", currentCultueInfo )</div>
-                    @if(resumeIncomeMonth.TotalMovements > resumeIncomeMonth.TotalMovementsPrev )
+                    <div class="fa-3x text-center w-100">@_resumeIncomeMonth.TotalMovements.ToString("n0", _currentCultueInfo )</div>
+                    @if(_resumeIncomeMonth.TotalMovements > _resumeIncomeMonth.TotalMovementsPrev )
                     {
                         <i>
                             <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24">
@@ -61,7 +61,7 @@
                         </i>
                     }
                 </div>
-                <div class="text-muted">Pagos realizados el mes anterior: @resumeIncomeMonth.TotalMovementsPrev.ToString("n0", currentCultueInfo )</div>
+                <div class="text-muted">Pagos realizados el mes anterior: @_resumeIncomeMonth.TotalMovementsPrev.ToString("n0", _currentCultueInfo )</div>
             </div>
         }
         else
@@ -80,33 +80,34 @@
 
     @* ****** Chart ****** *@
     <div class="border rounded bg-white p-1" style="grid-area: 4/1/5/2;">
-        <SfChart @ref="GraficaIngresos">
-            <ChartPrimaryXAxis Interval="1" ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-            <ChartPrimaryYAxis Visible="true" LabelFormat="c2" />
-            <ChartTooltipSettings Enable="true" Header="Importe" Format="<b>${point.x}</b> : ${point.y}" Shared="true"></ChartTooltipSettings>
-            <ChartSeriesCollection>
-                <ChartSeries DataSource="@DatosGraficaImporte" Name="Importe Cobrado" XName="Descripcion" YName="Valor1" Type="ChartSeriesType.Bar" Fill="#440412">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Outer" />
-                    </ChartMarker>
-                </ChartSeries>
-            </ChartSeriesCollection>
-        </SfChart>
+        <RadzenChart @ref="GraficaIngresos" Style="width:100%; height:100%;">
+            <RadzenCategoryAxis />
+            <RadzenValueAxis Visible="true" FormatString="{0:c2}" />
+            <RadzenChartTooltipOptions Shared="true" />
+            <RadzenBarSeries Data="@DatosGraficaImporte" Title="Importe Cobrado" CategoryProperty="Descripcion" ValueProperty="Valor1" Fill="#440412">
+                <TooltipTemplate Context="item">
+                    <b>@item.Descripcion</b> : @item.Valor1
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="true" />
+                </ChildContent>
+            </RadzenBarSeries>
+        </RadzenChart>
     </div>
 
     @* ****** DataGrid ****** *@
     <div class="border rounded bg-white p-1" style="grid-area: 4/2/5/3;">
-        <SfGrid @ref="DataGrid" DataSource="@DataOffices" TValue="ResumeOffice" AllowResizing="true" AllowSorting="true" AllowFiltering="false"
-                AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true" RowHeight="12">
-            <GridColumns>
-                <GridColumn Field="@nameof(ResumeOffice.OfficeName)" HeaderText="Oficina" TextAlign="TextAlign.Left" Width="100" />
-                <GridColumn Field="@nameof(ResumeOffice.TotalIncome)" HeaderText="Importe cobrado" TextAlign="TextAlign.Right" Width="125" Format="c2" />
-                <GridColumn Field="@nameof(ResumeOffice.TotalMovements)" HeaderText="Pagos realizados" TextAlign="TextAlign.Right" Width="120" Format="n0" />
-                <GridColumn HeaderText="#" TextAlign="TextAlign.Center" Width="70">
+        <RadzenDataGrid TItem="ResumeOffice" @ref="DataGrid" Data="@DataOffices" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:100%;">
+            <Columns>
+                <RadzenDataGridColumn Property="@nameof(ResumeOffice.OfficeName)" Title="Oficina" TextAlign="TextAlign.Left" Width="100px" />
+                <RadzenDataGridColumn Property="@nameof(ResumeOffice.TotalIncome)" Title="Importe cobrado" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" />
+                <RadzenDataGridColumn Property="@nameof(ResumeOffice.TotalMovements)" Title="Pagos realizados" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Title="#" TextAlign="TextAlign.Center" Width="70px">
                     <Template>
                         @{
                             var data = (context as ResumeOffice);
-                            if (data.OfficeId > 0 && data.OfficeId < 90) {
+                            if (data.OfficeId > 0 && data.OfficeId < 90)
+                            {
                                 <div class="d-flex align-items-center">
                                     <button type="button" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="top" title="Detalle" @onclick="@(e => HandleShowDetailsOffice(data))">
                                         <i class="fa fa-table" aria-hidden="true"></i>
@@ -115,9 +116,9 @@
                             }
                         }
                     </Template>
-                </GridColumn>
-            </GridColumns>
-        </SfGrid>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
     </div>
 
     <div style="grid-template: 5/1/6/3;"></div>
@@ -125,11 +126,11 @@
 
 
 @* ****** Dialogos y ventanas secundarias ****** *@
-<BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
+<BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
 
-<DetallePagosVtn @ref="detallePagosVtn" CerrarModal="HandleClosedDetallePagos" />
+<DetallePagosVtn @ref="_detallePagosVtn" CerrarModal="HandleClosedDetallePagos" />
 
-<DetalleOficinaVtn @ref="detalleOficinaVtn" CerrarModal="HandleClosedDetalleOficina" />
+<DetalleOficinaVtn @ref="_detalleOficinaVtn" CerrarModal="HandleClosedDetalleOficina" />
 
 <style>
     .layoutPage

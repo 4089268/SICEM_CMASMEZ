@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
-using Syncfusion.Blazor.Grids;
 using MatBlazor;
 using Sicem_Blazor.Services;
 using Sicem_Blazor.Helpers;
@@ -21,6 +20,9 @@ using System.Reflection;
 using Sicem_Blazor.Models;
 using Sicem_Blazor.Data;
 
+using Radzen;
+using Radzen.Blazor;
+using DateRange = Sicem_Blazor.Data.DateRange;
 namespace Sicem_Blazor.PagoLinea.Views
 {
     public partial class ProcessFilesPage : ComponentBase, IDisposable
@@ -55,39 +57,39 @@ namespace Sicem_Blazor.PagoLinea.Views
         [Inject]
         public SicemService SicemService { get; set; } = default!;
 
-        private SfGrid<UploadFilePayloadJob> DataGridFiles { get; set; }
-        private SfGrid<TransactionRecord> DataGridRecords { get; set; }
+        private RadzenDataGrid<UploadFilePayloadJob> DataGridFiles { get; set; }
+        private RadzenDataGrid<TransactionRecord> DataGridRecords { get; set; }
         private List<UploadFilePayloadJob> RecordsFiles { get; set; } = new();
         private List<TransactionRecord> Records { get; set; } = new();
-        private List<TransactionRecord> RecordsView => soloPendientes
+        private List<TransactionRecord> _recordsView => _soloPendientes
             ? Records.Where(item => item.Aplicado != EstatusAplicacionPagoEnum.APLICADO).ToList()
             : Records;
 
-        private bool busyDialog = false;
-        private bool soloPendientes = false;
-        private int tabIndex = 0;
-        private MatTabBar mattabbar;
-        private Timer timer = null; // Used to periodically retrive the file-records
-        private DateRange dateRange = new DateRange(DateTime.Now, DateTime.Now);
-        private IEnlace enlace;
-        private bool showButton = false;
-        private bool taskOnProgress = false;
+        private bool _busyDialog = false;
+        private bool _soloPendientes = false;
+        private int _tabIndex = 0;
+        private MatTabBar _mattabbar;
+        private Timer _timer = null; // Used to periodically retrive the file-records
+        private DateRange _dateRange = new DateRange(DateTime.Now, DateTime.Now);
+        private IEnlace _enlace;
+        private bool _showButton = false;
+        private bool _taskOnProgress = false;
 
 
         protected override void OnAfterRender(bool firstRender)
         {
             if(firstRender)
             {
-                timer = new Timer(FetchData, null, TimeSpan.Zero, TimeSpan.FromSeconds(3));
-                enlace = this.SicemService.ObtenerEnlaces().Where(i => i.Inactivo != true).First();
+                _timer = new Timer(FetchData, null, TimeSpan.Zero, TimeSpan.FromSeconds(3));
+                _enlace = this.SicemService.ObtenerEnlaces().Where(i => i.Inactivo != true).First();
             }
         }
 
         private void FetchData(object state)
         {
             this.RecordsFiles = this.PagoLineaUploadFilesData1.Files2Process.OrderBy(item => item.CreatedAt).ToList();
-            this.DataGridFiles.Refresh();
-            if(tabIndex == 0)
+            _ = InvokeAsync(() => this.DataGridFiles.Reload());
+            if(_tabIndex == 0)
             {
                 InvokeAsync(StateHasChanged);
             }
@@ -118,7 +120,7 @@ namespace Sicem_Blazor.PagoLinea.Views
                 return;
             }
 
-            this.busyDialog = true;
+            this._busyDialog = true;
             await Task.Delay(100);
 
             // * save the file temporarily
@@ -129,7 +131,7 @@ namespace Sicem_Blazor.PagoLinea.Views
             this.PagoLineaUploadFilesData1.Files2Process.Add(new UploadFilePayloadJob(filePath));
             this.ProcessFileJob.StartTimer(); // start job
             
-            this.busyDialog = false;
+            this._busyDialog = false;
             Toaster.Add("Archivo cargado y en espera de ser procesado..", MatToastType.Success);
 
             // * force the get the files
@@ -138,7 +140,7 @@ namespace Sicem_Blazor.PagoLinea.Views
 
         private async Task MatTabBarActiveChanged(BaseMatTabLabel label)
         {
-            tabIndex = label.Id switch
+            _tabIndex = label.Id switch
             {
                 "archivos" => 0,
                 "cargados" => 1,
@@ -149,13 +151,13 @@ namespace Sicem_Blazor.PagoLinea.Views
 
         public async Task Procesar(SeleccionarFechaEventArgs e)
         {
-            dateRange = new DateRange(e.Fecha1, e.Fecha2);
-            this.busyDialog = true;
+            _dateRange = new DateRange(e.Fecha1, e.Fecha2);
+            this._busyDialog = true;
             await Task.Delay(100);
 
             try
             {
-                var rawRecords = await this.PagoLineaRepo.ObtenerTransacciones(dateRange);
+                var rawRecords = await this.PagoLineaRepo.ObtenerTransacciones(_dateRange);
                 if(rawRecords.Any())
                 {
                     this.Records = rawRecords.Select(t => t.ToDTO()).ToList();
@@ -164,7 +166,7 @@ namespace Sicem_Blazor.PagoLinea.Views
                 {
                     this.Records = new List<TransactionRecord>();
                 }
-                this.DataGridRecords.Refresh();
+                await InvokeAsync(() => this.DataGridRecords.Reload());
             }
             catch(System.Exception err)
             {
@@ -173,8 +175,8 @@ namespace Sicem_Blazor.PagoLinea.Views
             }
             finally
             {
-                showButton = this.Records.Where( item => item.Aplicado != EstatusAplicacionPagoEnum.APLICADO).Any();
-                this.busyDialog = false;
+                _showButton = this.Records.Where( item => item.Aplicado != EstatusAplicacionPagoEnum.APLICADO).Any();
+                this._busyDialog = false;
                 await InvokeAsync(StateHasChanged);
             }
         }
@@ -191,15 +193,15 @@ namespace Sicem_Blazor.PagoLinea.Views
             transaccion.Aplicado = EstatusAplicacionPagoEnum.PROGRESS;
             await Task.Delay(100);
             await InvokeAsync(() => StateHasChanged());
-            this.DataGridRecords.Refresh();
+            await InvokeAsync(() => this.DataGridRecords.Reload());
 
             // * prepare the payload to aply the payment
-            var _paymentPayload = PagoLineaDetalle.FromEntity(enlace, transaccionContext.ToEntity());
+            var _paymentPayload = PagoLineaDetalle.FromEntity(_enlace, transaccionContext.ToEntity());
 
             // * aply the payment and process the response
             try
             {
-                var response = await this.PagoLineaService.AplicarPago(this.enlace, _paymentPayload);
+                var response = await this.PagoLineaService.AplicarPago(this._enlace, _paymentPayload);
                 if(response.Error == 1 || response.Estatus == Sicem_Blazor.Data.Contracts.ResumenOficinaEstatus.Error)
                 {
                     transaccion.FechaAplicacion = DateTime.Now;
@@ -235,12 +237,12 @@ namespace Sicem_Blazor.PagoLinea.Views
             // * updated the status on the grid
             await Task.Delay(100);
             await InvokeAsync(() => StateHasChanged());
-            this.DataGridRecords.Refresh();
+            await InvokeAsync(() => this.DataGridRecords.Reload());
         }
 
         private async Task AplicarPagosClick()
         {
-            if(taskOnProgress) return;
+            if(_taskOnProgress) return;
 
             // * confirmation modal
             var result = await MatDialogService.AskAsync("Está por aplicar los pagos pendientes, ¿Desea continuar?", new string[] {"Aplicar Pagos", "Cancelar"});
@@ -251,7 +253,7 @@ namespace Sicem_Blazor.PagoLinea.Views
 
 
             // * Preparar filas
-            taskOnProgress = true;
+            _taskOnProgress = true;
             var detallesPorAplicar = this.Records.Where(item => item.Aplicado != EstatusAplicacionPagoEnum.APLICADO).ToList();
             foreach(var detalle in detallesPorAplicar)
             {
@@ -269,22 +271,25 @@ namespace Sicem_Blazor.PagoLinea.Views
             }
 
 
-            taskOnProgress = false;
+            _taskOnProgress = false;
             await InvokeAsync( () => StateHasChanged());
 
 
             await MatDialogService.AlertAsync("Finalizado la aplicación de pagos.");
         }
+        // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+        /*
         private async Task DownloadExcel()
         {
             await DataGridRecords.ExportToExcelAsync();
         }
+        */
 
         private async Task OnSoloPendientesChanged(bool value)
         {
-            soloPendientes = value;
+            _soloPendientes = value;
             await InvokeAsync(StateHasChanged);
-            this.DataGridRecords.Refresh();
+            await InvokeAsync(() => this.DataGridRecords.Reload());
         }
 
         #region temporally files functions
@@ -322,9 +327,9 @@ namespace Sicem_Blazor.PagoLinea.Views
         public void Dispose()
         {
             this.Logger.LogDebug("Terminating UploadfilePage Tiemer");
-            timer?.Change(Timeout.Infinite, Timeout.Infinite);
-            timer?.Dispose();
-            timer = null;
+            _timer?.Change(Timeout.Infinite, Timeout.Infinite);
+            _timer?.Dispose();
+            _timer = null;
         }
         #endregion
     }

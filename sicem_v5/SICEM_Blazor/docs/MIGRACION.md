@@ -176,7 +176,7 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | 10 | Órdenes de Trabajo | `/ordenes` | ✅ Migrado (2026-10-06) |
 | 11 | Antigüedad de Saldos | `/controlRezago` | ✅ Migrado (2026-10-06) |
 | 12 | Lecturas | `/lecturas` | ✅ Migrado (2026-10-06) |
-| 13 | Pago en Línea | `/PagoLineaAnalitycs` | Pendiente |
+| 13 | Pago en Línea | `/PagoLineaAnalitycs` | ✅ Migrado (2026-10-06) |
 | 14 | Configuración | `/configuracion` | Pendiente |
 
 ### Módulo 1 – Consulta General (2026-10-06)
@@ -357,6 +357,23 @@ Exportación comentada (`TODO-EXPORT-RADZEN`) en los archivos con exportación. 
 4 archivos en `Areas/Lecturas/Views/` (`Index`, `DesempenioLecturistas`, `IncidenciasLecturas`, `DetalleLecturistaVtn`): 3 `SfGrid`, 1 `SfChart` → Radzen. Estas páginas consultan una oficina a la vez (no usan tareas paralelas), por lo que no aplica el patrón multi-oficina. Allman y renombres de miembros privados.
 
 - [ ] Prueba manual: Desempeño de Lecturistas (grid, gráfica y detalle por lecturista) e Incidencias.
+
+### Módulo 13 – Pago en Línea (2026-10-06)
+
+7 componentes en `Areas/PagoLinea/Views/`, todos con code-behind (`.razor` + `.razor.cs`): 8 `SfGrid`, 2 `SfChart` → Radzen.
+
+| Archivo | Cambios específicos |
+|---|---|
+| Todos los `.razor.cs` | `using Syncfusion.*` → `using Radzen*`; tipos `SfGrid`/`SfChart` → `RadzenDataGrid`/`RadzenChart`; alias `using DateRange = Sicem_Blazor.Data.DateRange;` donde se usa `DateRange` (el alias de `_Imports.razor` no aplica a archivos `.cs`). Exportación comentada en el `.cs` y su botón en el `.razor`. |
+| `PagoLineaResumePage.razor.cs` | Ya tenía `try/catch` por oficina; el refresco desde las tareas ahora usa `InvokeAsync(() => DataGrid.Reload())`. |
+| `ProcessFilesPage.razor.cs` | Refresco desde el `Timer` con `InvokeAsync`; en los manejadores `async` se usa `await InvokeAsync(() => ...Reload())`. |
+| `PagoLineaPage.razor.cs`, `PagoLineaResumePage.razor.cs` | Sus métodos de exportación (`ExportarExcel_Click`) no tenían botón en la página (código sin uso); se comentaron igual. |
+
+**Regla para `Refresh()` en code-behind:** en métodos `async` y fuera de `lock` → `await InvokeAsync(() => X.Reload())`; en cualquier otro caso (timers, tareas, dentro de `lock`) → `_ = InvokeAsync(() => X.Reload())`. `InvokeAsync` es seguro desde cualquier hilo.
+
+Allman y renombres de miembros privados, aplicados en conjunto al `.razor` y su `.razor.cs`. Los parámetros de métodos que se llaman igual que un campo no se renombran.
+
+- [ ] Prueba manual: Incorporación de Pagos (carga de archivos, tabla de archivos que se actualiza con el timer, registros, aplicar pago, filtro "solo pendientes"); resumen por oficina, por días, detalle de oficina y detalle de pagos.
 
 ### Pendientes de la Fase 2
 
