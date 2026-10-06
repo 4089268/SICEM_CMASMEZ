@@ -135,6 +135,13 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | `SfNumericTextBox ShowSpinButton="false"` | `RadzenNumeric ShowUpDown="false"` |
 | `SfComboBox` + `ComboBoxFieldSettings` | `RadzenDropDown TextProperty/ValueProperty AllowFiltering` |
 | `SfCheckBox Label @bind-Checked` | `RadzenCheckBox @bind-Value` + `RadzenLabel` |
+| `GridGroupSettings Columns=".."` + `CaptionTemplate` | `AllowGrouping` + `Groups` (`ObservableCollection<GroupDescriptor>`) + `GroupHeaderTemplate` (`grupo.Data.Key`, `grupo.Data.Count`) |
+| `GridGroupSettings ShowDropArea="false"` | CSS `.rz-group-header { display:none; }` en una clase del grid |
+| `GridPageSettings PageSize` | `AllowPaging` + `PageSize` |
+| `SfAccumulationChart` + `AccumulationChartSeries InnerRadius` | `RadzenChart` + `RadzenDonutSeries` (`Fills` = paleta) |
+| `SfAccumulationChart Title` | `<div>` con el título encima de la gráfica (RadzenChart no tiene título) |
+| `grid.Refresh()` / `chart.Refresh()` desde un `Timer` | `await InvokeAsync(...)` + `Reload()` (hilo de render) |
+| CSS `.e-rowcell` | `.rz-cell-data` |
 
 > Radzen 12 soporta zoom en gráficas (`AllowZoom`), así que `ChartZoomSettings` sí tiene equivalente.
 
@@ -143,8 +150,8 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | # | Módulo | Ruta | Estado |
 |---|---|---|---|
 | 1 | Consulta General | `/ConsultaGeneral` | ✅ Migrado (2026-10-06) |
-| 2 | Búsqueda Avanzada | `/analisisInfo` | Pendiente |
-| 3 | Seguimiento Pagos | `/seguimiento_cobros` | Pendiente |
+| 2 | Búsqueda Avanzada | `/analisisInfo` | ✅ Migrado (2026-10-06) |
+| 3 | Seguimiento Pagos | `/seguimiento_cobros` | ✅ Migrado (2026-10-06) |
 | 4 | Recaudación | `/recaudacion` | Pendiente |
 | 5 | Descuentos | `/descuentos` | Pendiente |
 | 6 | Facturación | `/facturacion` | Pendiente |
@@ -180,9 +187,33 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 
 - [ ] Prueba manual: buscar una cuenta (Enter en el campo y botón *Buscar Contratos*), selección/doble clic en la búsqueda, gráfica de consumos con tooltip, y las ventanas Movimientos, Modif ABC, Órdenes, Anticipos e Imágenes.
 
+### Módulo 2 – Búsqueda Avanzada (2026-10-06)
+
+| Archivo | Cambios |
+|---|---|
+| `Pages/AnalisisInformacion/ResultsPanel.razor` | `SfGrid` (47 columnas) → `RadzenDataGrid`: agrupado por Oficina con el mismo encabezado (`OFICINA X - n cuentas`), sin panel de agrupación, paginado de 200, densidad compacta; columnas *Es Macromedidor / DRAEF / Alto Consumidor* como checkbox de solo lectura. La exportación usa la clase propia `ExportarExcel` (EPPlus), no Syncfusion, así que **no se comentó**. Allman; propiedad `enableGridPaging` → `EnableGridPaging`. |
+| `Pages/AnalisisInformacion/AnalisisInformacionPage.razor` | Se quitó `@using Syncfusion.Blazor.Navigations` (sin uso). Allman. |
+| `Shared/Dialogs/NotificarDialog.razor` + `.razor.cs` | 2 `SfGrid` → `RadzenDataGrid` con selección simple; `SfTextBox Multiline` → `RadzenTextArea`; CSS `.e-rowcell` → `.rz-cell-data`. Campos `cargando`/`mostrarPre`/`FilasTemplate`/`ColumnasTemplate` → `_cargando`/`_mostrarPre`/`_filasTemplate`/`_columnasTemplate`. Allman. |
+
+- [ ] Prueba manual: buscar con filtros, verificar agrupación por oficina y paginado, botones de ubicación/WhatsApp por fila, exportar resultados, panel de notificación (selección de template y destinatario, previsualizar).
+- Nota: la clase `BodyNotification` (en `NotificarDialog.razor.cs`) no se usa y tiene propiedades en minúscula; no se modificó.
+
+### Módulo 3 – Seguimiento Pagos (2026-10-06)
+
+| Archivo | Cambios |
+|---|---|
+| `Areas/SeguimientoCobros/Views/Index.razor` | 2 `SfAccumulationChart` (dona) → `RadzenChart` + `RadzenDonutSeries` con la misma paleta; títulos como `<div>` encima de cada gráfica; `SfGrid` → `RadzenDataGrid`. Allman y renombres (`_dataGrid`, `_chartIngresos`, `IncomeData`, …). |
+
+**Correcciones:**
+- El `Timer` de actualización era `static`, compartido por **todas las sesiones**: con dos usuarios en la página el segundo reemplazaba el timer del primero y al salir cualquiera se detenía. Ahora es un campo de instancia (`_fetchTimer`).
+- El refresco desde el timer ahora se hace con `InvokeAsync(...)`, requerido para actualizar componentes desde otro hilo.
+
+- [ ] Prueba manual: que las gráficas y la tabla se actualicen cada 6 s, y con dos sesiones abiertas a la vez.
+
 ### Pendientes de la Fase 2
 
 - [ ] **Exportación Excel/PDF** (`TODO-EXPORT-RADZEN`): elegir librería (EPPlus/Aspose requieren licencia comercial; alternativas: ClosedXML [MIT] + QuestPDF [Community]) e implementar un servicio reutilizable que reciba las columnas visibles del `RadzenDataGrid` y los datos.
+- [ ] Revisar CSS que apunta a clases de Syncfusion (`.e-rowcell`, `.e-grid`, `.e-headercell`, …) en `wwwroot/css` y en bloques `<style>`: 13 apariciones detectadas al inicio de la Fase 2. Se corrigen al migrar el archivo que las usa.
 - [ ] Al terminar todos los módulos: quitar `Syncfusion.Blazor` del `.csproj`, `AddSyncfusionBlazor()` y el registro de licencia en `Startup.cs`, los CSS/JS de Syncfusion en `_Host.cshtml`, la clave `SyncfusionLicense`, y mover los `@using` de Radzen a `_Imports.razor`.
 
 ---

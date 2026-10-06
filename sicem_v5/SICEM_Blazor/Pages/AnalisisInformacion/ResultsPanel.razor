@@ -1,8 +1,5 @@
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Notifications
-@using Syncfusion.Blazor.Inputs
+@using Radzen
+@using Radzen.Blazor
 @using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
 @inject IJSRuntime JSRuntime
@@ -27,82 +24,94 @@
 </div>
 
 <div class="m-2 w-100 ns-small"  style="height: calc(100% - 106px)">
-    <SfGrid @ref="DataGrid" DataSource="@DatosGrid" AllowGrouping="true" TValue="CatPadron" AllowResizing="true" AllowSorting="true" AllowPaging="true" AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true" RowHeight="14">
-        <GridGroupSettings Columns="@(new string[] { "Oficina"})" ShowDropArea="false">
-            <CaptionTemplate>
-                @{
-                    var order = (context as CaptionTemplateContext);
-                    <div>OFICINA @order.Key - @order.Count.ToString("n0") cuentas</div>
-                }
-            </CaptionTemplate>
-        </GridGroupSettings>
-        <GridPageSettings PageSize="200"></GridPageSettings>
-        <GridColumns>
-            <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="120">
-                <Template>
-                    @{
-                        var data = (context as CatPadron);
-                        <div class="d-flex px-2">
-                            <button type="button" class="btn btn-primary btn-sm @(data.TieneUbicacion?"bg-success border-success":"bg-danger border-danger") mr-2" data-toggle="tooltip" data-placement="top" title="Mostrar Ubicacion" @onclick="@( e => HandleShowMapClick( data.Id_Padron ))" disabled="@(!data.TieneUbicacion)">
-                                <i class="fa fa-map-marker" aria-hidden="true"></i>
-                            </button>
-                            <button type="button" class="btn btn-primary btn-sm @(data.TieneTelefono?"bg-success border-success":"bg-danger border-danger") mr-2" data-toggle="tooltip" data-placement="top" title="Notificar Whatsapp" @onclick="@( e => HandleNotificationPanelClick( data.Id_Padron ))"  disabled="@(!data.TieneTelefono)">
-                                <i class="fa fa-phone" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                    }
+    <RadzenDataGrid @ref="DataGrid" TItem="CatPadron" Data="@DatosGrid" AllowGrouping="true" Groups="@_grupos" AllowColumnResize="true" AllowSorting="true"
+        AllowPaging="true" PageSize="200" Density="Density.Compact" class="grid-sin-panel-grupos" Style="height:100%; width:100%;">
+        <GroupHeaderTemplate Context="grupo">
+            <div>OFICINA @grupo.Data.Key - @grupo.Data.Count.ToString("n0") cuentas</div>
+        </GroupHeaderTemplate>
+        <Columns>
+            <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="120px" Sortable="false" Filterable="false" Groupable="false">
+                <Template Context="data">
+                    <div class="d-flex px-2">
+                        <button type="button" class="btn btn-primary btn-sm @(data.TieneUbicacion?"bg-success border-success":"bg-danger border-danger") mr-2" data-toggle="tooltip" data-placement="top" title="Mostrar Ubicacion" @onclick="@( e => HandleShowMapClick( data.Id_Padron ))" disabled="@(!data.TieneUbicacion)">
+                            <i class="fa fa-map-marker" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm @(data.TieneTelefono?"bg-success border-success":"bg-danger border-danger") mr-2" data-toggle="tooltip" data-placement="top" title="Notificar Whatsapp" @onclick="@( e => HandleNotificationPanelClick( data.Id_Padron ))"  disabled="@(!data.TieneTelefono)">
+                            <i class="fa fa-phone" aria-hidden="true"></i>
+                        </button>
+                    </div>
                 </Template>
-            </GridColumn>
-            <GridColumn Field="@nameof(CatPadron.Oficina)" HeaderText="Oficina" TextAlign="TextAlign.Left" Width="170" />
-            <GridColumn Field="@nameof(CatPadron.Id_Cuenta)" HeaderText="Cuenta" TextAlign="TextAlign.Center" Width="140" />
-            <GridColumn Field="@nameof(CatPadron.RazonSocial)" HeaderText="Razon Social" TextAlign="TextAlign.Left" Width="210" />
-            <GridColumn Field="@nameof(CatPadron.Estatus)" HeaderText="Estatus" TextAlign="TextAlign.Center" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Poblacion)" HeaderText="Poblacion" TextAlign="TextAlign.Center" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Calculo)" HeaderText="Calculo" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.MesFacturado)" HeaderText="Mes Facturado" TextAlign="TextAlign.Center" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Direccion)" HeaderText="Direccion" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Colonia)" HeaderText="Colonia" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Ciudad)" HeaderText="Ciudad" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Telefono1)" HeaderText="Telefono 1" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Ruta)" HeaderText="Ruta" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Sb)" HeaderText="Subsistema" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Sector)" HeaderText="Sector" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Manzana)" HeaderText="Manzana" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Lote)" HeaderText="Lote" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Toma)" HeaderText="Toma" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Localizacion)" HeaderText="Localizacion" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Giro)" HeaderText="Giro" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Estatus)" HeaderText="Estatus" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Mf)" HeaderText="Mf" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Af)" HeaderText="Af" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.MesAdeudoAct)" HeaderText="Meses Adeudo" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Servicio)" HeaderText="Servicio" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Clase_Usuario)" HeaderText="Clase Usuario" TextAlign="TextAlign.Center" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Tipo_Usuario)" HeaderText="Tipo Usuario" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Tarifa_Fija)" HeaderText="Tarifa Fija" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.AnomaliaAct)" HeaderText="Anomalia" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.LecturaAct)" HeaderText="Lectura Actual" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.ConsumoAct)" HeaderText="Consumo Actual" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Calculo)" HeaderText="Calculo" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Calculo_Act)" HeaderText="Calculo Act" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Subtotal)" HeaderText="Subtotal" TextAlign="TextAlign.Right" Width="140" Format="c2" />
-            <GridColumn Field="@nameof(CatPadron.Iva)" HeaderText="Iva" TextAlign="TextAlign.Right" Width="140" Format="c2" />
-            <GridColumn Field="@nameof(CatPadron.Total)" HeaderText="Total" TextAlign="TextAlign.Right" Width="140" Format="c2" />
-            <GridColumn Field="@nameof(CatPadron.EsMacromedidor)" HeaderText="Es Macromedidor" TextAlign="TextAlign.Center" Width="80" DisplayAsCheckBox="true"/>
-            <GridColumn Field="@nameof(CatPadron.EsDraef)" HeaderText="Es DRAEF" TextAlign="TextAlign.Center" Width="80" DisplayAsCheckBox="true" />
-            <GridColumn Field="@nameof(CatPadron.EsAltoconsumidor)" HeaderText="Es Alto Consumidor" TextAlign="TextAlign.Center" Width="80" DisplayAsCheckBox="true"/>
-            <GridColumn Field="@nameof(CatPadron.Id_Medidor)" HeaderText="Medidor" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.Tipotoma)" HeaderText="Tipo Toma" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.MesFacturado)" HeaderText="Mes Facturado" TextAlign="TextAlign.Left" Width="120" />
-            <GridColumn Field="@nameof(CatPadron.FechaAlta)" HeaderText="Fecha Alta" TextAlign="TextAlign.Left" Width="120"/>
-            <GridColumn Field="@nameof(CatPadron.FechaLecturaAct)" HeaderText="Fecha Lectura Ant" TextAlign="TextAlign.Left" Width="120"/>
-            <GridColumn Field="@nameof(CatPadron.FechaFacturaAct)" HeaderText="Fecha Lectura Act" TextAlign="TextAlign.Left" Width="120"/>
-            <GridColumn Field="@nameof(CatPadron.FechaVencimiento)" HeaderText="Fecha Vencimiento" TextAlign="TextAlign.Left" Width="120"/>
-            <GridColumn Field="@nameof(CatPadron.Situacion)" HeaderText="Situacion de Toma" TextAlign="TextAlign.Left" Width="120"/>
-            <GridColumn Field="@nameof(CatPadron.DiasSinPago)" HeaderText="Dias Sin Pago" TextAlign="TextAlign.Left" Width="120" Format="n0"/>
-        </GridColumns>
-    </SfGrid>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Oficina)" Title="Oficina" TextAlign="TextAlign.Left" Width="170px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Id_Cuenta)" Title="Cuenta" TextAlign="TextAlign.Center" Width="140px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.RazonSocial)" Title="Razon Social" TextAlign="TextAlign.Left" Width="210px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Estatus)" Title="Estatus" TextAlign="TextAlign.Center" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Poblacion)" Title="Poblacion" TextAlign="TextAlign.Center" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Calculo)" Title="Calculo" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.MesFacturado)" Title="Mes Facturado" TextAlign="TextAlign.Center" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Direccion)" Title="Direccion" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Colonia)" Title="Colonia" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Ciudad)" Title="Ciudad" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Telefono1)" Title="Telefono 1" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Ruta)" Title="Ruta" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Sb)" Title="Subsistema" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Sector)" Title="Sector" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Manzana)" Title="Manzana" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Lote)" Title="Lote" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Toma)" Title="Toma" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Localizacion)" Title="Localizacion" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Giro)" Title="Giro" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Estatus)" Title="Estatus" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Mf)" Title="Mf" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Af)" Title="Af" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.MesAdeudoAct)" Title="Meses Adeudo" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Servicio)" Title="Servicio" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Clase_Usuario)" Title="Clase Usuario" TextAlign="TextAlign.Center" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Tipo_Usuario)" Title="Tipo Usuario" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Tarifa_Fija)" Title="Tarifa Fija" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.AnomaliaAct)" Title="Anomalia" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.LecturaAct)" Title="Lectura Actual" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.ConsumoAct)" Title="Consumo Actual" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Calculo)" Title="Calculo" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Calculo_Act)" Title="Calculo Act" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Subtotal)" Title="Subtotal" TextAlign="TextAlign.Right" Width="140px" FormatString="{0:c2}" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Iva)" Title="Iva" TextAlign="TextAlign.Right" Width="140px" FormatString="{0:c2}" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Total)" Title="Total" TextAlign="TextAlign.Right" Width="140px" FormatString="{0:c2}" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.EsMacromedidor)" Title="Es Macromedidor" TextAlign="TextAlign.Center" Width="80px">
+                <Template Context="padron">
+                    <RadzenCheckBox TValue="bool" Value="@padron.EsMacromedidor" Disabled="true" />
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Property="@nameof(CatPadron.EsDraef)" Title="Es DRAEF" TextAlign="TextAlign.Center" Width="80px">
+                <Template Context="padron">
+                    <RadzenCheckBox TValue="bool" Value="@padron.EsDraef" Disabled="true" />
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Property="@nameof(CatPadron.EsAltoconsumidor)" Title="Es Alto Consumidor" TextAlign="TextAlign.Center" Width="80px">
+                <Template Context="padron">
+                    <RadzenCheckBox TValue="bool" Value="@padron.EsAltoconsumidor" Disabled="true" />
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Id_Medidor)" Title="Medidor" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Tipotoma)" Title="Tipo Toma" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.MesFacturado)" Title="Mes Facturado" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.FechaAlta)" Title="Fecha Alta" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.FechaLecturaAct)" Title="Fecha Lectura Ant" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.FechaFacturaAct)" Title="Fecha Lectura Act" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.FechaVencimiento)" Title="Fecha Vencimiento" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.Situacion)" Title="Situacion de Toma" TextAlign="TextAlign.Left" Width="120px" />
+            <RadzenDataGridColumn Property="@nameof(CatPadron.DiasSinPago)" Title="Dias Sin Pago" TextAlign="TextAlign.Left" Width="120px" FormatString="{0:n0}" />
+        </Columns>
+    </RadzenDataGrid>
 </div>
+
+@* El área para arrastrar columnas y agrupar no se mostraba en Syncfusion (ShowDropArea="false") *@
+<style>
+    .grid-sin-panel-grupos .rz-group-header
+    {
+        display: none;
+    }
+</style>
 
 @code
 {
@@ -116,9 +125,15 @@
     public EventCallback<long?> ShowNotificationPanel {get;set;}
     [Parameter]
     public EventCallback<bool> LoadingData {get;set;}
-    public SfGrid<CatPadron> DataGrid {get;set;}
+    public RadzenDataGrid<CatPadron> DataGrid {get;set;}
 
-    private bool enableGridPaging {get;set;}  = false;
+    private bool EnableGridPaging {get;set;}  = false;
+
+    // Agrupación inicial por oficina (en Syncfusion: GridGroupSettings Columns="Oficina")
+    private System.Collections.ObjectModel.ObservableCollection<GroupDescriptor> _grupos = new System.Collections.ObjectModel.ObservableCollection<GroupDescriptor>()
+    {
+        new GroupDescriptor() { Property = nameof(CatPadron.Oficina), Title = "Oficina" }
+    };
 
     private async void HandleShowMapClick(long? id_padron) => await ShowMap.InvokeAsync(id_padron);
     private async void HandleNotificationPanelClick(long? id_padron) => await ShowNotificationPanel.InvokeAsync(id_padron);
@@ -130,7 +145,8 @@
         var _exportador = new ExportarExcel<CatPadron>(DatosGrid, new Uri(_tmpFolder) );
         var _archivo = _exportador.GenerarExcel();
 
-        if(!String.IsNullOrEmpty(_archivo)){
+        if(!String.IsNullOrEmpty(_archivo))
+        {
             var _endPointDownload = Configuration.GetSection("AppSettings").GetValue<string>("Direccion_Api");
             var _targetUrl = $"{_endPointDownload}/download/{_archivo}";
             await JSRuntime.InvokeVoidAsync("OpenNewTabUrl", _targetUrl);

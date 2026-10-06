@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Syncfusion.Blazor.Grids;
 using Sicem_Blazor.Models;
 using Sicem_Blazor.Data.Whatsapp;
 using Sicem_Blazor.Data.Notification;
@@ -46,15 +45,19 @@ public partial class NotificarDialog
     [Parameter]
     public IEnumerable<CatPadron> PadronUsuarios { get; set; } = new List<CatPadron>();
 
-    private double[] FilasTemplate = new double[]{400, 40};
-    private double[] ColumnasTemplate = new double[]{300, 400, 350};
-    private bool cargando = false, mostrarPre = false;
+    private double[] _filasTemplate = new double[]{400, 40};
+    private double[] _columnasTemplate = new double[]{300, 400, 350};
+    private bool _cargando = false, _mostrarPre = false;
     private List<NotificacionTemplate> DatosGrid {get;set;}
     private NotificacionTemplate TemplateSeleccionado {get;set;}
-    private string TextoMensaje {
-        get {
-            if( TemplateSeleccionado == null){
-                TemplateSeleccionado = new NotificacionTemplate(){
+    private string TextoMensaje
+    {
+        get
+        {
+            if( TemplateSeleccionado == null)
+            {
+                TemplateSeleccionado = new NotificacionTemplate()
+                {
                     Titulo = "Notificacion de envio",
                     Texto = "Mensaje de prueba",
                     FCreacion = DateTime.Now,
@@ -63,9 +66,12 @@ public partial class NotificarDialog
             }
             return TemplateSeleccionado.Texto;
         }
-        set{
-            if( TemplateSeleccionado == null){
-                TemplateSeleccionado = new NotificacionTemplate(){
+        set
+        {
+            if( TemplateSeleccionado == null)
+            {
+                TemplateSeleccionado = new NotificacionTemplate()
+                {
                     Titulo = "Notificacion de envio",
                     Texto = "Mensaje de prueba",
                     FCreacion = DateTime.Now,
@@ -75,8 +81,10 @@ public partial class NotificarDialog
             TemplateSeleccionado.Texto = value;
         }
     }
-    private List<CatPadron> PadronUsuarios_ConTelefono {
-        get {
+    private List<CatPadron> PadronUsuarios_ConTelefono
+    {
+        get
+        {
             return PadronUsuarios.Where(item =>  !String.IsNullOrEmpty(item.Telefono1)).ToList();
         }
     }
@@ -84,11 +92,14 @@ public partial class NotificarDialog
     private string MesnajePrevisualizado {get; set;} = "";
 
 
-    protected override async Task OnInitializedAsync() {
+    protected override async Task OnInitializedAsync()
+    {
         await CargarTemplates();
     }
-    protected override void OnAfterRender(bool firstRender) {
-        if (firstRender) {
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
             var _usuariosConTelefono = PadronUsuarios.Where(item => !String.IsNullOrEmpty(item.Telefono1)).ToArray();
             var _usuariosSinTelefono = PadronUsuarios.Where(item => String.IsNullOrEmpty(item.Telefono1)).ToArray();
             this.Logger.LogInformation("Total Usuarios:{totalUsuarios} Usuarios con telefono:{conTelefono} Usuarios sin telefono:{sinTelefono}",
@@ -99,13 +110,15 @@ public partial class NotificarDialog
         }
     }
 
-    private async Task CerrarVentana_Click(){
+    private async Task CerrarVentana_Click()
+    {
         await OnClosed.InvokeAsync();
     }
 
-    private async Task EnviarMensaje(){
+    private async Task EnviarMensaje()
+    {
 
-        cargando = true;
+        _cargando = true;
         await Task.Delay(100);
 
         // * foreach user make and send the message
@@ -122,35 +135,40 @@ public partial class NotificarDialog
         }
 
         await Task.Delay(100);
-        cargando = false;
+        _cargando = false;
 
         await OnClosed.InvokeAsync();
     }
 
-    private void OnDataGrid_SelectionChanged(RowSelectEventArgs<NotificacionTemplate> e){
-        TemplateSeleccionado = e.Data;
+    private void OnDataGrid_SelectionChanged(NotificacionTemplate template)
+    {
+        TemplateSeleccionado = template;
     }
-    private async Task CargarTemplates(){
-        this.cargando = true;
+    private async Task CargarTemplates()
+    {
+        this._cargando = true;
         await Task.Delay(100);
 
         TemplateSeleccionado = null;
         this.DatosGrid = NotificacionesTemplateService1.ObtenerTemplateNotificaciones().ToList();
 
         await Task.Delay(100);
-        this.cargando = false;
+        this._cargando = false;
     }
 
-    private void OnDestinatarioSeleccionado(RowSelectEventArgs<CatPadron> e){
-        this.DestinatarioSeleccionado = e.Data;
+    private void OnDestinatarioSeleccionado(CatPadron destinatario)
+    {
+        this.DestinatarioSeleccionado = destinatario;
     }
 
-    private void PrevisualizarTexto_Click(){
-        if(DestinatarioSeleccionado == null){
+    private void PrevisualizarTexto_Click()
+    {
+        if(DestinatarioSeleccionado == null)
+        {
             return;
         }
         this.MesnajePrevisualizado = MessageUtils.GenerateMessage(TemplateSeleccionado.Texto, DestinatarioSeleccionado);
-        mostrarPre = true;
+        _mostrarPre = true;
     }
 
     private async Task<string> MakeImageNotification(string message)
@@ -174,7 +192,8 @@ public partial class NotificarDialog
 
 }
 
-class BodyNotification {
+class BodyNotification
+{
     public string phone {get;set;}
     public string message {get;set;}
 }

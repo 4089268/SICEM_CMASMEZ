@@ -1,5 +1,4 @@
 @page "/AnalisisInfo"
-@using Syncfusion.Blazor.Navigations
 @using Sicem_Blazor.Data.KML
 @using System.IO
 @inject SicemService sicemService
@@ -55,21 +54,24 @@
 
 
 <BusyIndicator Busy="cargando" ContentText="Cargando datos..." />
-@if(DatosGenerales_visible){
+@if(DatosGenerales_visible)
+{
     <DatosGenerales_Dialog 
         IdOficina="@OficinaActual"
         Cuenta="@CuentaActual"
         CerrarVentana="@(e => DatosGenerales_visible = false)"
     />
 }
-@if(MostrarUbicaciones){
+@if(MostrarUbicaciones)
+{
     <MapaComponent
         OnClosed="@(e => MostrarUbicaciones = false)" 
         MarkerDataSource="@MapPoints"
     />
 }
 
-@if(NotificarDialogVisible){
+@if(NotificarDialogVisible)
+{
     <NotificarDialog 
         OnClosed="@(e => HandleNotificationClose() )" 
         PadronUsuarios="@UsuariosANotificar"
@@ -77,7 +79,8 @@
 }
 
 
-@code {
+@code
+{
 
     private List<CatPadron> DatosGrid {get;set;}
     private bool cargando {get;set;} = false;
@@ -107,21 +110,24 @@
     {
         
         // Validar si se cuenta con la opcion
-        if(!sicemService.Usuario.OpcionSistemas.Select(item => item.Id).Contains(OpcionesSistema.BUSQUEDA_AVANZADA)){
+        if(!sicemService.Usuario.OpcionSistemas.Select(item => item.Id).Contains(OpcionesSistema.BUSQUEDA_AVANZADA))
+        {
             navigationManager.NavigateTo("/");
             return;
         }
 
         base.OnInitialized();
     }
-    protected override async Task OnParametersSetAsync(){
+    protected override async Task OnParametersSetAsync()
+    {
         this.cargando = true;
         await Task.Delay(200);
 
         
         var _oficinas = sicemService.ObtenerEnlaces().Where(item => item.Inactivo != true ).ToList();
         catOficinas = new Dictionary<int, string>();
-        _oficinas.ForEach(ofi => {
+        _oficinas.ForEach(ofi =>
+        {
             catOficinas.Add(ofi.Id, ofi.Oficina);
         });
         
@@ -138,12 +144,15 @@
 
     }
 
-    private async Task RealizarConsulta(AnalisysInfoFilter datosFiltro){
-        if( datosFiltro == null ){
+    private async Task RealizarConsulta(AnalisysInfoFilter datosFiltro)
+    {
+        if( datosFiltro == null )
+        {
             return;
         }
 
-        if( datosFiltro.Id_Oficinas.Count() <= 0 ){
+        if( datosFiltro.Id_Oficinas.Count() <= 0 )
+        {
             MatToaster.Add("Seleccione una oficina", MatToastType.Info);
             return;
         }
@@ -158,7 +167,8 @@
         await ShowLoadingData(false);
     }
 
-    private async Task ShowLoadingData(bool loading){
+    private async Task ShowLoadingData(bool loading)
+    {
         cargando = loading;
         await Task.Delay(100);
     }
