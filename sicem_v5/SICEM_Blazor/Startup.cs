@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Syncfusion.Blazor;
 using System.Net.Http;
 using MatBlazor;
+using Radzen;
 using Sicem_Blazor.Models;
 using Sicem_Blazor.Services;
 using Sicem_Blazor.Helpers;
@@ -76,6 +77,7 @@ namespace Sicem_Blazor {
 
             services.AddServerSideBlazor();
             services.AddSyncfusionBlazor();
+            services.AddRadzenComponents();
             services.AddMatToaster(config =>{
                 config.Position = MatToastPosition.TopCenter;
                 config.PreventDuplicates = true;

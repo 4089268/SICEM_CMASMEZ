@@ -46,6 +46,8 @@ Cada entrada indica la fecha, la rama, qué se cambió, por qué, y lo que queda
 
 > Mejora futura recomendada: habilitar el cifrado (`TrustServerCertificate=True` o un certificado válido en el servidor).
 
+**Actualización (2026-10-06, rama `feature/radzen`):** en `Models/Entities/Sicem/Ruta.cs` las conexiones por oficina pasaron a `Encrypt = SqlConnectionEncryptOption.Mandatory` + `TrustServerCertificate = true` (conexión cifrada, sin validar el certificado del servidor). Probado con el módulo Consulta General. Las cadenas `SICEM` y `ARQUOS` de `appsettings.json` siguen con `Encrypt=False;`.
+
 ### Resultado
 
 - `dotnet build`: correcto, 0 errores, 0 advertencias.
@@ -85,7 +87,103 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 
 ## Fase 2 – Migración de Syncfusion a Radzen.Blazor
 
-_Pendiente de iniciar._
+**Rama:** `feature/radzen` (creada a partir de `feature/net10`)
+
+### Decisiones
+
+- **Alcance:** se migran **todos** los componentes `Sf*` de cada archivo que se toca (Grid, Chart, AccumulationChart, TextBox, NumericTextBox, ComboBox, CheckBox, Tab, etc.), para poder quitar el paquete de Syncfusion al final.
+- **Orden:** por módulo, siguiendo el orden de `Shared/NavMenu.razor`.
+- **Exportación Excel/PDF:** `RadzenDataGrid` no exporta por sí solo. Por ahora el código de exportación se **comenta** con la marca `TODO-EXPORT-RADZEN` (botones y métodos) y se resuelve más adelante (ver _Pendientes de la Fase 2_). Para localizarlos: `grep -rn TODO-EXPORT-RADZEN`.
+- **Estilo de código:** en cada archivo migrado se aplican las reglas de `CLAUDE.md` (Allman, propiedades en PascalCase, campos privados `_camelCase`). No se modifican bloques `<style>` / `<script>`.
+
+### Infraestructura de Radzen (2026-10-06)
+
+| Archivo | Cambio |
+|---|---|
+| `Sicem_Blazor.csproj` | Se agregó `Radzen.Blazor` 12.0.6 |
+| `Startup.cs` | `using Radzen;` y `services.AddRadzenComponents();` (Syncfusion sigue registrado durante la transición) |
+| `Pages/_Host.cshtml` | Tema `_content/Radzen.Blazor/css/material-base.css` (variante *base*, sin reset global, para convivir con Bootstrap 4) y script `_content/Radzen.Blazor/Radzen.Blazor.js` |
+| `_Imports.razor` | Se **quitaron** los `@using Syncfusion.Blazor.{Grids,Charts,Popups,Notifications,Inputs}` globales |
+| 44 archivos `.razor` no migrados | Se les agregaron esos 5 `@using` de Syncfusion al inicio (y se quitaron duplicados) |
+
+**Por qué se movieron los `@using`:** Radzen y Syncfusion tienen tipos con el mismo nombre (`TextAlign`, `LegendPosition`, …). Con ambos namespaces globales, el proyecto daba 1,259 errores de referencia ambigua. Durante la transición:
+
+- Los archivos **no migrados** declaran sus `@using Syncfusion.*` localmente.
+- Los archivos **migrados** quitan esos `@using` y declaran `@using Radzen` / `@using Radzen.Blazor`.
+- Al terminar la migración: mover `@using Radzen` / `@using Radzen.Blazor` a `_Imports.razor` y quitar los locales.
+
+### Equivalencias usadas
+
+| Syncfusion | Radzen |
+|---|---|
+| `SfGrid` `DataSource` / `Height="100%"` | `RadzenDataGrid TItem=".."` `Data` / `Style="height:100%"` |
+| `GridColumn Field / HeaderText / Width="100" / Format="c2"` | `RadzenDataGridColumn Property / Title / Width="100px" / FormatString="{0:c2}"` |
+| `AllowResizing` | `AllowColumnResize` |
+| `EnableAltRow` | `AllowAlternatingRows` |
+| `RowHeight="22"` | `Density="Density.Compact"` |
+| `ClipMode.EllipsisWithTooltip` | `ShowCellDataAsTooltip="true"` |
+| `GridSelectionSettings` + `GridEvents RowSelected(RowSelectEventArgs<T>)` | `SelectionMode="DataGridSelectionMode.Single"` + `RowSelect(T)` |
+| `RowDeselected` | `RowDeselect(T)` |
+| `OnRecordDoubleClick(RecordDoubleClickEventArgs<T>)` → `RowData` | `RowDoubleClick(DataGridRowMouseEventArgs<T>)` → `Data` |
+| `DisplayAsCheckBox="true"` | `<Template>` con `RadzenCheckBox Disabled="true"` |
+| `SfChart` + `ChartSeries Type=Column` `XName/YName` | `RadzenChart` + `RadzenColumnSeries` `CategoryProperty/ValueProperty` |
+| `ChartPrimaryXAxis / ChartPrimaryYAxis Title` | `RadzenCategoryAxis / RadzenValueAxis` + `RadzenAxisTitle` |
+| `ChartDataLabel Visible` | `RadzenSeriesDataLabels Visible` |
+| `ChartTooltipSettings Format` | `TooltipTemplate` |
+| `chart.RefreshAsync()` | `chart.Reload()` |
+| `SfTextBox Readonly` / `Multiline` | `RadzenTextBox ReadOnly` / `RadzenTextArea` |
+| `SfNumericTextBox ShowSpinButton="false"` | `RadzenNumeric ShowUpDown="false"` |
+| `SfComboBox` + `ComboBoxFieldSettings` | `RadzenDropDown TextProperty/ValueProperty AllowFiltering` |
+| `SfCheckBox Label @bind-Checked` | `RadzenCheckBox @bind-Value` + `RadzenLabel` |
+
+> Radzen 12 soporta zoom en gráficas (`AllowZoom`), así que `ChartZoomSettings` sí tiene equivalente.
+
+### Avance por módulo (orden del menú)
+
+| # | Módulo | Ruta | Estado |
+|---|---|---|---|
+| 1 | Consulta General | `/ConsultaGeneral` | ✅ Migrado (2026-10-06) |
+| 2 | Búsqueda Avanzada | `/analisisInfo` | Pendiente |
+| 3 | Seguimiento Pagos | `/seguimiento_cobros` | Pendiente |
+| 4 | Recaudación | `/recaudacion` | Pendiente |
+| 5 | Descuentos | `/descuentos` | Pendiente |
+| 6 | Facturación | `/facturacion` | Pendiente |
+| 7 | Eficiencia | `/Eficiencia` | Pendiente |
+| 8 | Micromedición | `/micromedicion` | Pendiente |
+| 9 | Padrón de Usuarios | `/padron` | Pendiente |
+| 10 | Órdenes de Trabajo | `/ordenes` | Pendiente |
+| 11 | Antigüedad de Saldos | `/controlRezago` | Pendiente |
+| 12 | Lecturas | `/lecturas` | Pendiente |
+| 13 | Pago en Línea | `/PagoLineaAnalitycs` | Pendiente |
+| 14 | Configuración | `/configuracion` | Pendiente |
+
+### Módulo 1 – Consulta General (2026-10-06)
+
+| Archivo | Cambios |
+|---|---|
+| `Pages/ConsultaGeneral/ConsultaGeneralPage.razor` | `SfComboBox` → `RadzenDropDown`; `SfNumericTextBox` → `RadzenNumeric` (`Immediate="true"` para que el valor esté actualizado al presionar Enter); `SfGrid` → `RadzenDataGrid`; `SfChart` → `RadzenChart` con `RadzenColumnSeries`. Allman y renombre de campos privados (`_busy`, `_nCuenta`, `_catOficinas`, …). **Corrección:** el título de la ventana de Anticipos se asignaba a la ventana de Órdenes (`vnt_Ordenes.Titulo`); ahora se asigna a `_vntAnticipos.Titulo`. |
+| `Pages/ConsultaGeneral/ConsultaGral_Anticipos.razor` | `SfGrid` → `RadzenDataGrid` con selección simple. Allman, propiedades privadas en PascalCase. |
+| `Pages/ConsultaGeneral/ConsultaGeral_Movimientos.razor` | `SfGrid` → `RadzenDataGrid`. **Exportación Excel/PDF comentada** (`TODO-EXPORT-RADZEN`). Allman y renombres. |
+| `Pages/ConsultaGeneral/ConsultaGeral_ModificacionesABS.razor` | 2 `SfGrid`, 9 `SfTextBox` y 2 `SfNumericTextBox` → Radzen. Allman y renombres. |
+| `Pages/ConsultaGeneral/ConsultaGral_Ordenes.razor` | `SfGrid` → `RadzenDataGrid` (columna *Ejecutada* como checkbox de solo lectura); 94 `SfTextBox` → `RadzenTextBox` y 4 multilínea → `RadzenTextArea`. Se quitó `SelectionGrid_Unselected` (estaba vacío). Allman y renombres. |
+| `Shared/Dialogs/BusquedaCuenta.razor` | 4 `SfTextBox`, `SfCheckBox`, `SfGrid` (con doble clic) → Radzen. Allman y renombres. |
+| `Pages/ConsultaGeneral/ConsultaGral_ImagenesVtn.razor`, `Shared/Dialogs/BusyIndicator.razor` | Solo tenían `@using Syncfusion.*` sin usar: se quitaron. Allman. |
+| `Shared/Dialogs/MapaComponent.razor` | Se quitó `@using Syncfusion.Blazor.Maps` y el campo `SfMaps myMap`, que no se usaban. Allman. |
+
+**Diferencias de comportamiento a revisar:**
+
+- Columnas de fecha sin formato explícito en Syncfusion ahora usan `dd/MM/yyyy` (Anticipos, Órdenes) o `dd/MM/yyyy HH:mm` (Movimientos, Modificaciones ABC).
+- En Syncfusion la selección tenía `EnableToggle="false"` (un segundo clic no deseleccionaba). En Radzen un segundo clic sí deselecciona la fila; en Modificaciones ABC y Órdenes el detalle se conserva.
+- Columna *CONCEPTO* (texto) tenía `Format="c2"`, que no tenía efecto; se quitó.
+
+**Verificación:** `dotnet build` sin errores ni advertencias; la app arranca y `/ConsultaGeneral`, el CSS y el JS de Radzen responden 200.
+
+- [ ] Prueba manual: buscar una cuenta (Enter en el campo y botón *Buscar Contratos*), selección/doble clic en la búsqueda, gráfica de consumos con tooltip, y las ventanas Movimientos, Modif ABC, Órdenes, Anticipos e Imágenes.
+
+### Pendientes de la Fase 2
+
+- [ ] **Exportación Excel/PDF** (`TODO-EXPORT-RADZEN`): elegir librería (EPPlus/Aspose requieren licencia comercial; alternativas: ClosedXML [MIT] + QuestPDF [Community]) e implementar un servicio reutilizable que reciba las columnas visibles del `RadzenDataGrid` y los datos.
+- [ ] Al terminar todos los módulos: quitar `Syncfusion.Blazor` del `.csproj`, `AddSyncfusionBlazor()` y el registro de licencia en `Startup.cs`, los CSS/JS de Syncfusion en `_Host.cshtml`, la clave `SyncfusionLicense`, y mover los `@using` de Radzen a `_Imports.razor`.
 
 ---
 

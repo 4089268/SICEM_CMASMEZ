@@ -1,4 +1,3 @@
-@using Syncfusion.Blazor.Maps
 @using Sicem_Blazor.Data.KML
 @using System.IO
 @inject IJSRuntime JSRuntime
@@ -18,7 +17,8 @@
             <div id="map" style="height:100%;width:100%;"></div>
         </div>
 
-        @if(MarkerDataSource.Count() > 1){
+        @if(MarkerDataSource.Count() > 1)
+        {
             <div class="p-2 border rounded" style="width:100%; height:100%; grid-area:2/2/3/3; overflow-y:auto;">
             @foreach (var point in MarkerDataSource)
             {
@@ -50,7 +50,8 @@
     </Content>
 </VentanaSecundaria>
 
-@if(ExportarCamposVisible){
+@if(ExportarCamposVisible)
+{
     <MapaCamposExportarVtn  OnClosed="@GenerarKML"/>
 }
 
@@ -131,7 +132,8 @@
 </style>
 
 
-@code {
+@code
+{
     [Parameter] public double MinZoom {get;set;} = 1;
     [Parameter] public double MaxZoom {get;set;} = 19;
     [Parameter] public EventCallback OnClosed {get;set;}
@@ -141,19 +143,22 @@
     private bool ExportarCamposVisible = false;
 
 
-    private SfMaps myMap {get;set;}
     private double[] FilasTemplate = new double[]{40, .90};
     private double[] ColumnasTemplate = new double[]{.82, 250};
     
 
-    protected override void OnInitialized() {
+    protected override void OnInitialized()
+    {
         PositionSelected = MarkerDataSource.FirstOrDefault();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender) {
-        if (firstRender) {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
             var dataPoints = new List<PointInfo>();
-            foreach( MapMark markData in MarkerDataSource){
+            foreach( MapMark markData in MarkerDataSource)
+            {
                 var pointInfo = new PointInfo();
                 pointInfo.Titulo = markData.Descripcion;
                 pointInfo.SubTitulo = markData.Subtitulo;
@@ -172,40 +177,50 @@
         }
     }
 
-    private async Task CerrarVentana_Click(){
+    private async Task CerrarVentana_Click()
+    {
         await OnClosed.InvokeAsync();
     }
 
-    private async Task GenerarKML(List<string> camposExportar) {
+    private async Task GenerarKML(List<string> camposExportar)
+    {
 
         ExportarCamposVisible = false;
-        if(camposExportar == null){
+        if(camposExportar == null)
+        {
             return;
         }
 
         // Generar lista de punto
         var _puntos = new List<KmlPoint>();
-        foreach(var point in MarkerDataSource){
+        foreach(var point in MarkerDataSource)
+        {
 
             // Generar el titulo  con los camposa exportar
             var _titulo = "";
             
-            if(camposExportar.Count() > 1){
+            if(camposExportar.Count() > 1)
+            {
                 var _attributes = typeof(CatPadron).GetProperties();
-                foreach(var campo in camposExportar){
+                foreach(var campo in camposExportar)
+                {
                     System.Reflection.PropertyInfo _propInfo = _attributes.Where(item => item.Name.Equals(campo)).FirstOrDefault();
-                    if(_propInfo != null){
+                    if(_propInfo != null)
+                    {
                         _titulo = _titulo + $" {_propInfo.GetValue(point.Padron).ToString()} -";
                     }
                 }
                 _titulo = _titulo.Remove(_titulo.Length-1, 1);
 
-            }else{
+            }
+            else
+            {
                 var _info = typeof(CatPadron).GetProperty(camposExportar.First());
                 _titulo = _info.GetValue(point.Padron).ToString();
             }
 
-            _puntos.Add( new KmlPoint(){
+            _puntos.Add( new KmlPoint()
+            {
                 Titulo = _titulo,
                 Latitud = point.Latitude,
                 Longitud = point.Longitude
@@ -230,7 +245,8 @@
         await JSRuntime.InvokeVoidAsync("DownloAdFileFromBase64", _options);
         
     }
-    private async Task MoverMapa(MapMark markData){
+    private async Task MoverMapa(MapMark markData)
+    {
 
         var pointInfo = new PointInfo();
         pointInfo.Titulo = markData.Descripcion;
@@ -248,7 +264,8 @@
 
     private string getColorByStatus(int meses)
     {
-        switch(meses){
+        switch(meses)
+        {
             case 0:
             case 1:
             case 2:
@@ -261,7 +278,8 @@
                 return "red"; 
         }
     }
-    public class PointInfo {
+    public class PointInfo
+    {
         public string Titulo {get;set;}
         public string SubTitulo {get;set;}
         public decimal Latitud {get;set;}

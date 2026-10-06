@@ -19,48 +19,52 @@ namespace Sicem_Blazor.Services {
             this.logger = log;
         }
 
-        public ConsultaGralResponse ConsultaGeneral(int Id_Oficina, string id_cuenta, int id_localidad = 0) {
+        public ConsultaGralResponse ConsultaGeneral(int idOficina, string idCuenta, int idLocalidad = 0)
+        {
             var respuesta = new ConsultaGralResponse();
-            Ruta xEnlace;
             
-            logger.LogInformation($"(-) Obtener enlaces de oficina id: {Id_Oficina}" );
-            xEnlace = sicemService.ObtenerEnlaces(Id_Oficina).FirstOrDefault();
-            
-            if(xEnlace == null){
-                logger.LogError(0, null, $"(-) ConsultaGeneral; Error al obtener enlace de oficina id {Id_Oficina}; xEnlace == null.");
-                return null;
+            logger.LogInformation("Obtener enlaces de oficina id: {oficina}", idOficina);
+            Ruta enlace = null;
+            try
+            {
+                enlace = sicemService.ObtenerEnlaces(idOficina).FirstOrDefault() ?? throw new ArgumentNullException("No se encontro oficina del id solicitado.");
+            }
+            catch(Exception ex)
+            {
+                logger.LogError(ex, "Error al obtener enlace de oficina id {oficina}.", idOficina);
             }
 
             try
             {
                 /*********Datos Generales *********/
-                logger.LogInformation("(-) Obteniendo datos generales vista cuenta:{Cuenta}", id_cuenta);
-                RealizarConsultaDatosGenerales1(xEnlace.StringConection, long.Parse(id_cuenta), respuesta);
+                logger.LogInformation("Obteniendo datos generales cuenta:{Cuenta}", idCuenta);
+                RealizarConsultaDatosGenerales1(enlace.StringConection, long.Parse(idCuenta), respuesta);
 
                 /********* Si el id_padron es cero, abortar *********/
-                if(respuesta.Id_Padron <= 0) {
+                if(respuesta.Id_Padron <= 0)
+                {
                     throw new Exception("Sin datos, id_padron es igual a 0.");
                 }
 
                 long id_padron = respuesta.Id_Padron;
 
                 /*********Datos Generales2 *********/
-                logger.LogInformation("(-) Obteniendo datos generales cuenta:{Cuenta}", id_cuenta);
-                RealizarConsultaDatosGenerales2(xEnlace.StringConection, id_padron, respuesta);
+                logger.LogInformation("(-) Obteniendo datos generales cuenta:{Cuenta}", idCuenta);
+                RealizarConsultaDatosGenerales2(enlace.StringConection, id_padron, respuesta);
 
                 /********* Saldo a Favor *********/
-                logger.LogInformation("(-) Obteniendo saldo a fovor cuenta:{Cuenta} padron:{Padron}", id_cuenta, respuesta.Id_Padron );
-                RealizarConsultaSaldoFavor(xEnlace.StringConection, id_padron, respuesta);
+                logger.LogInformation("(-) Obteniendo saldo a fovor cuenta:{Cuenta} padron:{Padron}", idCuenta, respuesta.Id_Padron );
+                RealizarConsultaSaldoFavor(enlace.StringConection, id_padron, respuesta);
 
 
                 /********* Documentos x Cobrar *********/
-                logger.LogInformation("(-) Obteniendo documentos por cobrar cuenta:{Cuenta} padron:{Padron}", id_cuenta, respuesta.Id_Padron );
-                RealizarConsultaDocumentosPorCobrar(xEnlace.StringConection, id_padron, respuesta);
+                logger.LogInformation("(-) Obteniendo documentos por cobrar cuenta:{Cuenta} padron:{Padron}", idCuenta, respuesta.Id_Padron );
+                RealizarConsultaDocumentosPorCobrar(enlace.StringConection, id_padron, respuesta);
 
 
                 /********* Saldo Actual *********/
-                logger.LogInformation("(-) Obteniendo saldo actual cuenta:{Cuenta} padron:{Padron}", id_cuenta, respuesta.Id_Padron);
-                RealizarConsultaSaldoActual(xEnlace.StringConection, id_padron, respuesta);
+                logger.LogInformation("(-) Obteniendo saldo actual cuenta:{Cuenta} padron:{Padron}", idCuenta, respuesta.Id_Padron);
+                RealizarConsultaSaldoActual(enlace.StringConection, id_padron, respuesta);
 
 
                 /********* Calcular Totales Saldo Actual *********/
@@ -74,10 +78,10 @@ namespace Sicem_Blazor.Services {
 
                 /********* Obtener total Imagenes *********/
                 try {
-                    logger.LogInformation("(-) Obteniendo imagenes cuenta:{Cuenta} padron:{Padron}", id_cuenta, respuesta.Id_Padron);
-                    using(var xConnecton = new SqlConnection(xEnlace.StringConection)) {
+                    logger.LogInformation("(-) Obteniendo imagenes cuenta:{Cuenta} padron:{Padron}", idCuenta, respuesta.Id_Padron);
+                    using(var xConnecton = new SqlConnection(enlace.StringConection)) {
                         xConnecton.Open();
-                        string xQuery5 = $"Select Count(id_imagen) as t From [{xEnlace.BaseDatos}Media].[Global].[Opr_Imagenes]  Where id_padron = {id_padron} or id_tabla = '{id_padron}' ";
+                        string xQuery5 = $"Select Count(id_imagen) as t From [{enlace.BaseDatos}Media].[Global].[Opr_Imagenes]  Where id_padron = {id_padron} or id_tabla = '{id_padron}' ";
                         var xCommand = new SqlCommand(xQuery5, xConnecton);
                         var tmpListItems = new List<ConsultaGralResponse_saldoItem>();
                         using(var reader = xCommand.ExecuteReader()) {
@@ -89,15 +93,15 @@ namespace Sicem_Blazor.Services {
                     }
                 }
                 catch(Exception){
-                    logger.LogWarning("(-) No hay imagenes para la cuenta:{Cuenta}", id_cuenta);
+                    logger.LogWarning("(-) No hay imagenes para la cuenta:{Cuenta}", idCuenta);
                     respuesta.TotalImagenes = 0;
                 }
 
 
                 /********* Obtener coordenadas *********/
                 try {
-                    logger.LogInformation("(-) Obteniendo coordenadas cuenta:{Cuenta} padron:{Padron}", id_cuenta, respuesta.Id_Padron);
-                    using(var xConnecton = new SqlConnection(xEnlace.StringConection)) {
+                    logger.LogInformation("(-) Obteniendo coordenadas cuenta:{Cuenta} padron:{Padron}", idCuenta, respuesta.Id_Padron);
+                    using(var xConnecton = new SqlConnection(enlace.StringConection)) {
                         xConnecton.Open();
                         string xQuery6 = string.Format("Select latitud, longitud From [Padron].[Cat_Padron] Where id_padron = {0}", id_padron);
                         var xCommand = new SqlCommand(xQuery6, xConnecton);
@@ -113,13 +117,13 @@ namespace Sicem_Blazor.Services {
                 }catch(Exception err){
                     respuesta.Latitud = "0";
                     respuesta.Longitud = "0";
-                    logger.LogError(0, err, "(-) Error al obtener las coordenadas de la consulta general cuenta:{Cuenta}", id_cuenta );
+                    logger.LogError(0, err, "(-) Error al obtener las coordenadas de la consulta general cuenta:{Cuenta}", idCuenta );
                 }
 
 
                 /********* Obtener Historial Consumos *********/
-                logger.LogInformation("(-) Obteniendo historial consumos cuenta:{Cuenta} padron:{Padron}", id_cuenta, respuesta.Id_Padron);
-                using(var xConnecton = new SqlConnection(xEnlace.StringConection)) {
+                logger.LogInformation("(-) Obteniendo historial consumos cuenta:{Cuenta} padron:{Padron}", idCuenta, respuesta.Id_Padron);
+                using(var xConnecton = new SqlConnection(enlace.StringConection)) {
                     xConnecton.Open();
                     string xQuery7 = string.Format("Select top 24 id, id_padron, id_cuenta, mf, af, fecha, consumo_act, lectura_act, lectura_ant From [Facturacion].[Opr_Facturas]  Where  id_padron = {0} and id_tipomovto <> 11 Order BY fecha Desc", id_padron);
                     var xCommand = new SqlCommand(xQuery7, xConnecton);
@@ -144,7 +148,7 @@ namespace Sicem_Blazor.Services {
                 return respuesta;
 
             }catch(Exception err) {
-                logger.LogError(0, err, "(-) ConsultaGeneral; Error al obtener datos de la oficina id {Oficina}", Id_Oficina);
+                logger.LogError(0, err, "(-) ConsultaGeneral; Error al obtener datos de la oficina id {Oficina}", idOficina);
                 return null;
             }
         }

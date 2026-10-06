@@ -1,12 +1,9 @@
-﻿@using Syncfusion.Blazor
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Buttons
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Calendars
+@using Radzen
+@using Radzen.Blazor
 @inject IJSRuntime JSRuntime
 
-@if (Show){
+@if (Show)
+{
     <VentanaSecundaria Titulo="@Titulo" CerrarVentana="@CerrarModal" Filas="@(new double[]{40, 640})" Columnas="@(new double[]{.80})">
         <Content>
 
@@ -15,19 +12,18 @@
             </div>
 
             <div style="grid-row:2/3; grid-column:1/2;">
-                <SfGrid DataSource="@anticiposFiltrados" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="false" AllowPdfExport="false" Height="100%" Width="100%" EnableHover="true">
-                    <GridSelectionSettings EnableToggle="false" Mode="Syncfusion.Blazor.Grids.SelectionMode.Row" Type="Syncfusion.Blazor.Grids.SelectionType.Single"></GridSelectionSettings>
-                    <GridEvents TValue="AnticipoItem" RowSelected="@SelectionGridAnticipos_Changed"></GridEvents>
-                    <GridColumns>
-                        <GridColumn Field="@nameof(AnticipoItem.Id_Abono)" HeaderText="Id Abono" TextAlign="TextAlign.Center" Width="100" />
-                        <GridColumn Field="@nameof(AnticipoItem.Fecha)" HeaderText="Fecha" TextAlign="TextAlign.Left" Width="130" Type="ColumnType.DateTime"/>
-                        <GridColumn Field="@nameof(AnticipoItem.Ciclo)" HeaderText="Ciclo" TextAlign="TextAlign.Left" Width="130" />
-                        <GridColumn Field="@nameof(AnticipoItem.Estatus)" HeaderText="Estatus" TextAlign="TextAlign.Left" Width="130" />
-                        <GridColumn Field="@nameof(AnticipoItem.M3_Aplicados)" HeaderText="Metros por Aplicar" TextAlign="TextAlign.Center" Width="120" />
-                        <GridColumn Field="@nameof(AnticipoItem.Autorizo)" HeaderText="Autorizo" TextAlign="TextAlign.Left" Width="230" />
-                        <GridColumn Field="@nameof(AnticipoItem.Total)" HeaderText="Total" TextAlign="TextAlign.Center" Width="120" Format="c2" />
-                    </GridColumns>
-                </SfGrid>
+                <RadzenDataGrid TItem="AnticipoItem" Data="@AnticiposFiltrados" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false"
+                    SelectionMode="DataGridSelectionMode.Single" RowSelect="@SelectionGridAnticipos_Changed" Style="height:100%; width:100%;">
+                    <Columns>
+                        <RadzenDataGridColumn Property="@nameof(AnticipoItem.Id_Abono)" Title="Id Abono" TextAlign="TextAlign.Center" Width="100px" />
+                        <RadzenDataGridColumn Property="@nameof(AnticipoItem.Fecha)" Title="Fecha" TextAlign="TextAlign.Left" Width="130px" FormatString="{0:dd/MM/yyyy}" />
+                        <RadzenDataGridColumn Property="@nameof(AnticipoItem.Ciclo)" Title="Ciclo" TextAlign="TextAlign.Left" Width="130px" />
+                        <RadzenDataGridColumn Property="@nameof(AnticipoItem.Estatus)" Title="Estatus" TextAlign="TextAlign.Left" Width="130px" />
+                        <RadzenDataGridColumn Property="@nameof(AnticipoItem.M3_Aplicados)" Title="Metros por Aplicar" TextAlign="TextAlign.Center" Width="120px" />
+                        <RadzenDataGridColumn Property="@nameof(AnticipoItem.Autorizo)" Title="Autorizo" TextAlign="TextAlign.Left" Width="230px" />
+                        <RadzenDataGridColumn Property="@nameof(AnticipoItem.Total)" Title="Total" TextAlign="TextAlign.Center" Width="120px" FormatString="{0:c2}" />
+                    </Columns>
+                </RadzenDataGrid>
             </div>
 
         </Content>
@@ -35,62 +31,78 @@
 
 }
 
-@code {
+@code
+{
     [Parameter] public EventCallback CerrarModal { get; set; }
     [Parameter] public bool Show { get; set;}
     [Parameter] public ConsultaGralResponse DatosGenerales {get;set;}
     public string Titulo = "CONSULTA ANTICIPOS";
 
-    private List<AnticipoItem> catalogoAnticipos {get;set;}
-    private List<AnticipoItem> anticiposFiltrados { get;set;}
+    private List<AnticipoItem> CatalogoAnticipos { get; set; }
+    private List<AnticipoItem> AnticiposFiltrados { get; set; }
     //private List<Anticipo_Concepto> listaConceptosAplicados {get;set;}
-    private AnticipoItem  anticipoSeleccionado = new AnticipoItem();
-    private Anticipo_Concepto conceptoSeleccionado = new Anticipo_Concepto();
+    private AnticipoItem _anticipoSeleccionado = new AnticipoItem();
+    private Anticipo_Concepto _conceptoSeleccionado = new Anticipo_Concepto();
     private Dictionary<int, string> CatalogoEstatus = new Dictionary<int, string>();
 
     /******** FUNCIONES ********/
-    private void ClearData(){
+    private void ClearData()
+    {
         //catalogoAnticipos = null;
         //anticiposFiltrados = null;
         //listaConceptosAplicados = null;
-        anticipoSeleccionado = new AnticipoItem();
-        conceptoSeleccionado = new Anticipo_Concepto();
+        _anticipoSeleccionado = new AnticipoItem();
+        _conceptoSeleccionado = new Anticipo_Concepto();
         CatalogoEstatus = new Dictionary<int, string>();
     }
 
-    public async Task Inicializar(ConsultaGral_Aniticipos_v2 resp){
+    public async Task Inicializar(ConsultaGral_Aniticipos_v2 resp)
+    {
         ClearData();
-        catalogoAnticipos = resp.Anticipos.ToList();
-        anticiposFiltrados = resp.Anticipos.ToList();
+        CatalogoAnticipos = resp.Anticipos.ToList();
+        AnticiposFiltrados = resp.Anticipos.ToList();
 
         //*** Genera catalogo estatus
         CatalogoEstatus.Add(0, "TODOS");
-        catalogoAnticipos.GroupBy(item => item.Id_Estatus).ToList().ForEach(  group => CatalogoEstatus.Add(group.Key, group.FirstOrDefault().Estatus) );
+        CatalogoAnticipos.GroupBy(item => item.Id_Estatus).ToList().ForEach(group => CatalogoEstatus.Add(group.Key, group.FirstOrDefault().Estatus));
 
         await Task.Delay(100);
     }
-    private void Combobox_OnSelectionChanged(int val){
-        if(val == 0) {
-            anticiposFiltrados = catalogoAnticipos;
+
+    private void Combobox_OnSelectionChanged(int val)
+    {
+        if (val == 0)
+        {
+            AnticiposFiltrados = CatalogoAnticipos;
         }
-        else {
+        else
+        {
             AnticipoItem[] tmpData;
-            if ( (tmpData = catalogoAnticipos.Where(item => item.Id_Estatus == val).ToArray()).Length > 0) {
-                anticiposFiltrados = tmpData.ToList();
+            if ((tmpData = CatalogoAnticipos.Where(item => item.Id_Estatus == val).ToArray()).Length > 0)
+            {
+                AnticiposFiltrados = tmpData.ToList();
             }
-            else {
-                anticiposFiltrados = null;
+            else
+            {
+                AnticiposFiltrados = null;
             }
         }
     }
-    private void SelectionGridAnticipos_Changed(RowSelectEventArgs<AnticipoItem> selectedRow){
-        if(selectedRow.Data != null){
-            anticipoSeleccionado  = selectedRow.Data;
-        }else{
-            anticipoSeleccionado  = new AnticipoItem();
+
+    private void SelectionGridAnticipos_Changed(AnticipoItem selectedRow)
+    {
+        if (selectedRow != null)
+        {
+            _anticipoSeleccionado = selectedRow;
+        }
+        else
+        {
+            _anticipoSeleccionado = new AnticipoItem();
         }
     }
-    private async Task Cerrar_Modal() {
+
+    private async Task Cerrar_Modal()
+    {
         ClearData();
         await CerrarModal.InvokeAsync("");
     }
