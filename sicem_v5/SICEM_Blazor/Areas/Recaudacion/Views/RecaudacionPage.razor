@@ -1,6 +1,6 @@
 @page "/Recaudacion"
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
+@using Radzen
+@using Radzen.Blazor
 @using System.Threading.Tasks
 @using Sicem_Blazor.Recaudacion.Models
 @using Sicem_Blazor.Recaudacion.Data
@@ -19,21 +19,24 @@
 
     @* ****** Acciones ****** *@
     <div class="border rounded bg-white d-flex align-items-center" style="grid-area:3/1/4/2;">
+        @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
         <MatButton Class="mx-2" style="min-width: 130px;" Raised="true" @onclick="ExportarExcel_Click">Exportar Excel</MatButton>
+        *@
         <MatButton Class="mx-2" style="min-width: 130px;" Raised="true" Disabled="true">Generar Reporte</MatButton>
     </div>
 
     @* ****** DataGrid ****** *@
     <div class="border rounded bg-white p-2 d-flex" style="grid-area:4/1/5/2;">
-        <SfGrid @ref="dataGrid" DataSource="@datosRecaudacion" TValue="Recaudacion_Resumen" AllowResizing="true" AllowSorting="true" AllowFiltering="false"
-                AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true">
-            <GridColumns>
-                <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="40">
+        <RadzenDataGrid TItem="Recaudacion_Resumen" @ref="dataGrid" Data="@DatosRecaudacion" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:100%;">
+            <Columns>
+                <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="40px">
                     <Template>
                         @{
                             var data = (context as Recaudacion_Resumen);
-                            if(data.Id > 0 && data.Id < 999) {
-                                @switch (data.Estatus) {
+                            if(data.Id > 0 && data.Id < 999)
+                            {
+                                @switch (data.Estatus)
+                                {
 
                                     case ResumenOficinaEstatus.Completado:
                                         <i class="fas fa-check-circle" style="color:green; font-size:1.5rem;"></i>
@@ -50,21 +53,22 @@
                             }
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn Field="@nameof(Recaudacion_Resumen.Oficina)" HeaderText="Oficina" TextAlign="TextAlign.Left" Width="170" />
-                <GridColumn Field="@nameof(Recaudacion_Resumen.Usuarios_Propios)" HeaderText="Usu Propios" TextAlign="TextAlign.Right" Width="115" Format="n0" />
-                <GridColumn Field="@nameof(Recaudacion_Resumen.Ingresos_Propios)" HeaderText="$ Propios" TextAlign="TextAlign.Right" Width="125" Format="c2" />
-                <GridColumn Field="@nameof(Recaudacion_Resumen.Usuarios_Otros)" HeaderText="Usu Otros" TextAlign="TextAlign.Right" Width="115" Format="n0" />
-                <GridColumn Field="@nameof(Recaudacion_Resumen.Ingresos_Otros)" HeaderText="$ Otros" TextAlign="TextAlign.Right" Width="125" Format="c2" />
-                <GridColumn Field="@nameof(Recaudacion_Resumen.Usuarios_Total)" HeaderText="Total Usu" TextAlign="TextAlign.Center" Width="125" Format="n0" />
-                <GridColumn Field="@nameof(Recaudacion_Resumen.Importe_Total)" HeaderText="Total $" TextAlign="TextAlign.Center" Width="135" Format="c2" />
-                <GridColumn Field="@nameof(Recaudacion_Resumen.Cobrado)" HeaderText="Cobrado" TextAlign="TextAlign.Center" Width="135" Format="c2" />
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Property="@nameof(Recaudacion_Resumen.Oficina)" Title="Oficina" TextAlign="TextAlign.Left" Width="170px" />
+                <RadzenDataGridColumn Property="@nameof(Recaudacion_Resumen.Usuarios_Propios)" Title="Usu Propios" TextAlign="TextAlign.Right" Width="115px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Recaudacion_Resumen.Ingresos_Propios)" Title="$ Propios" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" />
+                <RadzenDataGridColumn Property="@nameof(Recaudacion_Resumen.Usuarios_Otros)" Title="Usu Otros" TextAlign="TextAlign.Right" Width="115px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Recaudacion_Resumen.Ingresos_Otros)" Title="$ Otros" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" />
+                <RadzenDataGridColumn Property="@nameof(Recaudacion_Resumen.Usuarios_Total)" Title="Total Usu" TextAlign="TextAlign.Center" Width="125px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Recaudacion_Resumen.Importe_Total)" Title="Total $" TextAlign="TextAlign.Center" Width="135px" FormatString="{0:c2}" />
+                <RadzenDataGridColumn Property="@nameof(Recaudacion_Resumen.Cobrado)" Title="Cobrado" TextAlign="TextAlign.Center" Width="135px" FormatString="{0:c2}" />
 
-                <GridColumn HeaderText="Acciones" TextAlign="TextAlign.Left" Width="230">
+                <RadzenDataGridColumn Title="Acciones" TextAlign="TextAlign.Left" Width="230px">
                     <Template>
                         @{
                             var data = (context as Recaudacion_Resumen);
-                            if (data.Id > 0 && data.Id < 90) {
+                            if (data.Id > 0 && data.Id < 90)
+                            {
                                 <div class="d-flex p-1">
                                     <button type="button" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="top" title="Analitico" disabled="@(data.Estatus != ResumenOficinaEstatus.Completado )" @onclick=@( e => Analitico_Click(data) )>
                                         <i class="fa fa-chart-line" aria-hidden="true"></i>
@@ -97,53 +101,43 @@
                             }
                         }
                     </Template>
-                </GridColumn>
-            </GridColumns>
-        </SfGrid>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
     </div>
 
     <!--- ****** Graficas ****** -->
     <div class="d-flex" style="grid-area:5/1/6/2;">
         <div class="border rounded bg-white mr-1 d-flex flex-column align-items-center" style="width:50%; height:100%;">
 
-            <SfChart @ref="graficaIngresos" Title="INGRESOS" Height="100%" Width="100%">
-                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-                <ChartPrimaryYAxis Visible="false" LabelFormat="c2" />
-                <ChartTooltipSettings Enable="true" Header="Ingresos" Format="<b>${series.name}</b> : ${point.y}" Shared="true"></ChartTooltipSettings>
-                <ChartSeriesCollection>
-                    <ChartSeries DataSource="@DatosGrafica_Ingresos" Name="Propios" XName="Descripcion" YName="Valor1" Type="ChartSeriesType.StackingBar">
-                        <ChartMarker>
-                            <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Outer" />
-                        </ChartMarker>
-                    </ChartSeries>
-                    <ChartSeries DataSource="@DatosGrafica_Ingresos" Name="Otros" XName="Descripcion" YName="Valor2" Type="ChartSeriesType.StackingBar">
-                        <ChartMarker>
-                            <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Outer" />
-                        </ChartMarker>
-                    </ChartSeries>
-                </ChartSeriesCollection>
-            </SfChart>
+            <div class="font-weight-bold">INGRESOS</div>
+            <RadzenChart @ref="_graficaIngresos" Style="height:100%; width:100%;">
+                <RadzenCategoryAxis />
+                <RadzenValueAxis Visible="false" FormatString="{0:c2}" />
+                <RadzenChartTooltipOptions Shared="true" />
+                <RadzenStackedBarSeries Data="@DatosGrafica_Ingresos" Title="Propios" CategoryProperty="@nameof(ChartItem.Descripcion)" ValueProperty="@nameof(ChartItem.Valor1)">
+                    <RadzenSeriesDataLabels Visible="true" />
+                </RadzenStackedBarSeries>
+                <RadzenStackedBarSeries Data="@DatosGrafica_Ingresos" Title="Otros" CategoryProperty="@nameof(ChartItem.Descripcion)" ValueProperty="@nameof(ChartItem.Valor2)">
+                    <RadzenSeriesDataLabels Visible="true" />
+                </RadzenStackedBarSeries>
+            </RadzenChart>
 
         </div>
         
         <div class="border rounded bg-white ml-1 d-flex flex-column align-items-center" style="width:50%; height:100%;">
-            <SfChart @ref="graficaUsuarios" Title="USUARIOS">
-                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-                <ChartPrimaryYAxis Visible="false" LabelFormat="n0" />
-                <ChartTooltipSettings Enable="true" Header="Usuarios" Format="<b>${series.name}</b> : ${point.y}" Shared="true"></ChartTooltipSettings>
-                <ChartSeriesCollection>
-                    <ChartSeries DataSource="@DatosGrafica_Usuarios" Name="Usuarios Propios" XName="Descripcion" YName="Valor1" Type="ChartSeriesType.StackingBar">
-                        <ChartMarker>
-                            <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Outer" />
-                        </ChartMarker>
-                    </ChartSeries>
-                    <ChartSeries DataSource="@DatosGrafica_Usuarios" Name="Usuarios Otros" XName="Descripcion" YName="Valor2" Type="ChartSeriesType.StackingBar">
-                        <ChartMarker>
-                            <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Outer" />
-                        </ChartMarker>
-                    </ChartSeries>
-                </ChartSeriesCollection>
-            </SfChart>
+            <div class="font-weight-bold">USUARIOS</div>
+            <RadzenChart @ref="_graficaUsuarios" Style="height:100%; width:100%;">
+                <RadzenCategoryAxis />
+                <RadzenValueAxis Visible="false" FormatString="{0:n0}" />
+                <RadzenChartTooltipOptions Shared="true" />
+                <RadzenStackedBarSeries Data="@DatosGrafica_Usuarios" Title="Usuarios Propios" CategoryProperty="@nameof(ChartItem.Descripcion)" ValueProperty="@nameof(ChartItem.Valor1)">
+                    <RadzenSeriesDataLabels Visible="true" />
+                </RadzenStackedBarSeries>
+                <RadzenStackedBarSeries Data="@DatosGrafica_Usuarios" Title="Usuarios Otros" CategoryProperty="@nameof(ChartItem.Descripcion)" ValueProperty="@nameof(ChartItem.Valor2)">
+                    <RadzenSeriesDataLabels Visible="true" />
+                </RadzenStackedBarSeries>
+            </RadzenChart>
         </div>
     </div>
 
@@ -151,71 +145,73 @@
 
 
 @* ****** Dialogos y ventanas secundarias ****** *@
-<BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
-<Recaudacion_IngresosAnalitico @ref="VtnAnalitico" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" MostrarVentana="@VtnAnalitico_visible" CerrarModal="@( e => VtnAnalitico_visible = false )" />
-<Recaudacion_IngresosRezago @ref="VtnRezago" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" MostrarVentana="@VtnRezago_visible" CerrarModal="@(e => VtnRezago_visible = false)" />
-<Recaudacion_IngresosxDias @ref="VtnDias" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" MostrarVentana="VtnDias_visible" CerrarModal="(e => VtnDias_visible = false)" />
-<Recaudacion_IngresosxCajas @ref="VtnCajas" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" MostrarVentana="VtnCajas_visible" CerrarModal="(e => VtnCajas_visible = false)" />
-<Recaudacion_LocalidadesVtn @ref="VtnPoblaciones" Desde="@f1" Hasta="@f2" Subsistema="@Subsistema" Sector="@Sector" Visible="VtnPoblaciones_Visible" OnClose="(e => VtnPoblaciones_Visible = false)" />
-<Recaudacion_IngresosConceptos @ref="VtnConceptos" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" MostrarVentana="VtnConceptos_visible" CerrarModal="(e => VtnConceptos_visible = false)" />
-<Recaudacion_ConceptosTUsuariosVtn @ref="VtnRConceptos" FechaDesde="@f1" FechaHasta="@f2" Subsistema="@Subsistema" Sector="@Sector" Visible="@VtnRConceptos_Visible" CerrarModal="@(e => VtnRConceptos_Visible = false)" />
+<BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
+<Recaudacion_IngresosAnalitico @ref="_vtnAnalitico" Fecha1="@_f1" Fecha2="@_f2" Subsistema="@_subsistema" Sector="@_sector" MostrarVentana="@_vtnAnalitico_visible" CerrarModal="@( e => _vtnAnalitico_visible = false )" />
+<Recaudacion_IngresosRezago @ref="_vtnRezago" Fecha1="@_f1" Fecha2="@_f2" Subsistema="@_subsistema" Sector="@_sector" MostrarVentana="@_vtnRezago_visible" CerrarModal="@(e => _vtnRezago_visible = false)" />
+<Recaudacion_IngresosxDias @ref="_vtnDias" Fecha1="@_f1" Fecha2="@_f2" Subsistema="@_subsistema" Sector="@_sector" MostrarVentana="_vtnDias_visible" CerrarModal="(e => _vtnDias_visible = false)" />
+<Recaudacion_IngresosxCajas @ref="_vtnCajas" Fecha1="@_f1" Fecha2="@_f2" Subsistema="@_subsistema" Sector="@_sector" MostrarVentana="_vtnCajas_visible" CerrarModal="(e => _vtnCajas_visible = false)" />
+<Recaudacion_LocalidadesVtn @ref="_vtnPoblaciones" Desde="@_f1" Hasta="@_f2" Subsistema="@_subsistema" Sector="@_sector" Visible="_vtnPoblaciones_Visible" OnClose="(e => _vtnPoblaciones_Visible = false)" />
+<Recaudacion_IngresosConceptos @ref="_vtnConceptos" Fecha1="@_f1" Fecha2="@_f2" Subsistema="@_subsistema" Sector="@_sector" MostrarVentana="_vtnConceptos_visible" CerrarModal="(e => _vtnConceptos_visible = false)" />
+<Recaudacion_ConceptosTUsuariosVtn @ref="_vtnRConceptos" FechaDesde="@_f1" FechaHasta="@_f2" Subsistema="@_subsistema" Sector="@_sector" Visible="@_vtnRConceptos_Visible" CerrarModal="@(e => _vtnRConceptos_Visible = false)" />
 
 
-@code{
+@code
+{
 
-    private SfGrid<Recaudacion_Resumen> dataGrid { get; set; }
-    private SfChart graficaIngresos { get; set; }
-    private SfChart graficaUsuarios { get; set; }
+    private RadzenDataGrid<Recaudacion_Resumen> dataGrid { get; set; }
+    private RadzenChart _graficaIngresos;
+    private RadzenChart _graficaUsuarios;
 
-    private bool busyDialog = false;
-    private DateTime f1, f2;
-    private int Subsistema, Sector;
-    private List<Recaudacion_Resumen> datosRecaudacion { get; set; }
+    private bool _busyDialog = false;
+    private DateTime _f1, _f2;
+    private int _subsistema, _sector;
+    private List<Recaudacion_Resumen> DatosRecaudacion { get; set; }
     private List<ChartItem> DatosGrafica_Ingresos { get; set; }
     private List<ChartItem> DatosGrafica_Usuarios { get; set; }
 
-    private Recaudacion_IngresosAnalitico VtnAnalitico;
-    private bool VtnAnalitico_visible = false;
+    private Recaudacion_IngresosAnalitico _vtnAnalitico;
+    private bool _vtnAnalitico_visible = false;
 
-    private Recaudacion_IngresosRezago VtnRezago;
-    private bool VtnRezago_visible = false;
+    private Recaudacion_IngresosRezago _vtnRezago;
+    private bool _vtnRezago_visible = false;
 
-    private Recaudacion_IngresosxDias VtnDias;
-    private bool VtnDias_visible = false;
+    private Recaudacion_IngresosxDias _vtnDias;
+    private bool _vtnDias_visible = false;
 
-    private Recaudacion_IngresosxCajas VtnCajas;
-    private bool VtnCajas_visible = false;
+    private Recaudacion_IngresosxCajas _vtnCajas;
+    private bool _vtnCajas_visible = false;
 
-    private Recaudacion_IngresosConceptos VtnConceptos;
-    private bool VtnConceptos_visible = false;
+    private Recaudacion_IngresosConceptos _vtnConceptos;
+    private bool _vtnConceptos_visible = false;
 
-    private Recaudacion_LocalidadesVtn VtnPoblaciones;
-    private bool VtnPoblaciones_Visible = false;
+    private Recaudacion_LocalidadesVtn _vtnPoblaciones;
+    private bool _vtnPoblaciones_Visible = false;
 
-    private Recaudacion_ConceptosTUsuariosVtn VtnRConceptos;
-    private bool VtnRConceptos_Visible = false;
+    private Recaudacion_ConceptosTUsuariosVtn _vtnRConceptos;
+    private bool _vtnRConceptos_Visible = false;
 
 
     //********* Funciones  *********
-    protected override void OnInitialized() {
+    protected override void OnInitialized()
+    {
         var _now = DateTime.Now;
-        this.f1 = new DateTime(_now.Year, _now.Month, 1);
-        this.f2 = new DateTime(_now.Year, _now.Month, DateTime.DaysInMonth(_now.Year, _now.Month));
-        this.Subsistema = 0;
-        this.Sector = 0;
+        this._f1 = new DateTime(_now.Year, _now.Month, 1);
+        this._f2 = new DateTime(_now.Year, _now.Month, DateTime.DaysInMonth(_now.Year, _now.Month));
+        this._subsistema = 0;
+        this._sector = 0;
     }
 
     public void Procesar(SeleccionarFechaEventArgs e)
     {
-        this.f1 = e.Fecha1;
-        this.f2 = e.Fecha2;
-        this.Subsistema = e.Subsistema;
-        this.Sector = e.Sector;
+        this._f1 = e.Fecha1;
+        this._f2 = e.Fecha2;
+        this._subsistema = e.Subsistema;
+        this._sector = e.Sector;
 
         IEnlace[] enlaces = sicemService.ObtenerOficinasDelUsuario().ToArray();
 
         //****** Preparar filas
-        datosRecaudacion = new List<Recaudacion_Resumen>();
+        DatosRecaudacion = new List<Recaudacion_Resumen>();
         DatosGrafica_Ingresos = new List<ChartItem>();
         DatosGrafica_Usuarios = new List<ChartItem>();
         var tareas = new List<Task>();
@@ -225,15 +221,17 @@
         {
             var oficinaModel = new Recaudacion_Resumen();
             oficinaModel.Enlace  = enlace;
-            datosRecaudacion.Add(oficinaModel);
+            DatosRecaudacion.Add(oficinaModel);
 
             //*** Agregar items grafica
-            DatosGrafica_Ingresos.Add(new ChartItem() {
+            DatosGrafica_Ingresos.Add(new ChartItem()
+            {
                 Id = enlace.Id,
                 Descripcion = enlace.Nombre,
                 Valor1 = 0m,
             });
-            DatosGrafica_Usuarios.Add(new ChartItem() {
+            DatosGrafica_Usuarios.Add(new ChartItem()
+            {
                 Id = enlace.Id,
                 Descripcion = enlace.Nombre,
                 Valor1 = 0m,
@@ -246,14 +244,16 @@
         //*** Agregar fila total
         if (enlaces.Length > 1)
         {
-            var oficinaModel = new Recaudacion_Resumen(){
+            var oficinaModel = new Recaudacion_Resumen()
+            {
                 Estatus = ResumenOficinaEstatus.Completado,
-                Enlace = new Ruta(){
+                Enlace = new Ruta()
+                {
                     Oficina =" TOTAL",
                     Id = 999
                 }
             };
-            datosRecaudacion.Add(oficinaModel);
+            DatosRecaudacion.Add(oficinaModel);
         }
 
         //****** Iniciar tareas
@@ -263,24 +263,37 @@
         }
 
     }
-    private void ConsultarOficina(IEnlace enlace) {
+    private void ConsultarOficina(IEnlace enlace)
+    {
 
-        //*** Realizar consulta
-        var dateRange = new DateRange(f1, f2, Subsistema, Sector);
-        Recaudacion_Resumen tmpDatos = recaudacionService.ObtenerResumen(enlace, dateRange);
+        //*** Realizar consulta (un error en esta oficina no debe detener a las demás)
+        var dateRange = new DateRange(_f1, _f2, _subsistema, _sector);
+        Recaudacion_Resumen tmpDatos;
+        try
+        {
+            tmpDatos = recaudacionService.ObtenerResumen(enlace, dateRange);
+        }
+        catch (Exception)
+        {
+            tmpDatos = null;
+        }
+        tmpDatos ??= new Recaudacion_Resumen() { Estatus = ResumenOficinaEstatus.Error };
         
         var _random = new Random();
         var sleep = _random.Next(3000);
         System.Threading.Thread.Sleep(sleep);
 
         //*** Refrescar datos grid
-        lock(datosRecaudacion){
+        lock(DatosRecaudacion)
+        {
 
             //*** Actualizar fila grid
-            Recaudacion_Resumen item = datosRecaudacion.Where(item => item.Id == enlace.Id).FirstOrDefault();
+            Recaudacion_Resumen item = DatosRecaudacion.Where(item => item.Id == enlace.Id).FirstOrDefault();
             
-            if (item != null) {
-                if (tmpDatos.Estatus == ResumenOficinaEstatus.Completado) {
+            if (item != null)
+            {
+                if (tmpDatos.Estatus == ResumenOficinaEstatus.Completado)
+                {
                     item.Estatus = ResumenOficinaEstatus.Completado;
                     item.Usuarios_Propios = tmpDatos.Usuarios_Propios;
                     item.Ingresos_Propios = tmpDatos.Ingresos_Propios;
@@ -291,46 +304,55 @@
                     item.Cobrado = tmpDatos.Cobrado;
                     item.Usuarios_Total = tmpDatos.Usuarios_Total;
                 }
-                else {
+                else
+                {
                     item.Estatus = ResumenOficinaEstatus.Error;
                 }
             }
 
             RecalcularFilaTotal();
-            dataGrid.Refresh();
         }
+        _ = InvokeAsync(() => dataGrid.Reload());
 
         //*** Actualizar grafica ingresos
-        lock(DatosGrafica_Ingresos){
-            try{
+        lock(DatosGrafica_Ingresos)
+        {
+            try
+            {
                 var itemGraf1 = DatosGrafica_Ingresos.Where(item => item.Id == enlace.Id).FirstOrDefault();
-                if(itemGraf1 != null) {
+                if(itemGraf1 != null)
+                {
                     itemGraf1.Valor1 = tmpDatos.Ingresos_Propios;
                     itemGraf1.Valor2 = tmpDatos.Ingresos_Otros;
                 }            
-                graficaIngresos.RefreshAsync();
+                _ = InvokeAsync(() => _graficaIngresos.Reload());
             }catch(Exception){ }
         }
 
         //*** Actualizar grafica usuarios
-        lock(DatosGrafica_Usuarios){
-            try{
+        lock(DatosGrafica_Usuarios)
+        {
+            try
+            {
                 var itemGraf2 = DatosGrafica_Usuarios.Where(item => item.Id == enlace.Id).FirstOrDefault();
-                if (itemGraf2 != null) {
+                if (itemGraf2 != null)
+                {
                     itemGraf2.Valor1 = tmpDatos.Usuarios_Propios;
                     itemGraf2.Valor2 = tmpDatos.Usuarios_Otros;
                 }
-                graficaUsuarios.RefreshAsync();
+                _ = InvokeAsync(() => _graficaUsuarios.Reload());
             }catch(Exception){ }
         }
 
     }
 
-    private void RecalcularFilaTotal() {
+    private void RecalcularFilaTotal()
+    {
         //*** Recalcular fila total
-        var itemTotal = datosRecaudacion.Where(item => item.Id == 999).FirstOrDefault();
-        if (itemTotal != null) {
-            var _tmpData = datosRecaudacion.Where(item => item.Id != 999).ToList();
+        var itemTotal = DatosRecaudacion.Where(item => item.Id == 999).FirstOrDefault();
+        if (itemTotal != null)
+        {
+            var _tmpData = DatosRecaudacion.Where(item => item.Id != 999).ToList();
 
             itemTotal.Usuarios_Propios = _tmpData.Sum(item => item.Usuarios_Propios);
             itemTotal.Ingresos_Propios = _tmpData.Sum(item => item.Ingresos_Propios);
@@ -344,163 +366,204 @@
             itemTotal.Usuarios_Total = _tmpData.Sum(item => item.Usuarios_Total);
         }
     }
+    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task ExportarExcel_Click(){
         var _options = new ExcelExportProperties(){
             IncludeHiddenColumn = true
         };
         await this.dataGrid.ExportToExcelAsync(_options);
     }
+    */
 
 
     //********* Funciones Ventanas Secundarias *********
-    private async Task Analitico_Click(Recaudacion_Resumen data) {
-        if (VtnAnalitico_visible) {
+    private async Task Analitico_Click(Recaudacion_Resumen data)
+    {
+        if (_vtnAnalitico_visible)
+        {
             return;
         }
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(200);
-        var dateRange = new DateRange(f1, f2, Subsistema, Sector);
+        var dateRange = new DateRange(_f1, _f2, _subsistema, _sector);
         var tmpdata = recaudacionService.ObtenerAnalisisIngresos(data.Enlace, dateRange);
-        if (tmpdata == null) {
+        if (tmpdata == null)
+        {
             Toaster.Add("Hubo un error al procesar la peticion, intentelo mas tarde.", MatToastType.Warning);
         }
-        else {
-            VtnAnalitico_visible = true;
-            VtnAnalitico.Titulo = $"{data.Enlace.Nombre.ToUpper()} - INGRESOS ANALITICO";
-            await VtnAnalitico.Inicializar(data.Enlace, tmpdata);
+        else
+        {
+            _vtnAnalitico_visible = true;
+            _vtnAnalitico.Titulo = $"{data.Enlace.Nombre.ToUpper()} - INGRESOS ANALITICO";
+            await _vtnAnalitico.Inicializar(data.Enlace, tmpdata);
         }
         await Task.Delay(200);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
-    private async Task Rezago_Click(Recaudacion_Resumen data) {
-        if (VtnRezago_visible) {
+    private async Task Rezago_Click(Recaudacion_Resumen data)
+    {
+        if (_vtnRezago_visible)
+        {
             return;
         }
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(200);
-        var dateRange = new DateRange(f1, f2, Subsistema, Sector);
+        var dateRange = new DateRange(_f1, _f2, _subsistema, _sector);
         var tmpData = recaudacionService.ObtenerRezago(data.Enlace, dateRange);
-        if (tmpData == null) {
+        if (tmpData == null)
+        {
             Toaster.Add("Hubo un error al procesar la petición, inténtelo mas tarde.", MatToastType.Warning);
         }
-        else {
-            VtnRezago_visible = true;
-            VtnRezago.Titulo = $"{data.Enlace.Nombre.ToUpper()} - ANALISIS DE REZAGO";
-            await VtnRezago.Inicializar(data.Enlace, tmpData);
+        else
+        {
+            _vtnRezago_visible = true;
+            _vtnRezago.Titulo = $"{data.Enlace.Nombre.ToUpper()} - ANALISIS DE REZAGO";
+            await _vtnRezago.Inicializar(data.Enlace, tmpData);
         }
         await Task.Delay(200);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
-    private async Task IngresosDias_Click(Recaudacion_Resumen data) {
-        if (VtnDias_visible) {
+    private async Task IngresosDias_Click(Recaudacion_Resumen data)
+    {
+        if (_vtnDias_visible)
+        {
             return;
         }
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(200);
-        var dateRange = new DateRange(f1, f2, Subsistema, Sector);
+        var dateRange = new DateRange(_f1, _f2, _subsistema, _sector);
         var tmpData = recaudacionService.ObtenerIngresosPorDias(data.Enlace, dateRange);
-        if (tmpData == null) {
+        if (tmpData == null)
+        {
             Toaster.Add("Hubo un error al procesar la petición, inténtelo mas tarde.", MatToastType.Warning);
         }
-        else {
-            VtnDias_visible = true;
-            VtnDias.Titulo = $"{data.Enlace.Nombre.ToUpper()} - INGRESOS DIAS";
-            VtnDias.Inicializar(data.Enlace, tmpData);
+        else
+        {
+            _vtnDias_visible = true;
+            _vtnDias.Titulo = $"{data.Enlace.Nombre.ToUpper()} - INGRESOS DIAS";
+            _vtnDias.Inicializar(data.Enlace, tmpData);
         }
         await Task.Delay(200);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
-    private async Task IngresosCajas_Click(Recaudacion_Resumen data) {
+    private async Task IngresosCajas_Click(Recaudacion_Resumen data)
+    {
         //Toaster.Add("No Implementado", MatToastType.Danger);
         //return;
 
-        if (VtnCajas_visible) {
+        if (_vtnCajas_visible)
+        {
             return;
         }
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(200);
-        var dateRange = new DateRange(f1, f2, Subsistema, Sector);
+        var dateRange = new DateRange(_f1, _f2, _subsistema, _sector);
         var tmpData = recaudacionService.ObtenerIngresosPorCajas(data.Enlace, dateRange);
-        if (tmpData == null) {
+        if (tmpData == null)
+        {
             Toaster.Add("Hubo un error al procesar la petición, inténtelo mas tarde.", MatToastType.Warning);
         }
-        else {
-            if (tmpData.Count() > 0) {
-                VtnCajas_visible = true;
-                VtnCajas.Titulo = $"{data.Enlace.Nombre.ToUpper()} - INGRESOS POR CAJAS";
-                VtnCajas.Inicializar(data.Enlace, tmpData);
+        else
+        {
+            if (tmpData.Count() > 0)
+            {
+                _vtnCajas_visible = true;
+                _vtnCajas.Titulo = $"{data.Enlace.Nombre.ToUpper()} - INGRESOS POR CAJAS";
+                _vtnCajas.Inicializar(data.Enlace, tmpData);
             }
-            else {
+            else
+            {
                 Toaster.Add("No hay datos disponibles para mostrar.", MatToastType.Info);
             }
         }
         await Task.Delay(200);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
-    private async Task IngresosPoPoblacion_Click(Recaudacion_Resumen data) {
-        this.busyDialog = true;
+    private async Task IngresosPoPoblacion_Click(Recaudacion_Resumen data)
+    {
+        this._busyDialog = true;
         await Task.Delay(100);
-        if (!VtnPoblaciones_Visible) {
-            var dateRange = new DateRange(f1, f2, Subsistema, Sector);
+        if (!_vtnPoblaciones_Visible)
+        {
+            var dateRange = new DateRange(_f1, _f2, _subsistema, _sector);
             var tmpData = recaudacionService.ObtenerRecaudacionLocalidades(data.Enlace, dateRange);
-            if (tmpData == null) {
+            if (tmpData == null)
+            {
                 Toaster.Add("Hubo un error al procesar la peticion, intentelo mas tarde.", MatToastType.Warning);
             }
-            else {
-                if (tmpData.Count() > 0) {
-                    VtnPoblaciones_Visible = true;
-                    VtnPoblaciones.Titulo = $"{data.Enlace.Nombre} - INGRESOS POR POBLACIONES";
-                    VtnPoblaciones.Inicializar(tmpData, data.Enlace);
+            else
+            {
+                if (tmpData.Count() > 0)
+                {
+                    _vtnPoblaciones_Visible = true;
+                    _vtnPoblaciones.Titulo = $"{data.Enlace.Nombre} - INGRESOS POR POBLACIONES";
+                    _vtnPoblaciones.Inicializar(tmpData, data.Enlace);
                 }
-                else {
+                else
+                {
                     Toaster.Add("No hay datos disponibles para mostrar.", MatToastType.Info);
                 }
             }
         }
         await Task.Delay(100);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
-    private async Task IngresosPoConceptos_Click(Recaudacion_Resumen data){
-        this.busyDialog = true;
+    private async Task IngresosPoConceptos_Click(Recaudacion_Resumen data)
+    {
+        this._busyDialog = true;
         await Task.Delay(100);
-        var dateRange = new DateRange(f1, f2, Subsistema, Sector);
+        var dateRange = new DateRange(_f1, _f2, _subsistema, _sector);
         var _datos = recaudacionService.ObtenerIngresosPorConceptos(data.Enlace, dateRange).ToList();
-        if( _datos == null){
+        if( _datos == null)
+        {
             Toaster.Add("Error al tratar de obtener los ingresos por conceptos", MatToastType.Danger);
-        }else{
-            if(_datos.Count() <= 0){
+        }
+        else
+        {
+            if(_datos.Count() <= 0)
+            {
                 Toaster.Add("No hay datos disponibles para este periodo", MatToastType.Info);
-            }else{
+            }
+            else
+            {
                 
                 // Inicializar ventana secundaria
-                VtnConceptos_visible = true;
-                VtnConceptos.Inicializar(data.Enlace, _datos);
+                _vtnConceptos_visible = true;
+                _vtnConceptos.Inicializar(data.Enlace, _datos);
             }
         }
 
         await Task.Delay(100);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
-    private async Task IngresosPorConceptosTiposUsuarios(Recaudacion_Resumen data){
-        this.busyDialog = true;
+    private async Task IngresosPorConceptosTiposUsuarios(Recaudacion_Resumen data)
+    {
+        this._busyDialog = true;
         await Task.Delay(100);
 
-        var dateRange = new DateRange(f1, f2, Subsistema, Sector);
+        var dateRange = new DateRange(_f1, _f2, _subsistema, _sector);
         var _datos = recaudacionService.ObtenerIngresosPorConceptosTipoUsuarios(data.Enlace, dateRange).ToList();
-        if( _datos == null){
+        if( _datos == null)
+        {
             Toaster.Add("Error al tratar de obtener los ingresos por conceptos y tipos de usuario", MatToastType.Danger);
-        }else{
-            if(_datos.Count() <= 0){
+        }
+        else
+        {
+            if(_datos.Count() <= 0)
+            {
                 Toaster.Add("No hay datos disponibles para este periodo", MatToastType.Info);
-            }else{
+            }
+            else
+            {
                 
                 // Inicializar ventana secundaria
-                VtnRConceptos_Visible = true;
-                VtnRConceptos.Inicializar(data.Enlace, _datos);
+                _vtnRConceptos_Visible = true;
+                _vtnRConceptos.Inicializar(data.Enlace, _datos);
             }
         }
 
         await Task.Delay(100);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
 }

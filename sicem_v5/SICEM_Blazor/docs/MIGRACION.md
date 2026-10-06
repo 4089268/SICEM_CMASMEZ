@@ -142,6 +142,14 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | `SfAccumulationChart Title` | `<div>` con el título encima de la gráfica (RadzenChart no tiene título) |
 | `grid.Refresh()` / `chart.Refresh()` desde un `Timer` | `await InvokeAsync(...)` + `Reload()` (hilo de render) |
 | CSS `.e-rowcell` | `.rz-cell-data` |
+| `ChartSeriesType.StackingBar` | `RadzenStackedBarSeries` |
+| `ChartSeriesType.Bar` | `RadzenBarSeries` |
+| `ChartSeriesType.Line` + `DashArray` | `RadzenLineSeries LineType="LineType.Dashed"` |
+| `ChartMarker Visible` | `RadzenMarkers MarkerType="MarkerType.Circle"` |
+| `SfAccumulationChart` sin `InnerRadius` | `RadzenPieSeries` |
+| `ChartZoomSettings` | `RadzenChart AllowZoom="true"` |
+| `ChartTooltipSettings Shared="true"` | `RadzenChartTooltipOptions Shared="true"` |
+| Serie con `TooltipTemplate` **y** etiquetas | las etiquetas van dentro de `<ChildContent>` |
 
 > Radzen 12 soporta zoom en gráficas (`AllowZoom`), así que `ChartZoomSettings` sí tiene equivalente.
 
@@ -152,7 +160,7 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | 1 | Consulta General | `/ConsultaGeneral` | ✅ Migrado (2026-10-06) |
 | 2 | Búsqueda Avanzada | `/analisisInfo` | ✅ Migrado (2026-10-06) |
 | 3 | Seguimiento Pagos | `/seguimiento_cobros` | ✅ Migrado (2026-10-06) |
-| 4 | Recaudación | `/recaudacion` | Pendiente |
+| 4 | Recaudación | `/recaudacion` | ✅ Migrado (2026-10-06) |
 | 5 | Descuentos | `/descuentos` | Pendiente |
 | 6 | Facturación | `/facturacion` | Pendiente |
 | 7 | Eficiencia | `/Eficiencia` | Pendiente |
@@ -209,6 +217,29 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 - El refresco desde el timer ahora se hace con `InvokeAsync(...)`, requerido para actualizar componentes desde otro hilo.
 
 - [ ] Prueba manual: que las gráficas y la tabla se actualicen cada 6 s, y con dos sesiones abiertas a la vez.
+
+### Módulo 4 – Recaudación (2026-10-06)
+
+17 archivos en `Areas/Recaudacion/Views/`: 22 `SfGrid`, 5 `SfChart`, 3 `SfAccumulationChart` y 7 `SfTextBox` → Radzen.
+
+| Archivo | Cambios específicos |
+|---|---|
+| `RecaudacionPage.razor` | 2 gráficas de barras apiladas → `RadzenStackedBarSeries`. **Patrón multi-oficina:** la llamada al service de cada oficina ahora tiene su propio `try/catch` (regla de `CLAUDE.md`); si falla, solo esa fila queda en *Error*. El refresco del grid y las gráficas desde las tareas se hace con `InvokeAsync(() => ...Reload())`. |
+| `RecaudacionOficinaPage.razor` | 2 donas (`RadzenDonutSeries`, tooltip con `%` en Ingresos), barras de conceptos (`RadzenBarSeries`, alto fijo 450 px porque Radzen no tiene `Height="auto"`), 7 `SfTextBox` de solo lectura → `RadzenTextBox`. |
+| `Recaudacion_IngresosAnalitico.razor` | 6 grids; 2 gráficas de líneas por año (series generadas en un `@for`) con zoom (`AllowZoom`). Se quitó el campo `rowHeight`, que solo alimentaba `RowHeight` de Syncfusion. |
+| `Recaudacion_FormasPago_View.razor` | Pastel → `RadzenPieSeries`. |
+| `Recaudacion_ConceptosyTiposUsuariosVtn.razor` | Agrupación inicial por *Tipo Concepto*, con el encabezado `TOTAL` cuando la clave contiene `--*--`. |
+| `Recaudacion_IngresosPagosMayoresVtn.razor` | `RowSelectHandler` recibe la fila (`Recaudacion_PagosMayores`) en lugar de `RowSelectEventArgs`. |
+| Todos los demás | Grids convertidos; exportación comentada (`TODO-EXPORT-RADZEN`) en 16 archivos. |
+
+**Infraestructura agregada en este módulo:**
+
+- `wwwroot/css/radzen-ajustes.css` (enlazado en `_Host.cshtml`): ajustes globales de Radzen. Por ahora, `.grid-sin-panel-grupos` (antes estaba dentro de `ResultsPanel.razor`).
+- `_Imports.razor`: alias `@using DateRange = Sicem_Blazor.Data.DateRange`. Radzen también tiene un tipo `DateRange` y daba referencia ambigua.
+
+**Estilo (`CLAUDE.md`):** Allman en los 17 archivos; campos privados → `_camelCase` (p. ej. `busyDialog` → `_busyDialog`, `f1` → `_f1`, `VtnDias` → `_vtnDias`) y propiedades privadas → PascalCase (`datosRecaudacion` → `DatosRecaudacion`). En `RecaudacionOficinaPage`, `dataGrid` no se renombró a `DataGrid` porque ese nombre ya existe.
+
+- [ ] Prueba manual: consulta con varias oficinas (spinner/✓/✗ por fila y fila TOTAL), gráficas de ingresos/usuarios, cada botón de acción por oficina (Analítico con sus pestañas y gráficas con zoom, Días y su detalle, Cajas, Localidades/Colonias, Rezago y su detalle, Conceptos, Conceptos y Tipos de Usuario, Pagos Mayores) y la página por oficina.
 
 ### Pendientes de la Fase 2
 

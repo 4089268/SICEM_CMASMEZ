@@ -1,0 +1,8 @@
+/* Ajustes de Radzen.Blazor durante la migración desde Syncfusion (ver docs/MIGRACION.md) */
+
+/* Grids con agrupación inicial pero sin el área para arrastrar columnas
+   (equivalente a GridGroupSettings ShowDropArea="false" de Syncfusion) */
+.grid-sin-panel-grupos .rz-group-header
+{
+    display: none;
+}

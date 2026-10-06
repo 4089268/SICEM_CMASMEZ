@@ -1,9 +1,11 @@
-@using Syncfusion.Blazor.Grids
+@using Radzen
+@using Radzen.Blazor
 @using Sicem_Blazor.Recaudacion.Data
 @using Sicem_Blazor.Recaudacion.Models
 @inject IJSRuntime JSRuntime
 
-@if (MostrarVentana) {
+@if (MostrarVentana)
+{
     <VentanaSecundaria Titulo="@Titulo" CerrarVentana="@CerrarModal" Filas="@(new Double[] { 50, 620 })" Columnas="@(new Double[]{.85})">
         <Content>
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 1/2; grid-column: 1/2;">
@@ -15,37 +17,38 @@
                         <option style="font-size: 1.2rem;" value="2">PROMEDIO</option>
                         <option style="font-size: 1.2rem;" value="3">FIJO</option>
                     </select>
+                    @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                     <MatButton Class="mr-2" Raised="true" Style="height:2.5rem;" OnClick="@GenerarExcel">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
+                    *@
                 </div>
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <SfGrid @ref="DataGrid" DataSource="@IngresosTipoUsuarios_filtrados" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="100%" 
-                        EnableHover="true">
-                    <GridColumns>
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Id_Concepto)" HeaderText="Id" TextAlign="TextAlign.Center" Width="60" Format="n0" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Descripcion)" HeaderText="Concepto" TextAlign="TextAlign.Left" Width="240" />
+                <RadzenDataGrid TItem="IngresosTipoUsuario" @ref="DataGrid" Data="@IngresosTipoUsuarios_filtrados" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:100%;">
+                    <Columns>
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Id_Concepto)" Title="Id" TextAlign="TextAlign.Center" Width="60px" FormatString="{0:n0}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Descripcion)" Title="Concepto" TextAlign="TextAlign.Left" Width="240px" />
 
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Dom_Sbt)" Visible="false" HeaderText="Domestico Sub." TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Dom_IVA)" Visible="false" HeaderText="Domestico IVA" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Dom_Tot)" Visible="false" HeaderText="Domestico Total" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Hot_Sbt)" Visible="false" HeaderText="Hotelero Sub." TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Hot_IVA)" Visible="false" HeaderText="Hotelero IVA" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Hot_Tot)" Visible="false" HeaderText="Hotelero Total" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Com_Sbt)" Visible="false" HeaderText="Comercial Sub." TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Com_IVA)" Visible="false" HeaderText="Comercial IVA" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Com_Tot)" Visible="false" HeaderText="Comercial Total" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Ind_Sbt)" Visible="false" HeaderText="Industrial Sub." TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Ind_IVA)" Visible="false" HeaderText="Industrial IVA" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Ind_Tot)" Visible="false" HeaderText="Industrial Total" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Pub_Sbt)" Visible="false" HeaderText="Publico Sub." TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Pub_IVA)" Visible="false" HeaderText="Publico IVA" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Pub_Tot)" Visible="false" HeaderText="Publico Total" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Subtotal)" Visible="false" HeaderText="Subtotal" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.IVA)"    Visible="false" HeaderText="IVA" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(IngresosTipoUsuario.Total)" Visible="false" HeaderText="Total" TextAlign="TextAlign.Right" Width="130" Format="c2" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Dom_Sbt)" Visible="false" Title="Domestico Sub." TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Dom_IVA)" Visible="false" Title="Domestico IVA" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Dom_Tot)" Visible="false" Title="Domestico Total" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Hot_Sbt)" Visible="false" Title="Hotelero Sub." TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Hot_IVA)" Visible="false" Title="Hotelero IVA" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Hot_Tot)" Visible="false" Title="Hotelero Total" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Com_Sbt)" Visible="false" Title="Comercial Sub." TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Com_IVA)" Visible="false" Title="Comercial IVA" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Com_Tot)" Visible="false" Title="Comercial Total" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Ind_Sbt)" Visible="false" Title="Industrial Sub." TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Ind_IVA)" Visible="false" Title="Industrial IVA" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Ind_Tot)" Visible="false" Title="Industrial Total" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Pub_Sbt)" Visible="false" Title="Publico Sub." TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Pub_IVA)" Visible="false" Title="Publico IVA" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Pub_Tot)" Visible="false" Title="Publico Total" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Subtotal)" Visible="false" Title="Subtotal" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.IVA)" Visible="false" Title="IVA" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(IngresosTipoUsuario.Total)" Visible="false" Title="Total" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
 
-                        <GridColumn HeaderText="Domesticos" TextAlign="TextAlign.Center" Width="335">
+                        <RadzenDataGridColumn Title="Domesticos" TextAlign="TextAlign.Center" Width="335px">
                             <HeaderTemplate>
                                 <div class="colorT1" style="grid-area: 1/1/2/4;">Domesticos</div>
                             </HeaderTemplate>
@@ -59,9 +62,9 @@
                                     </div>
                                 }
                             </Template>
-                        </GridColumn>
+                        </RadzenDataGridColumn>
 
-                        <GridColumn HeaderText="Hotelero" TextAlign="TextAlign.Center" Width="335">
+                        <RadzenDataGridColumn Title="Hotelero" TextAlign="TextAlign.Center" Width="335px">
                             <HeaderTemplate>
                                 <div class="colorT2" style="grid-area: 1/1/2/4;">Hotelero</div>
                             </HeaderTemplate>
@@ -75,9 +78,9 @@
                                     </div>
                                 }
                             </Template>
-                        </GridColumn>
+                        </RadzenDataGridColumn>
 
-                        <GridColumn HeaderText="Comercial" TextAlign="TextAlign.Center" Width="335">
+                        <RadzenDataGridColumn Title="Comercial" TextAlign="TextAlign.Center" Width="335px">
                             <HeaderTemplate>
                                 <div class="colorT3">COMERCIAL</div>
                             </HeaderTemplate>
@@ -91,9 +94,9 @@
                                     </div>
                                 }
                             </Template>
-                        </GridColumn>
+                        </RadzenDataGridColumn>
 
-                        <GridColumn HeaderText="Comercial" TextAlign="TextAlign.Center" Width="335">
+                        <RadzenDataGridColumn Title="Comercial" TextAlign="TextAlign.Center" Width="335px">
                             <HeaderTemplate>
                                 <div class="colorT3">INDUSTRIAL</div>
                             </HeaderTemplate>
@@ -107,9 +110,9 @@
                                     </div>
                                 }
                             </Template>
-                        </GridColumn>
+                        </RadzenDataGridColumn>
 
-                        <GridColumn HeaderText="Comercial" TextAlign="TextAlign.Center" Width="335">
+                        <RadzenDataGridColumn Title="Comercial" TextAlign="TextAlign.Center" Width="335px">
                             <HeaderTemplate>
                                 <div class="colorT3">PUBLICO</div>
                             </HeaderTemplate>
@@ -123,9 +126,9 @@
                                     </div>
                                 }
                             </Template>
-                        </GridColumn>
+                        </RadzenDataGridColumn>
 
-                        <GridColumn HeaderText="TOTAL" TextAlign="TextAlign.Center" Width="345">
+                        <RadzenDataGridColumn Title="TOTAL" TextAlign="TextAlign.Center" Width="345px">
                             <Template>
                                 @{
                                     var data = (context as IngresosTipoUsuario);
@@ -136,10 +139,10 @@
                                     </div>
                                 }
                             </Template>
-                        </GridColumn>
+                        </RadzenDataGridColumn>
 
-                    </GridColumns>
-                </SfGrid>
+                    </Columns>
+                </RadzenDataGrid>
             </div>
             
 
@@ -190,7 +193,8 @@
 
 }
 
-@code {
+@code
+{
 
     [Parameter] public bool MostrarVentana { get; set;}
     [Parameter] public EventCallback CerrarModal { get; set; }
@@ -201,33 +205,39 @@
     public IEnlace Enlace { get; set; }
     public string Titulo {get; set;} = "RECAUDACION DE INGRESOS POR TARIFAS";
 
-    private SfGrid<IngresosTipoUsuario> DataGrid {get;set;}
+    private RadzenDataGrid<IngresosTipoUsuario> DataGrid {get;set;}
     private List<IngresosTipoUsuario> IngresosTipoUsuarios {get;set;}
     private List<IngresosTipoUsuario> IngresosTipoUsuarios_filtrados {get;set;}
 
 
     //******** Funciones ********
-    public void Inicializar(IEnlace enlace, IEnumerable<IngresosTipoUsuario> datos) {
+    public void Inicializar(IEnlace enlace, IEnumerable<IngresosTipoUsuario> datos)
+    {
         this.Enlace = enlace;
         this.IngresosTipoUsuarios = datos.ToList();
         ProcesarDatos();
     }
-    private async Task Cerrar_Modal() {
-        if(IngresosTipoUsuarios != null){
+    private async Task Cerrar_Modal()
+    {
+        if(IngresosTipoUsuarios != null)
+        {
             IngresosTipoUsuarios.Clear();
         }
         await CerrarModal.InvokeAsync("");
     }
 
-    private void ProcesarDatos(){
+    private void ProcesarDatos()
+    {
         this.IngresosTipoUsuarios_filtrados = IngresosTipoUsuarios.ToList();
         FiltrarDatos(new ChangeEventArgs(){Value = 0} );
     }
-    private void FiltrarDatos(ChangeEventArgs e){
+    private void FiltrarDatos(ChangeEventArgs e)
+    {
         int valueSelected = int.Parse(e.Value.ToString());
         var tmpData = IngresosTipoUsuarios.Where(item => item.Id_TipoCalculo == valueSelected).ToList();
         this.IngresosTipoUsuarios_filtrados = tmpData;
-        switch (valueSelected) {
+        switch (valueSelected)
+        {
 
             case 1:
                 Titulo = $"{Enlace.Nombre} - INGRESOS POR TARIFAS Y TIPO DE CALCULO MEDIDO";
@@ -245,11 +255,14 @@
         }
     }
 
+    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task GenerarExcel(){
         await this.DataGrid.ExcelExport(new ExcelExportProperties {
             FileName = string.Format("sicem_tiposUsuario_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", "")),
             IncludeHiddenColumn = true
         });
     }
+    */
 
 }

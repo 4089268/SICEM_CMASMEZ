@@ -1,28 +1,28 @@
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Notifications
-@using Syncfusion.Blazor.Inputs
+@using Radzen
+@using Radzen.Blazor
 @using Sicem_Blazor.Recaudacion.Models
 @using Sicem_Blazor.Recaudacion.Data
 @inject IRecaudacionService RecaudacionService
 @inject IMatToaster Toaster
 
-@if(Visible){
-    <VentanaSecundaria Titulo="@Titulo" Columnas="@ColumnasTemplate" Filas="@FilasTemplate" CerrarVentana="@CerrarModal">
+@if(Visible)
+{
+    <VentanaSecundaria Titulo="@Titulo" Columnas="@_columnasTemplate" Filas="@_filasTemplate" CerrarVentana="@CerrarModal">
         <Content>
 
             <div class="d-flex align-items-center border rounded p-2 mb-2 bg-white">
+                @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                 <div class="button bg-success px-3 py-2" @onclick="OnExportExcel_Click" >
                     <i class="fa fa-file-excel mr-2"></i>
                     <span>Exportar Historial</span>
                 </div>
+                *@
             </div>
 
             <div class="border rounded p-2 mb-2 bg-white">
-                <SfGrid @ref="DataGrid" DataSource="@DatosGrid" AllowExcelExport="true" AllowResizing="true" Width="100%" Height="100%">
-                    <GridColumns>
-                        <GridColumn HeaderText="" TextAlign="TextAlign.Left" Width="40">
+                <RadzenDataGrid TItem="RecaudacionIngresosxPoblaciones" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" Style="width:100%; height:100%;">
+                    <Columns>
+                        <RadzenDataGridColumn Title="" TextAlign="TextAlign.Left" Width="40px">
                             <Template>
                                 @{
                                     var data = (context as RecaudacionIngresosxPoblaciones);
@@ -38,25 +38,26 @@
                                     </div>
                                 }
                             </Template>
-                        </GridColumn>
-                        <GridColumn Field="@nameof(RecaudacionIngresosxPoblaciones.Localidad)" HeaderText="Localidad" TextAlign="TextAlign.Left" Width="260" />
-                        <GridColumn Field="@nameof(RecaudacionIngresosxPoblaciones.Facturado)" HeaderText="Ingresos Facturados" TextAlign="TextAlign.Right" Width="150" Format="c2" />
-                        <GridColumn Field="@nameof(RecaudacionIngresosxPoblaciones.Cobrado)" HeaderText="Ingresos Cobrados" TextAlign="TextAlign.Right" Width="140" Format="c2" />
-                        <GridColumn Field="@nameof(RecaudacionIngresosxPoblaciones.Recibos)" HeaderText="Recibos" TextAlign="TextAlign.Center" Width="140" Format="n0" />
-                    </GridColumns>
-                </SfGrid>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn Property="@nameof(RecaudacionIngresosxPoblaciones.Localidad)" Title="Localidad" TextAlign="TextAlign.Left" Width="260px" />
+                        <RadzenDataGridColumn Property="@nameof(RecaudacionIngresosxPoblaciones.Facturado)" Title="Ingresos Facturados" TextAlign="TextAlign.Right" Width="150px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(RecaudacionIngresosxPoblaciones.Cobrado)" Title="Ingresos Cobrados" TextAlign="TextAlign.Right" Width="140px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(RecaudacionIngresosxPoblaciones.Recibos)" Title="Recibos" TextAlign="TextAlign.Center" Width="140px" FormatString="{0:n0}" />
+                    </Columns>
+                </RadzenDataGrid>
             </div>
 
         </Content>
     </VentanaSecundaria>
 
     <Recaudacion_ColoniasVtn @ref="RecaudacionColoniasVtn" Enlace="@Enlace" Desde="@Desde" Hasta="@Hasta" Subsistema="@Subsistema" Sector="@Sector" Visible="@RecaudacionColonias_visible" OnClose="@( e => RecaudacionColonias_visible = false)" Titulo="@($"{Enlace.Nombre} - Recaudacion Por Colonias")"/>
-    <Recaudacion_IngresosxDias_detalle_conceptos @ref="ConceptosLocalidadesVtn" MostrarVentana="@ConceptosLocalidades_visible" CerrarModal="@(e => ConceptosLocalidades_visible = false)" />
+    <Recaudacion_IngresosxDias_detalle_conceptos @ref="_conceptosLocalidadesVtn" MostrarVentana="@ConceptosLocalidades_visible" CerrarModal="@(e => ConceptosLocalidades_visible = false)" />
    
 }
-<BusyIndicator Busy="@busyDialog" ContentText="Cargando datos..." />
+<BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos..." />
 
-@code {
+@code
+{
     [Parameter] public EventCallback OnClose {get;set;}
     [Parameter] public bool Visible {get;set;}
     [Parameter] public DateTime Desde {get;set;}
@@ -66,24 +67,28 @@
     public IEnlace Enlace {get;set;}
     public string Titulo {get;set;} = "Recaudacion Por Localidades";
 
-    private SfGrid<RecaudacionIngresosxPoblaciones> DataGrid {get;set;}
+    private RadzenDataGrid<RecaudacionIngresosxPoblaciones> DataGrid {get;set;}
     private List<RecaudacionIngresosxPoblaciones> DatosGrid {get;set;}
-    private double[] ColumnasTemplate = new double[]{ .9};
-    private double[] FilasTemplate = new double[]{50, .8,};
+    private double[] _columnasTemplate = new double[]{ .9};
+    private double[] _filasTemplate = new double[]{50, .8,};
 
-    private bool busyDialog  = false, RecaudacionColonias_visible = false, ConceptosLocalidades_visible = false;
+    private bool _busyDialog  = false, RecaudacionColonias_visible = false, ConceptosLocalidades_visible = false;
     private Recaudacion_ColoniasVtn RecaudacionColoniasVtn {get;set;}
-    private Recaudacion_IngresosxDias_detalle_conceptos ConceptosLocalidadesVtn;
+    private Recaudacion_IngresosxDias_detalle_conceptos _conceptosLocalidadesVtn;
 
-    public void Inicializar(IEnumerable<RecaudacionIngresosxPoblaciones> datos, IEnlace enlace){
+    public void Inicializar(IEnumerable<RecaudacionIngresosxPoblaciones> datos, IEnlace enlace)
+    {
         this.Enlace = enlace;
         this.DatosGrid = datos.ToList();
 
         Titulo=$"{Enlace.Nombre} - Recaudacion Por Localidades";
     }
-    private async Task CerrarModal(){
+    private async Task CerrarModal()
+    {
         await OnClose.InvokeAsync(null);
     }
+    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task OnExportExcel_Click(){
         var _guid = Guid.NewGuid().ToString().Replace("-","").Substring(0,10);
         var _titulo = Titulo.Replace(" - ",".").Replace(" ","_").ToString();
@@ -93,8 +98,10 @@
         };
         await DataGrid.ExportToExcelAsync(_p);
     }
+    */
 
-    private async Task MostrarColonias_Click(RecaudacionIngresosxPoblaciones context){
+    private async Task MostrarColonias_Click(RecaudacionIngresosxPoblaciones context)
+    {
 
         Toaster.Add("NO IMPLEMENTADO", MatToastType.Danger);
         await Task.Delay(100);
@@ -104,7 +111,7 @@
             return;
         }
 
-        busyDialog = true;
+        _busyDialog = true;
         await Task.Delay(100);
 
         var _datos = RecaudacionService.ObtenerRecaudacionColonias(Enlace, Desde, Hasta, Subsistema, Sector, context.Id_localidad).ToList();
@@ -116,12 +123,14 @@
         }
 
         await Task.Delay(100);
-        busyDialog = false;
+        _busyDialog = false;
         */
     }
 
-    private async Task MostrarIngresosPorConceptos(RecaudacionIngresosxPoblaciones context){
-        if(ConceptosLocalidades_visible == true){
+    private async Task MostrarIngresosPorConceptos(RecaudacionIngresosxPoblaciones context)
+    {
+        if(ConceptosLocalidades_visible == true)
+        {
             return;
         }
         var idLocalidad = context.Id_localidad;
@@ -129,7 +138,7 @@
 
         var results = RecaudacionService.ObtenerIngresosConceptosPorLocalidadColonia(Enlace, dateRange, idLocalidad, 0);
         ConceptosLocalidades_visible = true;
-        ConceptosLocalidadesVtn.Inicializar(results, context.Localidad);
+        _conceptosLocalidadesVtn.Inicializar(results, context.Localidad);
         await Task.Delay(100);
     }
 
