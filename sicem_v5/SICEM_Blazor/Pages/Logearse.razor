@@ -1,6 +1,4 @@
-﻿@page "/Logearse"
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Buttons
+@page "/Logearse"
 @using System.Text
 @using System.Text.Json
 @using Sicem_Blazor.Models;
@@ -30,13 +28,13 @@
                 </div>
 
                 <div class="row my-4 justify-content-center">
-                    <input id="input-user" type="text" placeholder='Usuario' @bind="@usuario"/>
+                    <input id="input-user" type="text" placeholder='Usuario' @bind="@_usuario"/>
                 </div>
                 <div class="row my-4 justify-content-center">
-                    <input id="input-pass" type="password" placeholder='Contraseña' @bind="@contra" @onkeyup="@Tb_Contrasena_keyDown" />
+                    <input id="input-pass" type="password" placeholder='Contraseña' @bind="@_contra" @onkeyup="@Tb_Contrasena_keyDown" />
                 </div>
                 <div class="row my-4 justify-content-center">
-                    @if (!cargando)
+                    @if (!_cargando)
                     {
                         <div class="button p-2 w-100" style="height:3.25rem;" @onclick="@Logearse_Click"> INICIAR SESION </div>
                     }
@@ -68,43 +66,53 @@
 </div>
 
 
-@code {
+@code
+{
     [CascadingParameter] private ConnectionInfo connectionInfo { get; set; }
 
-    private string usuario = "";
-    private string contra = "";
-    private bool cargando = false;
+    private string _usuario = "";
+    private string _contra = "";
+    private bool _cargando = false;
 
 
-    protected override async Task OnAfterRenderAsync(bool firstRender){
-        if (firstRender) {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
             await JSRuntime.InvokeVoidAsync("animacionLineaNerus");
         }
     }
-    public async Task Tb_Contrasena_keyDown(KeyboardEventArgs e) {
-        if (e.Key == "Enter") {
+    public async Task Tb_Contrasena_keyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
             await Logearse_Click();
         }
     }
-    public async Task Logearse_Click() {
+    public async Task Logearse_Click()
+    {
 
-        if (cargando) {
+        if (_cargando)
+        {
             return;
         }
-        if(this.usuario.Length <= 0) {
+        if(this._usuario.Length <= 0)
+        {
             await JSRuntime.InvokeVoidAsync("shake", "#input-user");
             return;
         }
-        if(this.contra.Length <= 0) {
+        if(this._contra.Length <= 0)
+        {
             await JSRuntime.InvokeVoidAsync("shake", "#input-pass");
             return;
         }
 
-        cargando = true;
+        _cargando = true;
         await Task.Delay(100);
 
-        var res = sicemService.Logearse(this.usuario, this.contra, connectionInfo.IpAddress);
-        if (res == null) {
+        var res = sicemService.Logearse(this._usuario, this._contra, connectionInfo.IpAddress);
+        if (res == null)
+        {
 
             //*** Almacenar token
             var idSession = sicemService.IdSession;
@@ -113,11 +121,12 @@
             //*** Redireccionar a la pagina principal
             NavManager.NavigateTo("/");
         }
-        else {
+        else
+        {
             //*** Mostrar error
             Toaster.Add(res, MatToastType.Warning, "");
         }
         await Task.Delay(100);
-        cargando = false;
+        _cargando = false;
     }
 }

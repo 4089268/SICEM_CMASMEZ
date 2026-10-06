@@ -392,10 +392,22 @@ Allman y renombres de miembros privados.
 
 - [ ] Prueba manual: buscar en cada catálogo (Enter y limpiar búsqueda), alta/edición de usuarios y oficinas, conceptos (selección, edición, publicar), sesiones, historial de conexiones, plantillas e imágenes de notificaciones.
 
+### Archivos fuera del menú y estilos (2026-10-06)
+
+| Archivo | Cambios |
+|---|---|
+| `Shared/Dialogs/MapaCamposExportarVtn.razor` (lo usa `MapaComponent`) | 2 grids con `TItem="Dictionary<string, string>"`, selección y doble clic para mover campos entre listas. La limpieza de selección del otro grid (`ClearRowSelectionAsync`) se hace vaciando la lista enlazada con `@bind-Value`. `Refresh()` → `await Reload()`. |
+| `Shared/Dialogs/TestDialog.razor` | Grid convertido. ⚠️ No se usa en ninguna parte (código de prueba). |
+| `Pages/Logearse.razor`, `Shared/Dialogs/VisorImagen.razor`, `Data/DatabaseExecutor.cs` | Solo tenían `using` de Syncfusion sin usar: se quitaron. Allman. |
+| `wwwroot/css/radzen-ajustes.css` | Se trasladaron los "ESTILOS DE SYNCFUCION" de `site.css` a sus equivalentes Radzen: tamaño de letra y padding de celdas, fila seleccionada más grande, encabezado con degradado gris, filas alternas `#fafafa`, borde del grid, variante `.ns-small` y cajas de texto a 1.3rem. Las reglas `.e-*` de `site.css` quedan sin efecto; se eliminarán al quitar Syncfusion. |
+
+**Verificación:** `dotnet build` sin errores ni advertencias. La app arranca y responden 200 las rutas de los 14 módulos del menú (solo prueba que cargan sin errores de servidor; falta la prueba manual con datos de cada módulo).
+
 ### Pendientes de la Fase 2
 
 - [ ] **Exportación Excel/PDF** (`TODO-EXPORT-RADZEN`): elegir librería (EPPlus/Aspose requieren licencia comercial; alternativas: ClosedXML [MIT] + QuestPDF [Community]) e implementar un servicio reutilizable que reciba las columnas visibles del `RadzenDataGrid` y los datos.
-- [ ] Revisar CSS que apunta a clases de Syncfusion (`.e-rowcell`, `.e-grid`, `.e-headercell`, …) en `wwwroot/css` y en bloques `<style>`: 13 apariciones detectadas al inicio de la Fase 2. Se corrigen al migrar el archivo que las usa.
+- [x] CSS de Syncfusion en `site.css` trasladado a `radzen-ajustes.css`. Pendiente: borrar las reglas `.e-*` de `site.css`/`site.min.css` y `consultaGeneral.css` al quitar Syncfusion.
+- [ ] **`Pages/Maps/SicemMaps.razor`** (ruta `/SicemMaps`, fuera del menú): único uso de `SfMaps`; Radzen no tiene un componente de mapas equivalente. Parece una página de prueba (oficinas fijas de otro organismo, lista de marcadores vacía) y tiene una **llave de Bing Maps escrita en el código**. Decidir: eliminarla o reimplementarla.
 - [ ] Al terminar todos los módulos: quitar `Syncfusion.Blazor` del `.csproj`, `AddSyncfusionBlazor()` y el registro de licencia en `Startup.cs`, los CSS/JS de Syncfusion en `_Host.cshtml`, la clave `SyncfusionLicense`, y mover los `@using` de Radzen a `_Imports.razor`.
 
 ---

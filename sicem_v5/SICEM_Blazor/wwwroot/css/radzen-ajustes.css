@@ -6,3 +6,50 @@
 {
     display: none;
 }
+
+/* Apariencia de los grids: equivalentes Radzen de los "ESTILOS DE SYNCFUSION" de site.css
+   (.e-rowcell, .e-headercelldiv, .e-grid, table.e-table thead th, .e-altrow) */
+.rz-data-grid
+{
+    --rz-grid-cell-font-size: 1.1rem;
+    --rz-grid-cell-padding: 4px 6px;
+    --rz-grid-header-font-size: 1rem;
+    --rz-grid-stripe-background-color: #fafafa;
+    border: 1px solid #cdcdcd;
+}
+
+.rz-data-grid .rz-cell-data
+{
+    transition: font-size .1s;
+}
+
+.rz-data-grid .rz-state-highlight .rz-cell-data
+{
+    font-size: 1.15rem;
+}
+
+.rz-data-grid .rz-grid-table thead th
+{
+    background: rgb(222,222,222);
+    background: linear-gradient(180deg, rgba(232,232,232,1) 0%, rgba(244,244,244,1) 13%, rgba(244,244,244,1) 80%, rgba(227,227,227,1) 92%, rgba(205,205,205,1) 100%);
+    color: black;
+}
+
+/* Grids compactos (.ns-small) */
+.ns-small .rz-data-grid
+{
+    --rz-grid-cell-font-size: .95rem;
+}
+
+.ns-small .rz-data-grid .rz-state-highlight .rz-cell-data
+{
+    font-size: 1rem;
+}
+
+/* Cajas de texto (en site.css: .e-control.e-textbox { font-size: 1.3rem }) */
+.rz-textbox,
+.rz-textarea,
+.rz-numeric input
+{
+    font-size: 1.3rem;
+}

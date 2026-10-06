@@ -5,24 +5,24 @@ using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic;
-using Syncfusion.Blazor.PdfViewer;
 
 namespace SICEM_Blazor.Data
 {
     public class DatabaseExecutor
     {
-        private readonly string connectionString = "";
+        private readonly string _connectionString = "";
 
         public DatabaseExecutor( string connectionString)
         {
-            this.connectionString = connectionString;
+            this._connectionString = connectionString;
         }
 
         public IEnumerable<T> ExecuteQuery<T>(string sql_query, Func<DbDataReader, T> mapFunc)
         {
-            using var sqlConnection = new SqlConnection(this.connectionString);
+            using var sqlConnection = new SqlConnection(this._connectionString);
             sqlConnection.Open();
-            using var sqlCommand = new SqlCommand(){
+            using var sqlCommand = new SqlCommand()
+            {
                 Connection = sqlConnection,
                 CommandText = sql_query,
                 CommandType = System.Data.CommandType.Text
@@ -39,9 +39,10 @@ namespace SICEM_Blazor.Data
 
         public IEnumerable<T> ExecuteStoredProcedure<T>(string procedure_name, Dictionary<string, object> parameters, Func<DbDataReader, T> mapFunc)
         {
-            using var sqlConnection = new SqlConnection(this.connectionString);
+            using var sqlConnection = new SqlConnection(this._connectionString);
             sqlConnection.Open();
-            using var sqlCommand = new SqlCommand(){
+            using var sqlCommand = new SqlCommand()
+            {
                 Connection = sqlConnection,
                 CommandText = procedure_name,
                 CommandType = System.Data.CommandType.StoredProcedure
