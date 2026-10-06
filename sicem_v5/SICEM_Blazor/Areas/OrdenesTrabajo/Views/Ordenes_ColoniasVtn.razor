@@ -1,31 +1,28 @@
-@using Syncfusion.Blazor
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Buttons
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Calendars
-@using Syncfusion.Blazor.DropDowns
+@using Radzen
+@using Radzen.Blazor
 @using Sicem_Blazor.OrdenesTrabajos.Models
 
 @inject IJSRuntime JSRuntime
 @inject IMatToaster Toaster
 @inject OrdenesService ordenesService
 
-@if (Visible) {
+@if (Visible)
+{
 
     <VentanaSecundaria Titulo="@Titulo" CerrarVentana="@CerrarModal" Filas="@(new double[]{ 50, 580 })" Columnas="@(new double[]{.85})">
         <Content>
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 1/2; grid-column: 1/2;">
                 <div class="w-100 d-flex align-items-center">
+                    @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
                     <MatButton Class="mr-2" Raised="true" Style="height:2.5rem;" OnClick="@GenerarExcel">Exportar Excel <i class="fa fa-file-excel-o ml-2" aria-hidden="true"></i> </MatButton>
+                    *@
                 </div>
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <SfGrid @ref="dataGrid" DataSource="@datosGrid" AllowPaging="@allowPagesGrid" AllowSorting="true" AllowResizing="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="100%" EnableHover="true">
-                    <GridPageSettings PageSize="1000"></GridPageSettings>
-                    <GridColumns>
-                        <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="55">
+                <RadzenDataGrid TItem="Ordenes_Agrupado" @ref="_dataGrid" Data="@datosGrid" AllowPaging="@_allowPagesGrid" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" PageSize="1000" Style="height:100%; width:100%;">
+                    <Columns>
+                        <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="55px">
                             <Template>
                                 @{
                                     var data = (context as Ordenes_Agrupado);
@@ -34,28 +31,29 @@
                                     </button>
                                 }
                             </Template>
-                        </GridColumn>
+                        </RadzenDataGridColumn>
 
-                        <GridColumn Field="@nameof(Ordenes_Agrupado.Descripcion)" HeaderText="Colonia" TextAlign="TextAlign.Left" Width="220" />
-                        <GridColumn Field="@nameof(Ordenes_Agrupado.Pendientes)" HeaderText="Pendientes" TextAlign="TextAlign.Center" Width="100" />
-                        <GridColumn Field="@nameof(Ordenes_Agrupado.En_Ejecucion)" HeaderText="En Ejecucion" TextAlign="TextAlign.Center" Width="100" />
-                        <GridColumn Field="@nameof(Ordenes_Agrupado.Realizadas)" HeaderText="Realizadas" TextAlign="TextAlign.Center" Width="100" />
-                        <GridColumn Field="@nameof(Ordenes_Agrupado.Canceladas)" HeaderText="Canceladas" TextAlign="TextAlign.Center" Width="100" />
-                        <GridColumn Field="@nameof(Ordenes_Agrupado.Ejecutadas)" HeaderText="Ejecutadas" TextAlign="TextAlign.Center" Width="100" />
-                        <GridColumn Field="@nameof(Ordenes_Agrupado.No_Ejecutadas)" HeaderText="No Ejecutadas" TextAlign="TextAlign.Center" Width="100" />
-                        <GridColumn Field="@nameof(Ordenes_Agrupado.Total)" HeaderText="Total" TextAlign="TextAlign.Center" Width="100" />
-                    </GridColumns>
-                </SfGrid>
+                        <RadzenDataGridColumn Property="@nameof(Ordenes_Agrupado.Descripcion)" Title="Colonia" TextAlign="TextAlign.Left" Width="220px" />
+                        <RadzenDataGridColumn Property="@nameof(Ordenes_Agrupado.Pendientes)" Title="Pendientes" TextAlign="TextAlign.Center" Width="100px" />
+                        <RadzenDataGridColumn Property="@nameof(Ordenes_Agrupado.En_Ejecucion)" Title="En Ejecucion" TextAlign="TextAlign.Center" Width="100px" />
+                        <RadzenDataGridColumn Property="@nameof(Ordenes_Agrupado.Realizadas)" Title="Realizadas" TextAlign="TextAlign.Center" Width="100px" />
+                        <RadzenDataGridColumn Property="@nameof(Ordenes_Agrupado.Canceladas)" Title="Canceladas" TextAlign="TextAlign.Center" Width="100px" />
+                        <RadzenDataGridColumn Property="@nameof(Ordenes_Agrupado.Ejecutadas)" Title="Ejecutadas" TextAlign="TextAlign.Center" Width="100px" />
+                        <RadzenDataGridColumn Property="@nameof(Ordenes_Agrupado.No_Ejecutadas)" Title="No Ejecutadas" TextAlign="TextAlign.Center" Width="100px" />
+                        <RadzenDataGridColumn Property="@nameof(Ordenes_Agrupado.Total)" Title="Total" TextAlign="TextAlign.Center" Width="100px" />
+                    </Columns>
+                </RadzenDataGrid>
             </div>
         </Content>
     </VentanaSecundaria>
 
-    <BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
-    <Ordenes_DetalleVtn @ref="vtn_detalle" Visible="@vtn_detalle_visible" CerrarModal="@(()=> vtn_detalle_visible = false)" Fecha1="@Fecha1" Fecha2="@Fecha2" Subsistema="@Subsistema" Sector="@Sector" Filtro_Colonia="false" />
+    <BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
+    <Ordenes_DetalleVtn @ref="_vtn_detalle" Visible="@vtn_detalle_visible" CerrarModal="@(()=> vtn_detalle_visible = false)" Fecha1="@Fecha1" Fecha2="@Fecha2" Subsistema="@Subsistema" Sector="@Sector" Filtro_Colonia="false" />
 
 }
 
-@code{
+@code
+{
 
     [Parameter] public bool Visible { get; set; }
     [Parameter] public EventCallback CerrarModal { get; set; }
@@ -66,31 +64,36 @@
     public string Titulo = "Ordenes Agrupados por Colonias";
     public Ruta OficinaActual = null;
 
-    List<int> GridFilas = new List<int>() { 50, 580};
-    List<int> GridColumnas = new List<int>() { 1006 };
-    SfGrid<Ordenes_Agrupado> dataGrid;
+    List<int> _gridFilas = new List<int>() { 50, 580};
+    List<int> _gridColumnas = new List<int>() { 1006 };
+    RadzenDataGrid<Ordenes_Agrupado> _dataGrid;
     public List<Ordenes_Agrupado> datosGrid { get; set; } = new List<Ordenes_Agrupado>();
-    bool allowPagesGrid = false;
-    bool busyDialog = false, vtn_detalle_visible = false;
-    Ordenes_DetalleVtn vtn_detalle;
+    bool _allowPagesGrid = false;
+    bool _busyDialog = false, vtn_detalle_visible = false;
+    Ordenes_DetalleVtn _vtn_detalle;
 
 
     //"******** Funciones Generales ********"
-    private async Task Cerrar_Modal() {
+    private async Task Cerrar_Modal()
+    {
         this.datosGrid.Clear();
-        this.allowPagesGrid = false;
+        this._allowPagesGrid = false;
         await CerrarModal.InvokeAsync("");
     }
-    public async Task Inicializar(Ordenes_Agrupado[] _datos) {
-        if(_datos.Length > 2000){
-            this.allowPagesGrid = true;
+    public async Task Inicializar(Ordenes_Agrupado[] _datos)
+    {
+        if(_datos.Length > 2000)
+        {
+            this._allowPagesGrid = true;
         }
         this.datosGrid = _datos.ToList();
         await Task.Delay(100);
     }
-    private async Task MostrarDetalle(Ordenes_Agrupado data){
-        if(!vtn_detalle_visible){
-            this.busyDialog = true;
+    private async Task MostrarDetalle(Ordenes_Agrupado data)
+    {
+        if(!vtn_detalle_visible)
+        {
+            this._busyDialog = true;
             await Task.Delay(100);
 
             var titulo = $"{OficinaActual.Oficina} / Ordenes Colonia {data.Descripcion} del {Fecha1.ToString("dd/MM/yyyy")} al  {Fecha2.ToString("dd/MM/yyyy")}";
@@ -98,31 +101,36 @@
             Console.WriteLine($">> {_xmlFilro}");
             var datos = ordenesService.ObtenerOrdenesDetalle(OficinaActual, Fecha1.ToString("yyyyMMdd"), Fecha2.ToString("yyyyMMdd"), Subsistema, Sector, _xmlFilro);
 
-            if(datos == null){
+            if(datos == null)
+            {
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 await Task.Delay(100);
-                busyDialog = false;
+                _busyDialog = false;
                 return;
             }
-            if (datos.Length <= 0) {
+            if (datos.Length <= 0)
+            {
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 await Task.Delay(100);
-                busyDialog = false;
+                _busyDialog = false;
                 return;
             }
 
             vtn_detalle_visible = true;
-            vtn_detalle.IdOficina = OficinaActual.Id;
-            await vtn_detalle.Inicializar(datos, titulo);
+            _vtn_detalle.IdOficina = OficinaActual.Id;
+            await _vtn_detalle.Inicializar(datos, titulo);
 
             await Task.Delay(100);
-            this.busyDialog = false;
+            this._busyDialog = false;
         }
     }
+    // TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task GenerarExcel() {
-        await this.dataGrid.ExcelExport(new ExcelExportProperties {
+        await this._dataGrid.ExcelExport(new ExcelExportProperties {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
+    */
 
 }

@@ -172,7 +172,7 @@ Los otros 41 archivos de la Fase 1 solo cambiaron una línea `using`, por lo que
 | 7 | Eficiencia | `/Eficiencia` | ✅ Migrado (2026-10-06) |
 | 8 | Micromedición | `/micromedicion` | ✅ Migrado (2026-10-06) |
 | 9 | Padrón de Usuarios | `/padron` | ✅ Migrado (2026-10-06) |
-| 10 | Órdenes de Trabajo | `/ordenes` | Pendiente |
+| 10 | Órdenes de Trabajo | `/ordenes` | ✅ Migrado (2026-10-06) |
 | 11 | Antigüedad de Saldos | `/controlRezago` | Pendiente |
 | 12 | Lecturas | `/lecturas` | Pendiente |
 | 13 | Pago en Línea | `/PagoLineaAnalitycs` | Pendiente |
@@ -321,6 +321,19 @@ Exportación comentada (`TODO-EXPORT-RADZEN`) en los archivos con exportación. 
 Exportación comentada (`TODO-EXPORT-RADZEN`) en los archivos con exportación. Allman y renombres de miembros privados.
 
 - [ ] Prueba manual: consulta multi-oficina con gráfica; página por oficina (media dona); Resumen (3 pestañas y su detalle); Últimos Contratos; Tarifas Modificadas; Modificaciones ABC (selección y filtros).
+
+### Módulo 10 – Órdenes de Trabajo (2026-10-06)
+
+7 archivos `.razor` + `OrdenesPage.razor.cs` en `Areas/OrdenesTrabajo/Views/`: 6 `SfGrid`, 2 `SfChart` → Radzen.
+
+| Archivo | Cambios específicos |
+|---|---|
+| `OrdenesPage.razor` + `OrdenesPage.razor.cs` | En el code-behind: `using Syncfusion.*` → `using Radzen*`, tipos `SfGrid`/`SfChart` → `RadzenDataGrid`/`RadzenChart`. **Patrón multi-oficina:** `try/catch` propio por oficina y refresco con `InvokeAsync(() => ...Reload())`. Exportación (`ExportToExcelAsync`) comentada en el `.cs` y su botón en el `.razor`. Renombres aplicados a ambos archivos. |
+| Resto (Oficina, Colonias, Trabajos, Realización, Capturación, Detalle) | Grids y gráficas convertidos. |
+
+Allman y renombres de miembros privados.
+
+- [ ] Prueba manual: consulta multi-oficina con gráfica; página por oficina; ventanas Colonias, Trabajos, Realización, Capturación y Detalle.
 
 ### Pendientes de la Fase 2
 

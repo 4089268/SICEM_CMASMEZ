@@ -1,10 +1,7 @@
 @page "/Ordenes"
+@using Radzen
+@using Radzen.Blazor
 @namespace Sicem_Blazor.OrdenesTrabajos.Views
-@using Syncfusion.Blazor.Buttons
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Navigations
 @using Sicem_Blazor.OrdenesTrabajos.Models
 @using Sicem_Blazor.Areas.OrdenesTrabajo.Views
 
@@ -23,16 +20,17 @@
 
     @* ****** Acciones ****** *@
     <div class="border rounded bg-white p-2 d-flex align-items-center" style="grid-area:3/1/4/2;">
+        @* TODO-EXPORT-RADZEN: exportación pendiente (ver docs/MIGRACION.md)
         <MatButton Class="mx-2" style="min-width: 130px;" Raised="true" @onclick="ExportarExcel_Click">Exportar Excel</MatButton>
+        *@
         <MatButton Class="mx-2" style="min-width: 130px;" Raised="true" Disabled="true">Generar Reporte</MatButton>
     </div>
 
     @* ****** DataGrid ****** *@
     <div class="border rounded bg-white p-2 d-flex" style="grid-area:4/1/5/2;">
-        <SfGrid @ref="DataGrid" DataSource="@DatosGrid" TValue="OrdenesResumenOficina" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true"
-                AllowPdfExport="true" Height="99%" Width="100%" EnableHover="true">
-            <GridColumns>
-                <GridColumn Width="40" >
+        <RadzenDataGrid TItem="OrdenesResumenOficina" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:99%; width:100%;">
+            <Columns>
+                <RadzenDataGridColumn Width="40px">
                     <Template>
                         @{
                             var data = (context as OrdenesResumenOficina);
@@ -55,16 +53,16 @@
                             }
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn Field="@nameof(OrdenesResumenOficina.Oficina)" HeaderText="Oficina" TextAlign="TextAlign.Left" Width="140" />
-                <GridColumn Field="@nameof(OrdenesResumenOficina.Pendi)" HeaderText="Ordenes Pendientes" TextAlign="TextAlign.Center" Width="125" Format="n0" />
-                <GridColumn Field="@nameof(OrdenesResumenOficina.Eneje)" HeaderText="Ordenes en Ejecucion" TextAlign="TextAlign.Center" Width="125" Format="n0" />
-                <GridColumn Field="@nameof(OrdenesResumenOficina.Reali)" HeaderText="Ordenes Realizadas" TextAlign="TextAlign.Center" Width="125" Format="n0" />
-                <GridColumn Field="@nameof(OrdenesResumenOficina.Cance)" HeaderText="Ordenes Canceladas" TextAlign="TextAlign.Center" Width="125" Format="n0" />
-                <GridColumn Field="@nameof(OrdenesResumenOficina.Eje)" HeaderText="Ordenes Ejecutadas" TextAlign="TextAlign.Center" Width="125" Format="n0" />
-                <GridColumn Field="@nameof(OrdenesResumenOficina.No_eje)" HeaderText="Ordenes No Ejecutadas" TextAlign="TextAlign.Center" Width="125" Format="n0" />
-                <GridColumn Field="@nameof(OrdenesResumenOficina.Total)" HeaderText="Total Ordenes" TextAlign="TextAlign.Center" Width="125" Format="n0" />
-                <GridColumn HeaderText="Acciones" TextAlign="TextAlign.Left" Width="140">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Property="@nameof(OrdenesResumenOficina.Oficina)" Title="Oficina" TextAlign="TextAlign.Left" Width="140px" />
+                <RadzenDataGridColumn Property="@nameof(OrdenesResumenOficina.Pendi)" Title="Ordenes Pendientes" TextAlign="TextAlign.Center" Width="125px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(OrdenesResumenOficina.Eneje)" Title="Ordenes en Ejecucion" TextAlign="TextAlign.Center" Width="125px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(OrdenesResumenOficina.Reali)" Title="Ordenes Realizadas" TextAlign="TextAlign.Center" Width="125px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(OrdenesResumenOficina.Cance)" Title="Ordenes Canceladas" TextAlign="TextAlign.Center" Width="125px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(OrdenesResumenOficina.Eje)" Title="Ordenes Ejecutadas" TextAlign="TextAlign.Center" Width="125px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(OrdenesResumenOficina.No_eje)" Title="Ordenes No Ejecutadas" TextAlign="TextAlign.Center" Width="125px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(OrdenesResumenOficina.Total)" Title="Total Ordenes" TextAlign="TextAlign.Center" Width="125px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Title="Acciones" TextAlign="TextAlign.Left" Width="140px">
                     <Template>
                         @{
                             var data = (context as OrdenesResumenOficina);
@@ -87,46 +85,52 @@
                             }
                         }
                     </Template>
-                </GridColumn>
-            </GridColumns>
-        </SfGrid>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
     </div>
 
     <!--- ****** Graficas ****** -->
     <div class="d-flex" style="grid-area:5/1/6/2;">
-        <SfChart @ref="GraficaUsuarios" Height="100%" Width="100%" Title="ORDENES DE TRABAJO">
-            <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-            <ChartPrimaryYAxis Visible="false" LabelFormat="n0" />
-            <ChartTooltipSettings Enable="true" Header="Ordenes" Format="<b>${series.name}</b> : ${point.y}" Shared="true"></ChartTooltipSettings>
-            <ChartLegendSettings Visible="true" Position="LegendPosition.Right"></ChartLegendSettings>
-            <ChartSeriesCollection>
-
-                <ChartSeries DataSource="@DatosGrafica" Name="Pendientes" XName="Descripcion" YName="Valor1" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Outer" />
-                    </ChartMarker>
-                </ChartSeries>
-
-                <ChartSeries DataSource="@DatosGrafica" Name="En Ejecucion" XName="Descripcion" YName="Valor2" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Outer" />
-                    </ChartMarker>
-                </ChartSeries>
-
-                <ChartSeries DataSource="@DatosGrafica" Name="Realizadas" XName="Descripcion" YName="Valor3" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Outer" />
-                    </ChartMarker>
-                </ChartSeries>
-
-                <ChartSeries DataSource="@DatosGrafica" Name="Canceladas" XName="Descripcion" YName="Valor4" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Outer" />
-                    </ChartMarker>
-                </ChartSeries>
-
-            </ChartSeriesCollection>
-        </SfChart>
+        <div class="text-center font-weight-bold">ORDENES DE TRABAJO</div>
+        <RadzenChart @ref="GraficaUsuarios" Style="height:100%; width:100%;">
+            <RadzenCategoryAxis />
+            <RadzenValueAxis Visible="false" FormatString="{0:n0}" />
+            <RadzenChartTooltipOptions Shared="true" />
+            <RadzenLegend Visible="true" Position="LegendPosition.Right" />
+            <RadzenStackedBarSeries Data="@DatosGrafica" Title="Pendientes" CategoryProperty="Descripcion" ValueProperty="Valor1">
+                <TooltipTemplate Context="item">
+                    <b>Pendientes</b> : @item.Valor1
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="true" />
+                </ChildContent>
+            </RadzenStackedBarSeries>
+            <RadzenStackedBarSeries Data="@DatosGrafica" Title="En Ejecucion" CategoryProperty="Descripcion" ValueProperty="Valor2">
+                <TooltipTemplate Context="item">
+                    <b>En Ejecucion</b> : @item.Valor2
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="true" />
+                </ChildContent>
+            </RadzenStackedBarSeries>
+            <RadzenStackedBarSeries Data="@DatosGrafica" Title="Realizadas" CategoryProperty="Descripcion" ValueProperty="Valor3">
+                <TooltipTemplate Context="item">
+                    <b>Realizadas</b> : @item.Valor3
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="true" />
+                </ChildContent>
+            </RadzenStackedBarSeries>
+            <RadzenStackedBarSeries Data="@DatosGrafica" Title="Canceladas" CategoryProperty="Descripcion" ValueProperty="Valor4">
+                <TooltipTemplate Context="item">
+                    <b>Canceladas</b> : @item.Valor4
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="true" />
+                </ChildContent>
+            </RadzenStackedBarSeries>
+        </RadzenChart>
     </div>
 </div>
 
@@ -140,10 +144,10 @@
 
 
 @* ****** Dialogos y ventanas secundarias ****** *@
-<Ordenes_DetalleVtn @ref="vtn_detalle" Visible="@vtn_detalle_visible" CerrarModal="@(()=> vtn_detalle_visible = false)" Fecha1="@f1" Fecha2="@f2" Subsistema="@subsistema" Sector="@sector" Filtro_Estatus="false" />
-<Ordenes_ColoniasVtn @ref="vtn_colonias" Visible="@vtn_colonias_visible" CerrarModal="@(()=> vtn_colonias_visible = false)" Fecha1="@f1" Fecha2="@f2" Subsistema="@subsistema" Sector="@sector" />
-<Ordenes_TrabajosVtn @ref="vtn_trabajos" Visible="@vtn_trabajos_visible" CerrarModal="@(()=> vtn_trabajos_visible = false)" Fecha1="@f1" Fecha2="@f2" Subsistema="@subsistema" Sector="@sector" />
-<Ordenes_RealizacionVtn @ref="vtn_realizacion" Visible="@vtn_realizacion_visible" CerrarModal="@(()=> vtn_realizacion_visible = false)" Fecha1="@f1" Fecha2="@f2" Subsistema="@subsistema" Sector="@sector" />
-<Ordenes_CapturacionVtn @ref="vtn_capturacion" Visible="@vtn_capturacion_visible" CerrarModal="@(()=> vtn_capturacion_visible = false)" Fecha1="@f1" Fecha2="@f2" Subsistema="@subsistema" Sector="@sector" />
+<Ordenes_DetalleVtn @ref="_vtn_detalle" Visible="@_vtn_detalle_visible" CerrarModal="@(()=> _vtn_detalle_visible = false)" Fecha1="@_f1" Fecha2="@_f2" Subsistema="@_subsistema" Sector="@_sector" Filtro_Estatus="false" />
+<Ordenes_ColoniasVtn @ref="_vtn_colonias" Visible="@vtn_colonias_visible" CerrarModal="@(()=> vtn_colonias_visible = false)" Fecha1="@_f1" Fecha2="@_f2" Subsistema="@_subsistema" Sector="@_sector" />
+<Ordenes_TrabajosVtn @ref="_vtn_trabajos" Visible="@vtn_trabajos_visible" CerrarModal="@(()=> vtn_trabajos_visible = false)" Fecha1="@_f1" Fecha2="@_f2" Subsistema="@_subsistema" Sector="@_sector" />
+<Ordenes_RealizacionVtn @ref="_vtn_realizacion" Visible="@vtn_realizacion_visible" CerrarModal="@(()=> vtn_realizacion_visible = false)" Fecha1="@_f1" Fecha2="@_f2" Subsistema="@_subsistema" Sector="@_sector" />
+<Ordenes_CapturacionVtn @ref="_vtn_capturacion" Visible="@vtn_capturacion_visible" CerrarModal="@(()=> vtn_capturacion_visible = false)" Fecha1="@_f1" Fecha2="@_f2" Subsistema="@_subsistema" Sector="@_sector" />
 
-<BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
+<BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />

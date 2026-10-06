@@ -1,9 +1,7 @@
 @page "/OrdenesOficina/{IdOficinaParam}"
+@using Radzen
+@using Radzen.Blazor
 @using System.Text
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Navigations
 @using Sicem_Blazor.OrdenesTrabajos.Models
 
 @inject IMatToaster Toaster
@@ -176,33 +174,44 @@
 
     @* ****** Grafica Adeudos ****** *@
     <div class="border rounded bg-white p-1 my-1 mr-2 " style="width:100%;">
-        <SfChart Title="Ordenes por Trabajos" Width="100%" Height="680">
-            <ChartPrimaryXAxis Title="" ValueType="Syncfusion.Blazor.Charts.ValueType.Category" Minimum="0"> </ChartPrimaryXAxis>
-            <ChartPrimaryYAxis LabelFormat="n0"> </ChartPrimaryYAxis>
-            <ChartTooltipSettings Enable="true" Header="${point.x}" Shared="true" Format="${series.name} : ${point.y}"></ChartTooltipSettings>
-            <ChartSeriesCollection>
-                <ChartSeries DataSource="@DatosGrafica_Trabajos" Name="Pendientes" XName="Descripcion" YName="Valor1" Width="0.75" ColumnWidth="0.75" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true"></ChartDataLabel>
-                    </ChartMarker>
-                </ChartSeries>
-                <ChartSeries DataSource="@DatosGrafica_Trabajos" Name="En Ejecucion" XName="Descripcion" YName="Valor2" Width="0.75" ColumnWidth="0.75" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true"></ChartDataLabel>
-                    </ChartMarker>
-                </ChartSeries>
-                <ChartSeries DataSource="@DatosGrafica_Trabajos" Name="Realizadas" XName="Descripcion" YName="Valor3" Width="0.75" ColumnWidth="0.75" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true"></ChartDataLabel>
-                    </ChartMarker>
-                </ChartSeries>
-                <ChartSeries DataSource="@DatosGrafica_Trabajos" Name="Canceladas" XName="Descripcion" YName="Valor4" Width="0.75" ColumnWidth="0.75" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true"></ChartDataLabel>
-                    </ChartMarker>
-                </ChartSeries>
-            </ChartSeriesCollection>
-        </SfChart>
+        <div class="text-center font-weight-bold">Ordenes por Trabajos</div>
+        <RadzenChart Style="width:100%; height:680px;">
+            <RadzenCategoryAxis />
+            <RadzenValueAxis FormatString="{0:n0}" />
+            <RadzenChartTooltipOptions Shared="true" />
+            <RadzenStackedBarSeries Data="@DatosGrafica_Trabajos" Title="Pendientes" CategoryProperty="Descripcion" ValueProperty="Valor1">
+                <TooltipTemplate Context="item">
+                    Pendientes : @item.Valor1
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="true" />
+                </ChildContent>
+            </RadzenStackedBarSeries>
+            <RadzenStackedBarSeries Data="@DatosGrafica_Trabajos" Title="En Ejecucion" CategoryProperty="Descripcion" ValueProperty="Valor2">
+                <TooltipTemplate Context="item">
+                    En Ejecucion : @item.Valor2
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="true" />
+                </ChildContent>
+            </RadzenStackedBarSeries>
+            <RadzenStackedBarSeries Data="@DatosGrafica_Trabajos" Title="Realizadas" CategoryProperty="Descripcion" ValueProperty="Valor3">
+                <TooltipTemplate Context="item">
+                    Realizadas : @item.Valor3
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="true" />
+                </ChildContent>
+            </RadzenStackedBarSeries>
+            <RadzenStackedBarSeries Data="@DatosGrafica_Trabajos" Title="Canceladas" CategoryProperty="Descripcion" ValueProperty="Valor4">
+                <TooltipTemplate Context="item">
+                    Canceladas : @item.Valor4
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="true" />
+                </ChildContent>
+            </RadzenStackedBarSeries>
+        </RadzenChart>
     </div>
 
 </div>
@@ -260,44 +269,48 @@
 
 
 @* ****** Dialogos y ventanas secundarias ****** *@
-<BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
-<Ordenes_DetalleVtn @ref="vtn_detalle" Visible="@vtn_detalle_visible" CerrarModal="@(()=> vtn_detalle_visible = false)" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" Filtro_Estatus="false" />
-<Ordenes_ColoniasVtn @ref="vtn_colonias" Visible="@vtn_colonias_visible" CerrarModal="@(()=> vtn_colonias_visible = false)" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" />
-<Ordenes_TrabajosVtn @ref="vtn_trabajos" Visible="@vtn_trabajos_visible" CerrarModal="@(()=> vtn_trabajos_visible = false)" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" />
-<Ordenes_RealizacionVtn @ref="vtn_realizacion" Visible="@vtn_realizacion_visible" CerrarModal="@(()=> vtn_realizacion_visible = false)" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" />
-<Ordenes_CapturacionVtn @ref="vtn_capturacion" Visible="@vtn_capturacion_visible" CerrarModal="@(()=> vtn_capturacion_visible = false)" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" />
+<BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
+<Ordenes_DetalleVtn @ref="_vtn_detalle" Visible="@_vtn_detalle_visible" CerrarModal="@(()=> _vtn_detalle_visible = false)" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" Filtro_Estatus="false" />
+<Ordenes_ColoniasVtn @ref="_vtn_colonias" Visible="@vtn_colonias_visible" CerrarModal="@(()=> vtn_colonias_visible = false)" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" />
+<Ordenes_TrabajosVtn @ref="_vtn_trabajos" Visible="@vtn_trabajos_visible" CerrarModal="@(()=> vtn_trabajos_visible = false)" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" />
+<Ordenes_RealizacionVtn @ref="_vtn_realizacion" Visible="@vtn_realizacion_visible" CerrarModal="@(()=> vtn_realizacion_visible = false)" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" />
+<Ordenes_CapturacionVtn @ref="_vtn_capturacion" Visible="@vtn_capturacion_visible" CerrarModal="@(()=> vtn_capturacion_visible = false)" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" />
 
 
-@code{
+@code
+{
     [Parameter] public string IdOficinaParam { get; set; }
     public Ordenes_Resumen datosResumen = null;
     public DateTime f1, f2;
     public int Subsistema, Sector;
-    private bool busyDialog = false;
+    private bool _busyDialog = false;
     public Ruta OficinaActual;
     public List<ChartItem> DatosGrafica_Trabajos = new List<ChartItem>();
 
-    private bool vtn_detalle_visible = false, vtn_colonias_visible = false, vtn_trabajos_visible = false, vtn_realizacion_visible = false, vtn_capturacion_visible = false;
+    private bool _vtn_detalle_visible = false, vtn_colonias_visible = false, vtn_trabajos_visible = false, vtn_realizacion_visible = false, vtn_capturacion_visible = false;
 
-    Ordenes_DetalleVtn vtn_detalle;
-    Ordenes_ColoniasVtn vtn_colonias;
-    Ordenes_TrabajosVtn vtn_trabajos;
-    Ordenes_RealizacionVtn vtn_realizacion;
-    Ordenes_CapturacionVtn vtn_capturacion;
+    Ordenes_DetalleVtn _vtn_detalle;
+    Ordenes_ColoniasVtn _vtn_colonias;
+    Ordenes_TrabajosVtn _vtn_trabajos;
+    Ordenes_RealizacionVtn _vtn_realizacion;
+    Ordenes_CapturacionVtn _vtn_capturacion;
 
 
     //********* Funciones  *********
-    protected override async Task OnInitializedAsync() {
+    protected override async Task OnInitializedAsync()
+    {
 
         //*** Validar Oficina
         IEnlace ofi = new Ruta();
-        if (!sicemService.ComprobarOficinaUsuario(int.TryParse(IdOficinaParam, out int tmpId) ? tmpId : -1, out ofi)){
+        if (!sicemService.ComprobarOficinaUsuario(int.TryParse(IdOficinaParam, out int tmpId) ? tmpId : -1, out ofi))
+        {
             Toaster.Add("Oficina no autorizada para este usuario.", MatToastType.Warning);
             NavManager.NavigateTo("/");
         }
         OficinaActual = sicemService.ObtenerEnlaces().Where( item => item.Id == ofi.Id).FirstOrDefault();
 
-        var tmpE = new SeleccionarFechaEventArgs() {
+        var tmpE = new SeleccionarFechaEventArgs()
+        {
             Subsistema = 0,
             Sector = 0,
             Fecha1 = DateTime.Parse("01/" + DateTime.Now.ToString("MM") + "/" + DateTime.Now.ToString("yyyy")),
@@ -310,10 +323,11 @@
 
         await Procesar(tmpE);
     }
-    public async Task Procesar(SeleccionarFechaEventArgs e) {
+    public async Task Procesar(SeleccionarFechaEventArgs e)
+    {
 
         await Task.Delay(100);
-        this.busyDialog = true;
+        this._busyDialog = true;
 
         this.f1 = e.Fecha1;
         this.f2 = e.Fecha2;
@@ -321,17 +335,26 @@
         this.Sector = e.Sector;
 
         datosResumen = ordenesService.ObtenerOrdenesResumen(OficinaActual, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), Subsistema, Sector);
-        if (datosResumen != null) { Procesar_Datos_Grafica(); }
-        else { Toaster.Add("Error al llamar a la base de datos, intente m�s tarde.", MatToastType.Warning, ""); }
+        if (datosResumen != null)
+        {
+            Procesar_Datos_Grafica();
+        }
+        else
+        {
+            Toaster.Add("Error al llamar a la base de datos, intente m�s tarde.", MatToastType.Warning, "");
+        }
 
-        this.busyDialog = false;
+        this._busyDialog = false;
         await Task.Delay(100);
     }
-    private void Procesar_Datos_Grafica(){
+    private void Procesar_Datos_Grafica()
+    {
         /**** Grafica Barras ******/
         var tmpChar2 = new List<ChartItem>();
-        foreach (Ordenes_Resumen_Trabajo trab in this.datosResumen.Trabajos) {
-            tmpChar2.Add(new ChartItem {
+        foreach (Ordenes_Resumen_Trabajo trab in this.datosResumen.Trabajos)
+        {
+            tmpChar2.Add(new ChartItem
+            {
                 Descripcion = trab.Descripcion,
                 Valor1 = trab.Pendi,
                 Valor2 = trab.Eneje,
@@ -341,9 +364,11 @@
         }
         DatosGrafica_Trabajos = tmpChar2;
     }
-    private string CalcularPorcentaje(int total, int subtotal) {
+    private string CalcularPorcentaje(int total, int subtotal)
+    {
         decimal xp = 0m;
-        try {
+        try
+        {
             xp = System.Math.Round(((decimal)subtotal / (decimal)total) * 100, 2);
         }
         catch (Exception){}
@@ -351,15 +376,18 @@
     }
 
     //*** Funciones Ventanas Secundarias
-    private async Task Mostrar_Vtn_Detalle(int opcion) {
-        if (!vtn_detalle_visible) {
-            this.busyDialog = true;
+    private async Task Mostrar_Vtn_Detalle(int opcion)
+    {
+        if (!_vtn_detalle_visible)
+        {
+            this._busyDialog = true;
             await Task.Delay(100);
 
             Ordenes_Detalle[] datos = new Ordenes_Detalle[] { };
             var titulo = "Ordenes Generadas";
             var xmlFiltro = "";
-            switch (opcion) {
+            switch (opcion)
+            {
                 case 0:
                     xmlFiltro = OrdenesService.GenerarFiltro_Detalle(isEstatus: 0);
                     datos = ordenesService.ObtenerOrdenesDetalle(OficinaActual, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), Subsistema, Sector, xmlFiltro);
@@ -397,121 +425,139 @@
                     break;
             }
 
-            if (datos == null) {
-                busyDialog = false;
+            if (datos == null)
+            {
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
-            if (datos.Length <= 0) {
-                busyDialog = false;
+            if (datos.Length <= 0)
+            {
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
 
-            vtn_detalle_visible = true;
-            await vtn_detalle.Inicializar(datos, titulo);
+            _vtn_detalle_visible = true;
+            await _vtn_detalle.Inicializar(datos, titulo);
 
             await Task.Delay(100);
-            this.busyDialog = false;
+            this._busyDialog = false;
         }
     }
-    private async Task Mostrar_Vtn_Colonias() {
-        if (!vtn_colonias_visible) {
-            this.busyDialog = true;
+    private async Task Mostrar_Vtn_Colonias()
+    {
+        if (!vtn_colonias_visible)
+        {
+            this._busyDialog = true;
             await Task.Delay(100);
 
             Ordenes_Agrupado[] datos = ordenesService.ObtenerOrdenesColonias(OficinaActual, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), Subsistema, Sector, "");
-            if (datos == null) {
-                busyDialog = false;
+            if (datos == null)
+            {
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
-            if (datos.Length <= 0) {
-                busyDialog = false;
+            if (datos.Length <= 0)
+            {
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
             vtn_colonias_visible = true;
-            vtn_colonias.OficinaActual = OficinaActual;
-            await vtn_colonias.Inicializar(datos);
+            _vtn_colonias.OficinaActual = OficinaActual;
+            await _vtn_colonias.Inicializar(datos);
 
             await Task.Delay(100);
-            this.busyDialog = false;
+            this._busyDialog = false;
         }
     }
-    private async Task Mostrar_Vtn_Trabajos() {
-        if (!vtn_trabajos_visible) {
-            this.busyDialog = true;
+    private async Task Mostrar_Vtn_Trabajos()
+    {
+        if (!vtn_trabajos_visible)
+        {
+            this._busyDialog = true;
             await Task.Delay(100);
             
             Ordenes_Agrupado[] datos = ordenesService.ObtenerOrdenesTrabajos(OficinaActual, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), Subsistema, Sector).ToArray();
 
-            if (datos == null) {
-                busyDialog = false;
+            if (datos == null)
+            {
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
-            if (datos.Length <= 0) {
-                busyDialog = false;
+            if (datos.Length <= 0)
+            {
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
 
             vtn_trabajos_visible = true;
-            vtn_trabajos.OficinaActual = OficinaActual;
-            await vtn_trabajos.Inicializar(datos);
+            _vtn_trabajos.OficinaActual = OficinaActual;
+            await _vtn_trabajos.Inicializar(datos);
 
             await Task.Delay(100);
-            this.busyDialog = false;
+            this._busyDialog = false;
         }
     }
-    private async Task Mostrar_Vtn_Realizacion() {
-        if (!vtn_realizacion_visible) {
-            this.busyDialog = true;
+    private async Task Mostrar_Vtn_Realizacion()
+    {
+        if (!vtn_realizacion_visible)
+        {
+            this._busyDialog = true;
             await Task.Delay(100);
 
             Ordenes_Realizacion[] datos = ordenesService.ObtenerOrdenesRealizacion(OficinaActual, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), Subsistema, Sector, "").ToArray();
-            if (datos == null) {
-                busyDialog = false;
+            if (datos == null)
+            {
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
-            if (datos.Length <= 0) {
-                busyDialog = false;
+            if (datos.Length <= 0)
+            {
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
             vtn_realizacion_visible = true;
-            vtn_realizacion.OficinaActual = OficinaActual;
-            await vtn_realizacion.Inicializar(datos);
+            _vtn_realizacion.OficinaActual = OficinaActual;
+            await _vtn_realizacion.Inicializar(datos);
 
             await Task.Delay(100);
-            this.busyDialog = false;
+            this._busyDialog = false;
         }
     }
-    private async Task Mostrar_Vtn_Capturacion() {
-        if (!vtn_capturacion_visible) {
-            this.busyDialog = true;
+    private async Task Mostrar_Vtn_Capturacion()
+    {
+        if (!vtn_capturacion_visible)
+        {
+            this._busyDialog = true;
             await Task.Delay(100);
             Ordenes_Capturacion[] datos = ordenesService.ObtenerOrdenesCapturacion(OficinaActual, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), Subsistema, Sector, "");
 
-            if (datos == null) {
-                busyDialog = false;
+            if (datos == null)
+            {
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
-            if (datos.Length <= 0) {
-                busyDialog = false;
+            if (datos.Length <= 0)
+            {
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
 
             vtn_capturacion_visible = true;
-            vtn_capturacion.OficinaActual = OficinaActual;
-            await vtn_capturacion.Inicializar(datos);
+            _vtn_capturacion.OficinaActual = OficinaActual;
+            await _vtn_capturacion.Inicializar(datos);
 
             await Task.Delay(100);
-            this.busyDialog = false;
+            this._busyDialog = false;
         }
     }
 }
