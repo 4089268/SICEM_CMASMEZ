@@ -5,6 +5,30 @@
 :root
 {
     --rz-text-font-family: 'Montzerrat', sans-serif;
+
+    /* Colores primario y secundario: los del tema de la aplicación (site.css),
+       los mismos que usa MatBlazor. Los tonos se derivan con color-mix(). */
+    --rz-primary: var(--mdc-theme-primary);
+    --rz-primary-light: color-mix(in srgb, var(--rz-primary) 80%, white);
+    --rz-primary-lighter: color-mix(in srgb, var(--rz-primary) 12%, transparent);
+    --rz-primary-dark: color-mix(in srgb, var(--rz-primary) 80%, black);
+    --rz-primary-darker: color-mix(in srgb, var(--rz-primary) 65%, black);
+    --rz-on-primary: #ffffff;
+    --rz-on-primary-light: #ffffff;
+    --rz-on-primary-lighter: var(--rz-primary-dark);
+    --rz-on-primary-dark: #ffffff;
+    --rz-on-primary-darker: #ffffff;
+
+    --rz-secondary: var(--mdc-theme-secondary);
+    --rz-secondary-light: color-mix(in srgb, var(--rz-secondary) 80%, white);
+    --rz-secondary-lighter: color-mix(in srgb, var(--rz-secondary) 12%, transparent);
+    --rz-secondary-dark: color-mix(in srgb, var(--rz-secondary) 80%, black);
+    --rz-secondary-darker: color-mix(in srgb, var(--rz-secondary) 65%, black);
+    --rz-on-secondary: #ffffff;
+    --rz-on-secondary-light: #ffffff;
+    --rz-on-secondary-lighter: var(--rz-secondary-dark);
+    --rz-on-secondary-dark: #ffffff;
+    --rz-on-secondary-darker: #ffffff;
 }
 
 .rz-chart text
@@ -112,11 +136,11 @@
    (equivalente de las reglas .e-tab.e-fill que había en consultaGeneral.css) */
 .rz-tabview
 {
-    --rz-tabs-tab-selected-background-color: var(--mdc-theme-secondary);
+    --rz-tabs-tab-selected-background-color: var(--rz-secondary);
     --rz-tabs-tab-selected-color: #fff;
 }
 
 .rz-tabview-nav
 {
-    border-bottom: 2px solid var(--mdc-theme-secondary);
+    border-bottom: 2px solid var(--rz-secondary);
 }

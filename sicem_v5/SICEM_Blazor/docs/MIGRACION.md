@@ -438,6 +438,10 @@ Syncfusion quedó **eliminado por completo** del proyecto.
 
 **Verificación:** `dotnet build` sin errores ni advertencias; la app arranca y las 21 rutas (14 módulos del menú y páginas de Configuración) responden 200; los recursos `_content/Syncfusion.Blazor/*` ya no existen (404).
 
+### Colores de Radzen (2026-10-06)
+
+`wwwroot/css/radzen-ajustes.css`: los colores primario y secundario de Radzen (por defecto índigo `#4340D2` y rosa `#e31c65` en el tema *material*) ahora toman los del tema de la aplicación definidos en `site.css` — `--rz-primary: var(--mdc-theme-primary)` (`#49b2c7`) y `--rz-secondary: var(--mdc-theme-secondary)` (`#2c8ea2`), los mismos de MatBlazor. Los tonos `-light`, `-lighter`, `-dark` y `-darker` se calculan con `color-mix()`, por lo que cambiar el color en `site.css` actualiza también Radzen. La pestaña activa usa `--rz-secondary`. Los colores de las series de las gráficas no cambian (son la paleta propia de Radzen).
+
 ### Pendientes de la Fase 2
 
 - [ ] **Exportación Excel/PDF** (`TODO-EXPORT-RADZEN`): elegir librería (EPPlus/Aspose requieren licencia comercial; alternativas: ClosedXML [MIT] + QuestPDF [Community]) e implementar un servicio reutilizable que reciba las columnas visibles del `RadzenDataGrid` y los datos.
