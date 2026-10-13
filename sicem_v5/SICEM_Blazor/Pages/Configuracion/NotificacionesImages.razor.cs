@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Logging;
-using Syncfusion.Blazor.Grids;
 using Sicem_Blazor.Services;
 using Sicem_Blazor.Models;
 
+using Radzen;
+using Radzen.Blazor;
 namespace Sicem_Blazor.Pages.Configuracion;
 public partial class NotificacionesImages
 {
@@ -24,25 +25,25 @@ public partial class NotificacionesImages
     [Parameter]
     public RenderFragment ChildContent { get; set; }
 
-    private SfGrid<CatImagenesTemplate> DataGrid {get;set;}
+    private RadzenDataGrid<CatImagenesTemplate> DataGrid {get;set;}
     private List<CatImagenesTemplate> DatosGrid {get;set;}
     private CatImagenesTemplate TemplateSeleccionado {get;set;}
-    private bool cargando = false;
-    private bool displayNotificationImageVtn = false;
+    private bool _cargando = false;
+    private bool _displayNotificationImageVtn = false;
 
     protected override async Task OnInitializedAsync()
     {
         await CargarTemplates();
     }
     
-    private void OnDataGrid_SelectionChanged(RowSelectEventArgs<CatImagenesTemplate> e)
+    private void OnDataGrid_SelectionChanged(CatImagenesTemplate fila)
     {
-        TemplateSeleccionado = e.Data;
+        TemplateSeleccionado = fila;
     }
 
     private async Task CargarTemplates()
     {
-        this.cargando = true;
+        this._cargando = true;
         await Task.Delay(100);
 
         TemplateSeleccionado = null;
@@ -50,7 +51,7 @@ public partial class NotificacionesImages
         Logger.LogDebug("Total imagesTemplate: {total}", this.DatosGrid.Count);
 
         await Task.Delay(100);
-        this.cargando = false;
+        this._cargando = false;
     }
 
     private async Task GuardarOCrear()
@@ -62,7 +63,7 @@ public partial class NotificacionesImages
         //     return;
         // }
 
-        // this.cargando = true;
+        // this._cargando = true;
         // await Task.Delay(100);
 
         // // Guarar template en la base de datos
@@ -74,12 +75,12 @@ public partial class NotificacionesImages
 
     private void AgregarNuevoTemplateClick()
     {
-        displayNotificationImageVtn = true;
+        _displayNotificationImageVtn = true;
     }
 
     private void HandleCreateNotificationImageOnClose()
     {
-        displayNotificationImageVtn = false;
+        _displayNotificationImageVtn = false;
     }
 
 }

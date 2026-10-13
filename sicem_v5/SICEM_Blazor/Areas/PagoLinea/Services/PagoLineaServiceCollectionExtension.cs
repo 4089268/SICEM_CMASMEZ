@@ -11,7 +11,10 @@ public static class PagoLineaServiceCollectionExtension
         services.AddScoped<IPagoLineaRepo, PagoLineaService>();
         services.AddSingleton<PagoLineaUploadFilesData>();
         services.AddSingleton<PagoLineaProcessFileJob>();
-        services.AddHostedService(provider => provider.GetRequiredService<PagoLineaProcessFileJob>());
+
+        // * Se comenta el siguiente HostedService para pruebas en desarrollo.
+        // services.AddHostedService(provider => provider.GetRequiredService<PagoLineaProcessFileJob>());
+
         // services.AddHostedService<AplyPaymentJob>();
     }
 }

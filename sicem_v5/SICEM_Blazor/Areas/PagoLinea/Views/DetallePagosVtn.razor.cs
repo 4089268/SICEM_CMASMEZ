@@ -6,8 +6,6 @@ using System.IO;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
-using Syncfusion.Blazor.Grids;
-using Syncfusion.Blazor.Charts;
 using MatBlazor;
 using Sicem_Blazor.Data;
 using Sicem_Blazor.Data.Contracts;
@@ -17,9 +15,14 @@ using Sicem_Blazor.PagoLinea.Models;
 using Sicem_Blazor.PagoLinea.Data;
 using Sicem_Blazor.PagoLinea.Services;
 
+using Radzen;
+using Radzen.Blazor;
 namespace Sicem_Blazor.PagoLinea.Views;
 public partial class DetallePagosVtn
 {
+    [Inject]
+    public RadzenDataGridExportacionExcelService ExportacionExcel { get; set; }
+
     [Inject]
     public IMatToaster Toaster {get;set;} = default!;
     
@@ -34,19 +37,21 @@ public partial class DetallePagosVtn
 
     public bool mostrarVentana = false;
     
-    private IEnlace enlace = default!;
+    private IEnlace _enlace = default!;
 
     public string titulo = "Detalle venta en linea";
 
-    private SfGrid<OprVenta> DataGrid {get;set;}
+    private RadzenDataGrid<OprVenta> DataGrid {get;set;}
     public List<OprVenta> Datos {get;set;}
 
 
-    public void Show(IEnlace enlace, IEnumerable<OprVenta> datos, string titulo = ""){
-        if(!string.IsNullOrWhiteSpace(titulo)){
+    public void Show(IEnlace enlace, IEnumerable<OprVenta> datos, string titulo = "")
+    {
+        if(!string.IsNullOrWhiteSpace(titulo))
+        {
             this.titulo = titulo;
         }
-        this.enlace = enlace;
+        this._enlace = enlace;
         this.Datos = datos.ToList();
         mostrarVentana = true;
         StateHasChanged();
@@ -60,7 +65,8 @@ public partial class DetallePagosVtn
     }
     private async Task ExportData()
     {
-        await this.DataGrid.ExcelExport(new ExcelExportProperties {
+        await ExportacionExcel.ExportarAsync(this.DataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_ingresosxConceptos_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }

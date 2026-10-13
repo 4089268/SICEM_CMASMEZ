@@ -1,11 +1,10 @@
 @page "/Facturacion"
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
 @using Sicem_Blazor.Facturacion.Models
 @inject IMatToaster Toaster
 @inject FacturacionService facturacionService
 @inject SicemService sicemService
 @inject IJSRuntime JSRuntime
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
 
 <div class="layout-page1">
@@ -13,7 +12,7 @@
     <div class="title-page" style="grid-area:1/1/2/2;">FACTURACIÓN</div>
 
     <div class="border rounded bg-white px-2 d-flex align-items-center" style="grid-area:2/1/3/2;">
-        <SeleccionarFecha fecha1="@Fecha1" fecha2="@Fecha2" ProcesarParam="@Procesar" MostrarPeriodos="false" />
+        <SeleccionarFecha fecha1="@_fecha1" fecha2="@_fecha2" ProcesarParam="@Procesar" MostrarPeriodos="false" />
     </div>
 
     @* ****** Acciones ****** *@
@@ -24,15 +23,16 @@
 
     @* ****** DataGrid ****** *@
     <div class="border rounded bg-white p-2 d-flex" style="grid-area:4/1/5/2;">
-        <SfGrid @ref="dataGrid" DataSource="@datosFacturacion" TValue="Facturacion_Oficina" AllowResizing="true" AllowSorting="true" AllowFiltering="false"
-                AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="100%" EnableHover="true">
-            <GridColumns>
-                <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="40">
+        <RadzenDataGrid TItem="Facturacion_Oficina" @ref="dataGrid" Data="@DatosFacturacion" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:100%;">
+            <Columns>
+                <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="40px">
                     <Template>
                         @{
                             var data = (context as Facturacion_Oficina);
-                            if(data.Id_Oficina > 0 && data.Id_Oficina < 999) {
-                                @switch (data.Estatus) {
+                            if(data.Id_Oficina > 0 && data.Id_Oficina < 999)
+                            {
+                                @switch (data.Estatus)
+                                {
                                     case 1:
                                         <i class="fas fa-check-circle" style="color:green; font-size:1.5rem;"></i>
                                         break;
@@ -46,10 +46,10 @@
                             }
                         }
                     </Template>
-                </GridColumn>
+                </RadzenDataGridColumn>
 
-                <GridColumn Field="@nameof(Facturacion_Oficina.Oficina)" HeaderText="Oficina" TextAlign="TextAlign.Left" Width="170" />
-                <GridColumn HeaderText="Domestico" TextAlign="TextAlign.Center" Width="110">
+                <RadzenDataGridColumn Property="@nameof(Facturacion_Oficina.Oficina)" Title="Oficina" TextAlign="TextAlign.Left" Width="170px" />
+                <RadzenDataGridColumn Title="Domestico" TextAlign="TextAlign.Center" Width="110px">
                     <Template>
                         @{
                             var data = (context as Facturacion_Oficina);
@@ -59,8 +59,8 @@
                             </div>
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn HeaderText="Comercial" TextAlign="TextAlign.Center" Width="110">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Title="Comercial" TextAlign="TextAlign.Center" Width="110px">
                     <Template>
                         @{
                             var data = (context as Facturacion_Oficina);
@@ -70,8 +70,8 @@
                             </div>
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn HeaderText="Industrial" TextAlign="TextAlign.Center" Width="110">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Title="Industrial" TextAlign="TextAlign.Center" Width="110px">
                     <Template>
                         @{
                             var data = (context as Facturacion_Oficina);
@@ -81,8 +81,8 @@
                             </div>
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn HeaderText="Serv. Gen." TextAlign="TextAlign.Center" Width="110">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Title="Serv. Gen." TextAlign="TextAlign.Center" Width="110px">
                     <Template>
                         @{
                             var data = (context as Facturacion_Oficina);
@@ -92,27 +92,28 @@
                             </div>
                         }
                     </Template>
-                </GridColumn>
+                </RadzenDataGridColumn>
 
-                <GridColumn Field="@nameof(Facturacion_Oficina.Domestico_Usu)" HeaderText="Usu Domestico" TextAlign="TextAlign.Center" Width="115" Format="n0" Visible="false"/>
-                <GridColumn Field="@nameof(Facturacion_Oficina.Domestico_Fact)" HeaderText="Fact Domestico" TextAlign="TextAlign.Right" Width="115" Format="c2" Visible="false"/>
-                <GridColumn Field="@nameof(Facturacion_Oficina.Comercial_Usu)" HeaderText="Usu Comercial" TextAlign="TextAlign.Center" Width="115" Format="n0" Visible="false"/>
-                <GridColumn Field="@nameof(Facturacion_Oficina.Comercial_Fact)" HeaderText="Fact Comercial" TextAlign="TextAlign.Right" Width="115" Format="c2" Visible="false"/>
-                <GridColumn Field="@nameof(Facturacion_Oficina.Industrial_Usu)" HeaderText="Usu Industrial" TextAlign="TextAlign.Center" Width="115" Format="n0" Visible="false"/>
-                <GridColumn Field="@nameof(Facturacion_Oficina.Industrial_Fact)" HeaderText="Fact Industrial" TextAlign="TextAlign.Right" Width="115" Format="c2" Visible="false"/>
-                <GridColumn Field="@nameof(Facturacion_Oficina.ServGener_Usu)" HeaderText="Usu Serv Gen" TextAlign="TextAlign.Center" Width="115" Format="n0" Visible="false"/>
-                <GridColumn Field="@nameof(Facturacion_Oficina.ServGener_Fact)" HeaderText="Fact Serv Gen" TextAlign="TextAlign.Right" Width="115" Format="c2" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(Facturacion_Oficina.Domestico_Usu)" Title="Usu Domestico" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(Facturacion_Oficina.Domestico_Fact)" Title="Fact Domestico" TextAlign="TextAlign.Right" Width="115px" FormatString="{0:c2}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(Facturacion_Oficina.Comercial_Usu)" Title="Usu Comercial" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(Facturacion_Oficina.Comercial_Fact)" Title="Fact Comercial" TextAlign="TextAlign.Right" Width="115px" FormatString="{0:c2}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(Facturacion_Oficina.Industrial_Usu)" Title="Usu Industrial" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(Facturacion_Oficina.Industrial_Fact)" Title="Fact Industrial" TextAlign="TextAlign.Right" Width="115px" FormatString="{0:c2}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(Facturacion_Oficina.ServGener_Usu)" Title="Usu Serv Gen" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" Visible="false" />
+                <RadzenDataGridColumn Property="@nameof(Facturacion_Oficina.ServGener_Fact)" Title="Fact Serv Gen" TextAlign="TextAlign.Right" Width="115px" FormatString="{0:c2}" Visible="false" />
 
-                <GridColumn Field="@nameof(Facturacion_Oficina.Subtotal)" HeaderText="Subtotal" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                <GridColumn Field="@nameof(Facturacion_Oficina.Iva)" HeaderText="IVA" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                <GridColumn Field="@nameof(Facturacion_Oficina.Total)" HeaderText="Total" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                <GridColumn Field="@nameof(Facturacion_Oficina.Usuarios)" HeaderText="Usuarios" TextAlign="TextAlign.Center" Width="120" Format="n0" />
+                <RadzenDataGridColumn Property="@nameof(Facturacion_Oficina.Subtotal)" Title="Subtotal" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                <RadzenDataGridColumn Property="@nameof(Facturacion_Oficina.Iva)" Title="IVA" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                <RadzenDataGridColumn Property="@nameof(Facturacion_Oficina.Total)" Title="Total" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                <RadzenDataGridColumn Property="@nameof(Facturacion_Oficina.Usuarios)" Title="Usuarios" TextAlign="TextAlign.Center" Width="120px" FormatString="{0:n0}" />
 
-                <GridColumn HeaderText="Acciones" TextAlign="TextAlign.Left" Width="240">
+                <RadzenDataGridColumn Title="Acciones" TextAlign="TextAlign.Left" Width="240px">
                     <Template>
                         @{
                             var data = (context as Facturacion_Oficina);
-                            if(data.Id_Oficina > 0 && data.Id_Oficina < 999) {
+                            if(data.Id_Oficina > 0 && data.Id_Oficina < 999)
+                            {
                                 <div class="d-flex p-1">
                                     <button type="button" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="top" title="Facturacion Por Conceptos" disabled="@(data.Estatus != 1 )" @onclick=@( e => FacturacionConceptos_Click(data) ) >
                                         <i class="fa fa-tag" aria-hidden="true"></i>
@@ -127,42 +128,53 @@
                             }
                         }
                     </Template>
-                </GridColumn>
-            </GridColumns>
-        </SfGrid>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
     </div>
 
     <!--- ****** Graficas ****** -->
     <div class="d-flex" style="grid-area:5/1/6/2;">
         <div class="border rounded bg-white mr-1 d-flex flex-column align-items-center" style="width:100%; height:100%;">
-            <SfChart @ref="graficaFacturacion" Title="TARIFAS FACTURADAS">
-                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-                <ChartPrimaryYAxis Visible="false" LabelFormat="c2" />
-                <ChartTooltipSettings Enable="true" Header="Usuarios" Format="<b>${series.name}</b> : ${point.y}" Shared="true"></ChartTooltipSettings>
-                <ChartLegendSettings Position="LegendPosition.Right" />
-                <ChartSeriesCollection>
-                    <ChartSeries DataSource="@datosGrafica" Name="Domestico" XName="Descripcion" YName="Valor1" Type="ChartSeriesType.StackingBar">
-                        <ChartMarker>
-                            <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Outer" />
-                        </ChartMarker>
-                    </ChartSeries>
-                    <ChartSeries DataSource="@datosGrafica" Name="Comercial" XName="Descripcion" YName="Valor3" Type="ChartSeriesType.StackingBar">
-                        <ChartMarker>
-                            <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Outer" />
-                        </ChartMarker>
-                    </ChartSeries>
-                    <ChartSeries DataSource="@datosGrafica" Name="Industrial" XName="Descripcion" YName="Valor4" Type="ChartSeriesType.StackingBar">
-                        <ChartMarker>
-                            <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Outer" />
-                        </ChartMarker>
-                    </ChartSeries>
-                    <ChartSeries DataSource="@datosGrafica" Name="Serv. Gen." XName="Descripcion" YName="Valor5" Type="ChartSeriesType.StackingBar">
-                        <ChartMarker>
-                            <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Outer" />
-                        </ChartMarker>
-                    </ChartSeries>
-                </ChartSeriesCollection>
-            </SfChart>
+            <div class="text-center font-weight-bold">TARIFAS FACTURADAS</div>
+            <RadzenChart @ref="GraficaFacturacion" Style="width:100%; height:100%;">
+                <RadzenCategoryAxis />
+                <RadzenValueAxis Visible="false" FormatString="{0:c2}" />
+                <RadzenChartTooltipOptions Shared="true" />
+                <RadzenLegend Visible="true" Position="LegendPosition.Right" />
+                <RadzenStackedBarSeries Data="@DatosGrafica" Title="Domestico" CategoryProperty="Descripcion" ValueProperty="Valor1">
+                    <TooltipTemplate Context="item">
+                        <b>Domestico</b> : @item.Valor1
+                    </TooltipTemplate>
+                    <ChildContent>
+                        <RadzenSeriesDataLabels Visible="true" />
+                    </ChildContent>
+                </RadzenStackedBarSeries>
+                <RadzenStackedBarSeries Data="@DatosGrafica" Title="Comercial" CategoryProperty="Descripcion" ValueProperty="Valor3">
+                    <TooltipTemplate Context="item">
+                        <b>Comercial</b> : @item.Valor3
+                    </TooltipTemplate>
+                    <ChildContent>
+                        <RadzenSeriesDataLabels Visible="true" />
+                    </ChildContent>
+                </RadzenStackedBarSeries>
+                <RadzenStackedBarSeries Data="@DatosGrafica" Title="Industrial" CategoryProperty="Descripcion" ValueProperty="Valor4">
+                    <TooltipTemplate Context="item">
+                        <b>Industrial</b> : @item.Valor4
+                    </TooltipTemplate>
+                    <ChildContent>
+                        <RadzenSeriesDataLabels Visible="true" />
+                    </ChildContent>
+                </RadzenStackedBarSeries>
+                <RadzenStackedBarSeries Data="@DatosGrafica" Title="Serv. Gen." CategoryProperty="Descripcion" ValueProperty="Valor5">
+                    <TooltipTemplate Context="item">
+                        <b>Serv. Gen.</b> : @item.Valor5
+                    </TooltipTemplate>
+                    <ChildContent>
+                        <RadzenSeriesDataLabels Visible="true" />
+                    </ChildContent>
+                </RadzenStackedBarSeries>
+            </RadzenChart>
         </div>
     </div>
 
@@ -185,63 +197,69 @@
 
 
 @* ****** Dialogos y ventanas secundarias ****** *@
-<BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
-    <FacturacionConceptosVtn  @ref="facturacionConceptos" 
-        Visible="@facturacionConceptos_Visible" 
-        CerrarModal="@( e => facturacionConceptos_Visible = false )" 
-        Fecha="@Fecha1" 
-        Subsistema="@Subsistema"
-        Sector="@Sector"
+<BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
+    <FacturacionConceptosVtn  @ref="FacturacionConceptos" 
+        Visible="@_facturacionConceptos_Visible" 
+        CerrarModal="@( e => _facturacionConceptos_Visible = false )" 
+        Fecha="@_fecha1" 
+        Subsistema="@_subsistema"
+        Sector="@_sector"
     />
-<Facturacion_AnualVtn @ref="FacturacionAnualVtn" Visible="@FacturacionAnual_Visible" AnoFacturacion="@Fecha1.Year" Subsistema="@Subsistema" Sector="@Sector" OnClose="@( e => FacturacionAnual_Visible = false)"/>
-<Facturacion_LocalidadesVtn @ref="facturacionLocalidadesVtn" Fecha="@Fecha1" Subsistema="@Subsistema" Sector="@Sector" Visible="@FacturacionLocalidad_Visible" OnClose="@( e => FacturacionLocalidad_Visible = false)" />
+<Facturacion_AnualVtn @ref="FacturacionAnualVtn" Visible="@FacturacionAnual_Visible" AnoFacturacion="@_fecha1.Year" Subsistema="@_subsistema" Sector="@_sector" OnClose="@( e => FacturacionAnual_Visible = false)"/>
+<Facturacion_LocalidadesVtn @ref="FacturacionLocalidadesVtn" Fecha="@_fecha1" Subsistema="@_subsistema" Sector="@_sector" Visible="@FacturacionLocalidad_Visible" OnClose="@( e => FacturacionLocalidad_Visible = false)" />
    
-@code{
-    private SfGrid<Facturacion_Oficina> dataGrid {get;set;}
-    private SfChart graficaFacturacion {get;set;}
-    private List<Facturacion_Oficina> datosFacturacion {get;set;}
-    private List<ChartItem> datosGrafica {get;set;}
-    private bool busyDialog = false;
+@code
+{
+    private RadzenDataGrid<Facturacion_Oficina> dataGrid {get;set;}
+    private RadzenChart GraficaFacturacion {get;set;}
+    private List<Facturacion_Oficina> DatosFacturacion {get;set;}
+    private List<ChartItem> DatosGrafica {get;set;}
+    private bool _busyDialog = false;
 
-    private DateTime Fecha1, Fecha2;
-    private int Subsistema, Sector;
-    private FacturacionConceptosVtn facturacionConceptos {get;set;}
+    private DateTime _fecha1, _fecha2;
+    private int _subsistema, _sector;
+    private FacturacionConceptosVtn FacturacionConceptos {get;set;}
     private Facturacion_AnualVtn FacturacionAnualVtn {get;set;}
-    private Facturacion_LocalidadesVtn facturacionLocalidadesVtn {get; set;}
-    private bool facturacionConceptos_Visible = false, FacturacionAnual_Visible = false, FacturacionLocalidad_Visible = false;
-    private IEnlace EnlaceSeleccionado;
+    private Facturacion_LocalidadesVtn FacturacionLocalidadesVtn {get; set;}
+    private bool _facturacionConceptos_Visible = false, FacturacionAnual_Visible = false, FacturacionLocalidad_Visible = false;
+    private IEnlace _enlaceSeleccionado;
 
 
 
     //********* Funciones  *********
-    protected override void OnInitialized() {
+    protected override void OnInitialized()
+    {
         var _now = DateTime.Now.AddMonths(-1);
-        this.Fecha1 = new DateTime(_now.Year, _now.Month, 1);
-        this.Fecha2 = new DateTime(_now.Year, _now.Month, DateTime.DaysInMonth(_now.Year, _now.Month));
-        this.Subsistema = 0;
-        this.Sector = 0;
+        this._fecha1 = new DateTime(_now.Year, _now.Month, 1);
+        this._fecha2 = new DateTime(_now.Year, _now.Month, DateTime.DaysInMonth(_now.Year, _now.Month));
+        this._subsistema = 0;
+        this._sector = 0;
     }
-    public void Procesar(SeleccionarFechaEventArgs e) {
-        this.Fecha1 = e.Fecha1;
-        this.Fecha2 = e.Fecha2;
-        this.Subsistema = e.Subsistema;
-        this.Sector = e.Sector;
+    public void Procesar(SeleccionarFechaEventArgs e)
+    {
+        this._fecha1 = e.Fecha1;
+        this._fecha2 = e.Fecha2;
+        this._subsistema = e.Subsistema;
+        this._sector = e.Sector;
 
-        datosFacturacion = new List<Facturacion_Oficina>();
-        datosGrafica = new List<ChartItem>();
+        DatosFacturacion = new List<Facturacion_Oficina>();
+        DatosGrafica = new List<ChartItem>();
         var enlaces = sicemService.ObtenerOficinasDelUsuario();
         var oficinas = sicemService.ObtenerEnlaces().Where(item => enlaces.Select(i => i.Id).Contains(item.Id)).ToArray();
         var tareas = new List<Task>();
 
-        foreach(Ruta oficina in oficinas){
-            var newItem = new Facturacion_Oficina(){
+        foreach(Ruta oficina in oficinas)
+        {
+            var newItem = new Facturacion_Oficina()
+            {
                 Estatus = 0,
                 Id_Oficina = oficina.Id,
                 Oficina = oficina.Oficina
             };
-            this.datosFacturacion.Add(newItem);
+            this.DatosFacturacion.Add(newItem);
 
-            var newChart = new ChartItem(){
+            var newChart = new ChartItem()
+            {
                 Id = oficina.Id,
                 Descripcion = oficina.Oficina,
                 Valor1 = 0m,
@@ -250,29 +268,44 @@
                 Valor4 = 0m,
                 Valor5 = 0m
             };
-            this.datosGrafica.Add(newChart);
+            this.DatosGrafica.Add(newChart);
 
             tareas.Add(new Task( () => ProcesarConsulta(oficina)) );
         }
 
         //*** Fila total
-        if(oficinas.Length > 1){
-            var itemTotal = new Facturacion_Oficina(){
+        if(oficinas.Length > 1)
+        {
+            var itemTotal = new Facturacion_Oficina()
+            {
                 Estatus = 0,
                 Id_Oficina = 999,
                 Oficina = "TOTAL"
             };
-            this.datosFacturacion.Add(itemTotal);
+            this.DatosFacturacion.Add(itemTotal);
         }
 
         tareas.ForEach(item => item.Start());
     }
-    private void ProcesarConsulta(Ruta oficina){
-        var result = facturacionService.ObtenerFacturacionOficina(oficina, this.Fecha1.Year, this.Fecha1.Month, this.Subsistema, this.Sector );
+    private void ProcesarConsulta(Ruta oficina)
+    {
+        // Un error en esta oficina no debe detener a las demás (CLAUDE.md); Estatus 2 = Error
+        Facturacion_Oficina result;
+        try
+        {
+            result = facturacionService.ObtenerFacturacionOficina(oficina, this._fecha1.Year, this._fecha1.Month, this._subsistema, this._sector );
+        }
+        catch (Exception)
+        {
+            result = null;
+        }
+        result ??= new Facturacion_Oficina() { Estatus = 2 };
 
-        lock(datosFacturacion){
-            var itemList = this.datosFacturacion.Where(item=> item.Id_Oficina == oficina.Id).FirstOrDefault();
-            if(itemList != null){
+        lock(DatosFacturacion)
+        {
+            var itemList = this.DatosFacturacion.Where(item=> item.Id_Oficina == oficina.Id).FirstOrDefault();
+            if(itemList != null)
+            {
                 itemList.Estatus = result.Estatus;
                 itemList.Domestico_Fact = result.Domestico_Fact;
                 itemList.Domestico_Usu = result.Domestico_Usu;
@@ -289,25 +322,29 @@
             }
             //**** Recalcular fila total
             RecalcularTotal();
-            dataGrid.Refresh();
         }
+        _ = InvokeAsync(() => dataGrid.Reload());
 
-        lock(datosGrafica){
+        lock(DatosGrafica)
+        {
             //**** Procesar item grafica
-            var itemGraf = this.datosGrafica.Where(item => item.Id == oficina.Id).FirstOrDefault();
-            if(itemGraf != null){
+            var itemGraf = this.DatosGrafica.Where(item => item.Id == oficina.Id).FirstOrDefault();
+            if(itemGraf != null)
+            {
                 itemGraf.Valor1 = result.Domestico_Fact;
                 itemGraf.Valor3 = result.Comercial_Fact;
                 itemGraf.Valor4 = result.Industrial_Fact;
                 itemGraf.Valor5 = result.ServGener_Fact;
             }
-            graficaFacturacion.RefreshLiveData();
+            _ = InvokeAsync(() => GraficaFacturacion.Reload());
         }
     }
-    private void RecalcularTotal(){
-        var filaTotal = this.datosFacturacion.Where(item => item.Id_Oficina == 999).FirstOrDefault();
-        if( filaTotal != null){
-            var _tmpDatos = this.datosFacturacion.Where(item => item.Id_Oficina > 0 && item.Id_Oficina < 999).ToList();
+    private void RecalcularTotal()
+    {
+        var filaTotal = this.DatosFacturacion.Where(item => item.Id_Oficina == 999).FirstOrDefault();
+        if( filaTotal != null)
+        {
+            var _tmpDatos = this.DatosFacturacion.Where(item => item.Id_Oficina > 0 && item.Id_Oficina < 999).ToList();
             filaTotal.Domestico_Fact = _tmpDatos.Sum( item => item.Domestico_Fact);
             filaTotal.Domestico_Usu = _tmpDatos.Sum( item => item.Domestico_Usu);
             filaTotal.Comercial_Fact = _tmpDatos.Sum( item => item.Comercial_Fact);
@@ -322,83 +359,98 @@
             filaTotal.Usuarios = _tmpDatos.Sum( item => item.Usuarios);
         }
     }
-    private async Task ExportarExcel_Click(){
+    private async Task ExportarExcel_Click()
+    {
         var p = new ExcelExportProperties();
         p.IncludeHiddenColumn = true;
-        await this.dataGrid.ExportToExcelAsync(p);
+        await ExportacionExcel.ExportarAsync(this.dataGrid, p);
     }
 
     //*** Funciones Ventanas Secundarias
-    private async Task FacturacionConceptos_Click(Facturacion_Oficina context){
-        if(facturacionConceptos_Visible){
+    private async Task FacturacionConceptos_Click(Facturacion_Oficina context)
+    {
+        if(_facturacionConceptos_Visible)
+        {
             return;
         }
 
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(100);
 
         Ruta oficina = sicemService.ObtenerEnlaces(context.Id_Oficina).FirstOrDefault();
-        var datos = facturacionService.ObtenerFacturacionConceptos(oficina, this.Fecha1.Year, this.Fecha1.Month, this.Subsistema, this.Sector);
+        var datos = facturacionService.ObtenerFacturacionConceptos(oficina, this._fecha1.Year, this._fecha1.Month, this._subsistema, this._sector);
         
         var catLocalidades = new Dictionary<int,string>();
         var _localidades = sicemService.ObtenerCatalogoLocalidades(oficina.Id).Where(i => i.Id_Poblacion > 0).ToList();
         catLocalidades.Add(0, "TODOS");
-        foreach( var loc in _localidades){
+        foreach( var loc in _localidades)
+        {
             catLocalidades.Add(loc.Id_Poblacion, loc.Descripcion.ToUpper().Trim());
         }
 
-        if(datos == null){
+        if(datos == null)
+        {
             Toaster.Add("Error al procesar la consulta, intentelo mas tarde.", MatToastType.Warning);
-        }else{
-            facturacionConceptos_Visible = true;
-            facturacionConceptos.Titulo = $"CONCEPTOS FACTURADOS DEL {Fecha1.ToString("dd/MM/yyyy")} AL {Fecha2.ToString("dd/MM/yyyy")}  DE LA OFICINA {context.Oficina}";
-            facturacionConceptos.Inicializar(oficina, datos, catLocalidades);
+        }
+        else
+        {
+            _facturacionConceptos_Visible = true;
+            FacturacionConceptos.Titulo = $"CONCEPTOS FACTURADOS DEL {_fecha1.ToString("dd/MM/yyyy")} AL {_fecha2.ToString("dd/MM/yyyy")}  DE LA OFICINA {context.Oficina}";
+            FacturacionConceptos.Inicializar(oficina, datos, catLocalidades);
             
             StateHasChanged();
             await JSRuntime.InvokeVoidAsync("iniciarVentanaConceptos");
         }
 
         await Task.Delay(100);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
-    private async Task FacturacionAnual_Click(Facturacion_Oficina context){
-        if(FacturacionAnual_Visible || FacturacionAnualVtn == null){
+    private async Task FacturacionAnual_Click(Facturacion_Oficina context)
+    {
+        if(FacturacionAnual_Visible || FacturacionAnualVtn == null)
+        {
             return;
         }
 
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(100);
 
         var _oficina = sicemService.ObtenerEnlaces(context.Id_Oficina).FirstOrDefault();
-        var _datos = facturacionService.ObtenerFacturacionAnual(_oficina, this.Fecha1.Year, this.Subsistema, this.Sector).ToList();
-        if(_datos.Count > 0){
-            FacturacionAnualVtn.Titulo = $"{_oficina.Oficina} - ANALISIS DE FACTURACION {this.Fecha1.Year}";
+        var _datos = facturacionService.ObtenerFacturacionAnual(_oficina, this._fecha1.Year, this._subsistema, this._sector).ToList();
+        if(_datos.Count > 0)
+        {
+            FacturacionAnualVtn.Titulo = $"{_oficina.Oficina} - ANALISIS DE FACTURACION {this._fecha1.Year}";
             FacturacionAnual_Visible = true;
             FacturacionAnualVtn.Inicializar(_datos, _oficina);
         }
 
         await Task.Delay(100);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
-    private async Task FacturacionLocalidades_Click(Facturacion_Oficina context){
-        if(FacturacionLocalidad_Visible){
+    private async Task FacturacionLocalidades_Click(Facturacion_Oficina context)
+    {
+        if(FacturacionLocalidad_Visible)
+        {
             return;
         }
 
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(100);
 
-        this.EnlaceSeleccionado  = sicemService.ObtenerEnlaces(context.Id_Oficina).FirstOrDefault();
-        var _datos = facturacionService.ObtenerFacturacionLocalidades(EnlaceSeleccionado, this.Fecha1.Year, this.Fecha1.Month, this.Subsistema, this.Sector).ToList();
-        if(_datos.Count > 0){
+        this._enlaceSeleccionado  = sicemService.ObtenerEnlaces(context.Id_Oficina).FirstOrDefault();
+        var _datos = facturacionService.ObtenerFacturacionLocalidades(_enlaceSeleccionado, this._fecha1.Year, this._fecha1.Month, this._subsistema, this._sector).ToList();
+        if(_datos.Count > 0)
+        {
             FacturacionLocalidad_Visible = true;
-            facturacionLocalidadesVtn.Inicializar(_datos, EnlaceSeleccionado);
-        }else{
+            FacturacionLocalidadesVtn.Inicializar(_datos, _enlaceSeleccionado);
+        }
+        else
+        {
             Toaster.Add("Error al realizar la consulta", MatToastType.Warning);
         }
 
         await Task.Delay(100);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
 
 }

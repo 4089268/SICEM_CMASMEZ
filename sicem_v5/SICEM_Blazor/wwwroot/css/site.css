@@ -314,54 +314,6 @@ select.ns-input{
         cursor: pointer;
     }
 
-
-/********** ESTILOS DE SYNCFUCION  **********/
-.e-rowcell{
-    transition:font-size .1s;
-    font-size: 1.1rem;
-    padding: 4px 6px !important;
-}
-.e-rowcell.e-active{
-    font-size: 1.15rem;
-}
-
-.ns-small .e-rowcell{
-    font-size: .95rem !important;
-}
-.ns-small .e-rowcell.e-active{
-    font-size: 1rem !important;
-}
-
-.e-control, .e-css, text{
-    font-family: 'Montzerrat' !important;
-}
-.e-headercelldiv{
-    font-size: 1.1rem !important;
-}
-.e-textboxm,.e-dropdownlist{
-    font-size: 1rem !important;
-}
-.e-grid {
-    border: 1px solid #cdcdcd !important;
-}
-.e-control.e-textbox {
-    font-size: 1.3rem !important;
-}
-table.e-table thead th {
-    background: rgb(222,222,222);
-    background: linear-gradient(180deg, rgba(232,232,232,1) 0%, rgba(244,244,244,1) 13%, rgba(244,244,244,1) 80%, rgba(227,227,227,1) 92%, rgba(205,205,205,1) 100%);
-    color: black;
-    height: .5rem !important;
-    font-size: 1rem !important;
-}
-.e-grid .e-altrow {
-    background-color: #fafafa;
-}
-.e-tab.e-control .e-content .e-item.e-active{
-    height: 100%;
-}
-
-
 .busy-control {
     left: 0;
     top: 0;

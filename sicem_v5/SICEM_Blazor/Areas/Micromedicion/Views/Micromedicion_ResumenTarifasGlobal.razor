@@ -1,4 +1,5 @@
 @using Sicem_Blazor.Micromedicion.Models
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
 <div class="w-100 h-100">
 
@@ -9,28 +10,31 @@
     </div>
 
     <div class="m-1 p-2 border rounded bg-white" style="width:100%; height: calc(100% - 4rem);">
-        <SfGrid @ref="DataGrid" DataSource="@DatosGrid" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true" RowHeight="22">
-            <GridColumns>
-                <GridColumn Field="@nameof(Resumen_Tarifa.Descripcion)" HeaderText="Tarifa" TextAlign="TextAlign.Left" Width="280" />
-                <GridColumn Field="@nameof(Resumen_Tarifa.UsuMedidorFun)" HeaderText="Medidores Funcionando" TextAlign="TextAlign.Center" Width="150" Format="n0" />
-                <GridColumn Field="@nameof(Resumen_Tarifa.UsuMedidorNoFun)" HeaderText="Medidores No Funcionando" TextAlign="TextAlign.Center" Width="150" Format="n0" />
-                <GridColumn Field="@nameof(Resumen_Tarifa.UsuConMedidor)" HeaderText="Usu Con Medidor" TextAlign="TextAlign.Center" Width="150" Format="n0" />
-                <GridColumn Field="@nameof(Resumen_Tarifa.UsuSinMedidor)" HeaderText="Usu Sin Medidor" TextAlign="TextAlign.Center" Width="150" Format="n0" />
-                <GridColumn Field="@nameof(Resumen_Tarifa.UsuDren)" HeaderText="Tomas Con Drenaje" TextAlign="TextAlign.Center" Width="150" Format="n0" />
-                <GridColumn Field="@nameof(Resumen_Tarifa.UsuTomas)" HeaderText="Total Tomas" TextAlign="TextAlign.Center" Width="150" Format="n0" />
-            </GridColumns>
-        </SfGrid>
+        <RadzenDataGrid TItem="Resumen_Tarifa" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
+            <Columns>
+                <RadzenDataGridColumn Property="@nameof(Resumen_Tarifa.Descripcion)" Title="Tarifa" TextAlign="TextAlign.Left" Width="280px" />
+                <RadzenDataGridColumn Property="@nameof(Resumen_Tarifa.UsuMedidorFun)" Title="Medidores Funcionando" TextAlign="TextAlign.Center" Width="150px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Resumen_Tarifa.UsuMedidorNoFun)" Title="Medidores No Funcionando" TextAlign="TextAlign.Center" Width="150px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Resumen_Tarifa.UsuConMedidor)" Title="Usu Con Medidor" TextAlign="TextAlign.Center" Width="150px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Resumen_Tarifa.UsuSinMedidor)" Title="Usu Sin Medidor" TextAlign="TextAlign.Center" Width="150px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Resumen_Tarifa.UsuDren)" Title="Tomas Con Drenaje" TextAlign="TextAlign.Center" Width="150px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Resumen_Tarifa.UsuTomas)" Title="Total Tomas" TextAlign="TextAlign.Center" Width="150px" FormatString="{0:n0}" />
+            </Columns>
+        </RadzenDataGrid>
     </div>
 </div>
 
-@code {
+@code
+{
 
     [Parameter] public IEnlace Enlace { get; set; }
     [Parameter] public List<Resumen_Tarifa> DatosGrid {get;set;}
-    private SfGrid<Resumen_Tarifa> DataGrid {get;set;}
+    private RadzenDataGrid<Resumen_Tarifa> DataGrid {get;set;}
 
-    private async Task GenerarExcel() {
-        await this.DataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this.DataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("ResumenTomasxTarifas_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }

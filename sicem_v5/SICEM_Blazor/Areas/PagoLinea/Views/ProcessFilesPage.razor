@@ -1,8 +1,6 @@
 @page "/PagoLineaAnalitycs"
 @namespace Sicem_Blazor.PagoLinea.Views
 @using System.IO
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
 @using Sicem_Blazor.PagoLinea.Models
 @using Sicem_Blazor.PagoLinea.Data
 
@@ -11,7 +9,7 @@
     <div class="title-page" style="grid-area:1/1/2/3;">Incorporación de Pagos al Sistema</div>
 
     <div class="nav-tabs">
-        <MatTabBar @ref="mattabbar" ActiveChanged="MatTabBarActiveChanged">
+        <MatTabBar @ref="_mattabbar" ActiveChanged="MatTabBarActiveChanged">
             <MatTabLabel Id="archivos">
                 <h6>Cargar Archivos</h6>
             </MatTabLabel>
@@ -28,7 +26,7 @@
     </div>
 
     <div class="nav-content">
-        @if(tabIndex == 0)
+        @if(_tabIndex == 0)
         {
             <div class="w-100 h-100 d-flex flex-column">
                 <div class="w-100">
@@ -39,9 +37,9 @@
                     </label>
                 </div>
                 <div class="h-100 w-100 border-top mt-1">
-                    <SfGrid @ref="DataGridFiles" DataSource="@RecordsFiles" TValue="UploadFilePayloadJob" AllowResizing="true" AllowSorting="true" Height="100%" Width="100%" EnableHover="true">
-                        <GridColumns>
-                            <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="40">
+                    <RadzenDataGrid TItem="UploadFilePayloadJob" @ref="DataGridFiles" Data="@RecordsFiles" AllowColumnResize="true" AllowSorting="true" Style="height:100%; width:100%;">
+                        <Columns>
+                            <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="40px">
                                 <Template>
                                     @{
                                         var data = (context as UploadFilePayloadJob);
@@ -62,20 +60,20 @@
                                         }
                                     }
                                 </Template>
-                            </GridColumn>
-                            <GridColumn Field="@nameof(UploadFilePayloadJob.Id)" HeaderText="id" TextAlign="TextAlign.Left" Width="170"/>
-                            <GridColumn Field="@nameof(UploadFilePayloadJob.FileName)" HeaderText="Archivo" TextAlign="TextAlign.Left" Width="240"/>
-                            <GridColumn Field="@nameof(UploadFilePayloadJob.CreatedAt)" HeaderText="Registro" TextAlign="TextAlign.Left" Width="120" Format="d"/>
-                            <GridColumn Field="@nameof(UploadFilePayloadJob.UploadedAt)" HeaderText="Ultima Actualizacion" TextAlign="TextAlign.Left" Width="120" Format="d"/>
-                            <GridColumn Field="@nameof(UploadFilePayloadJob.Records)" HeaderText="Total" TextAlign="TextAlign.Left" Width="120" Format="n0"/>
-                            <GridColumn Field="@nameof(UploadFilePayloadJob.Message)" HeaderText="Mensaje" TextAlign="TextAlign.Left" Width="200" ClipMode="ClipMode.EllipsisWithTooltip" />
-                        </GridColumns>
-                    </SfGrid>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn Property="@nameof(UploadFilePayloadJob.Id)" Title="id" TextAlign="TextAlign.Left" Width="170px" />
+                            <RadzenDataGridColumn Property="@nameof(UploadFilePayloadJob.FileName)" Title="Archivo" TextAlign="TextAlign.Left" Width="240px" />
+                            <RadzenDataGridColumn Property="@nameof(UploadFilePayloadJob.CreatedAt)" Title="Registro" TextAlign="TextAlign.Left" Width="120px" FormatString="{0:d}" />
+                            <RadzenDataGridColumn Property="@nameof(UploadFilePayloadJob.UploadedAt)" Title="Ultima Actualizacion" TextAlign="TextAlign.Left" Width="120px" FormatString="{0:d}" />
+                            <RadzenDataGridColumn Property="@nameof(UploadFilePayloadJob.Records)" Title="Total" TextAlign="TextAlign.Left" Width="120px" FormatString="{0:n0}" />
+                            <RadzenDataGridColumn Property="@nameof(UploadFilePayloadJob.Message)" Title="Mensaje" TextAlign="TextAlign.Left" Width="200px" ShowCellDataAsTooltip="true" />
+                        </Columns>
+                    </RadzenDataGrid>
                 </div>
             </div>
         }
 
-        @if(tabIndex == 1)
+        @if(_tabIndex == 1)
         {
             <div class="area-payments">
                 <div class="actions">
@@ -91,24 +89,22 @@
                     <div class="mx-2 vr"></div>
 
                     <label class="d-flex align-items-center mb-0 mr-2">
-                        <input type="checkbox" checked="@soloPendientes" @onchange="@((e) => OnSoloPendientesChanged((bool)e.Value))" class="mr-1" />
+                        <input type="checkbox" checked="@_soloPendientes" @onchange="@((e) => OnSoloPendientesChanged((bool)e.Value))" class="mr-1" />
                         Solo pendientes de aplicar
                     </label>
 
-                    @if(showButton)
+                    @if(_showButton)
                     {
-                        <MatButton Class="mx-2 bg-info" Raised="true" Style="height:2.5rem;" OnClick="@AplicarPagosClick" Disabled="@taskOnProgress">
+                        <MatButton Class="mx-2 bg-info" Raised="true" Style="height:2.5rem;" OnClick="@AplicarPagosClick" Disabled="@_taskOnProgress">
                             Aplicar Pagos
                             <i class="fa fa-check-double ml-2" aria-hidden="true"></i>
                         </MatButton>
                     }
                 </div>
                 <div class="datatable">
-                    <SfGrid @ref="DataGridRecords" DataSource="@RecordsView" TValue="TransactionRecord" AllowResizing="true" AllowSorting="true" AllowFiltering="false"
-                        AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true" AllowPaging="true">
-                        <GridPageSettings PageSize="100"></GridPageSettings>
-                        <GridColumns>
-                            <GridColumn HeaderText="Estatus Aplicado" TextAlign="TextAlign.Center" Width="150">
+                    <RadzenDataGrid TItem="TransactionRecord" @ref="DataGridRecords" Data="@_recordsView" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" AllowPaging="true" PageSize="100" Style="height:100%; width:100%;">
+                        <Columns>
+                            <RadzenDataGridColumn Title="Estatus Aplicado" TextAlign="TextAlign.Center" Width="150px">
                                 <Template>
                                     @{
                                         var data = (context as TransactionRecord);
@@ -136,30 +132,30 @@
                                         }
                                     }
                                 </Template>
-                            </GridColumn>
-                            <GridColumn Field="@nameof(TransactionRecord.Id)" HeaderText="Id" TextAlign="TextAlign.Left" Width="170" Visible="false" />
-                            <GridColumn Field="@nameof(TransactionRecord.Folio)" HeaderText="Folio" TextAlign="TextAlign.Left" Width="200"/>
-                            <GridColumn Field="@nameof(TransactionRecord.Fecha)" HeaderText="Fecha" TextAlign="TextAlign.Left" Width="150"/>
-                            @* <GridColumn Field="@nameof(TransactionRecord.Servicio)" HeaderText="Servicio" TextAlign="TextAlign.Left" Width="250" /> *@
-                            <GridColumn Field="@nameof(TransactionRecord.Concepto)" HeaderText="Concepto" TextAlign="TextAlign.Left" Width="250" />
-                            <GridColumn Field="@nameof(TransactionRecord.Referencia)" HeaderText="Referencia" TextAlign="TextAlign.Left" Width="115"/>
-                            <GridColumn Field="@nameof(TransactionRecord.Autorizacion)" HeaderText="Autorizacion" TextAlign="TextAlign.Left" Width="115"/>
-                            <GridColumn Field="@nameof(TransactionRecord.Usuario)" HeaderText="Usuario Pago" TextAlign="TextAlign.Left" Width="120"/>
-                            <GridColumn HeaderText="Estatus Pago" TextAlign="TextAlign.Center" Width="160">
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn Property="@nameof(TransactionRecord.Id)" Title="Id" TextAlign="TextAlign.Left" Width="170px" Visible="false" />
+                            <RadzenDataGridColumn Property="@nameof(TransactionRecord.Folio)" Title="Folio" TextAlign="TextAlign.Left" Width="200px" />
+                            <RadzenDataGridColumn Property="@nameof(TransactionRecord.Fecha)" Title="Fecha" TextAlign="TextAlign.Left" Width="150px" />
+                            @* <RadzenDataGridColumn Property="@nameof(TransactionRecord.Servicio)" Title="Servicio" TextAlign="TextAlign.Left" Width="250px" /> *@
+                            <RadzenDataGridColumn Property="@nameof(TransactionRecord.Concepto)" Title="Concepto" TextAlign="TextAlign.Left" Width="250px" />
+                            <RadzenDataGridColumn Property="@nameof(TransactionRecord.Referencia)" Title="Referencia" TextAlign="TextAlign.Left" Width="115px" />
+                            <RadzenDataGridColumn Property="@nameof(TransactionRecord.Autorizacion)" Title="Autorizacion" TextAlign="TextAlign.Left" Width="115px" />
+                            <RadzenDataGridColumn Property="@nameof(TransactionRecord.Usuario)" Title="Usuario Pago" TextAlign="TextAlign.Left" Width="120px" />
+                            <RadzenDataGridColumn Title="Estatus Pago" TextAlign="TextAlign.Center" Width="160px">
                                 <Template>
                                     @{
                                         var data = (context as TransactionRecord);
                                         <span>@data.EstatusPago.ToString()</span>
                                     }
                                 </Template>
-                            </GridColumn>
-                            @* <GridColumn Field="@nameof(TransactionRecord.FechaCreacion)" HeaderText="Fecha Registro" TextAlign="TextAlign.Center" Width="160" /> *@
-                            <GridColumn Field="@nameof(TransactionRecord.UltimaModificacion)" HeaderText="Fecha Modificacion" TextAlign="TextAlign.Center" Width="160"/>
-                            <GridColumn Field="@nameof(TransactionRecord.IdPadron)" HeaderText="Id Padron" TextAlign="TextAlign.Center" Width="120"/>
-                            <GridColumn Field="@nameof(TransactionRecord.FechaAplicacion)" HeaderText="Fecha Aplicacion Comercial" TextAlign="TextAlign.Left" Width="180"/>
-                            <GridColumn Field="@nameof(TransactionRecord.MensajeAplicacion)" HeaderText="Mensaje Apliacion Comercial" TextAlign="TextAlign.Left" Width="240" ClipMode="ClipMode.EllipsisWithTooltip"/>
-                        </GridColumns>
-                    </SfGrid>
+                            </RadzenDataGridColumn>
+                            @* <RadzenDataGridColumn Property="@nameof(TransactionRecord.FechaCreacion)" Title="Fecha Registro" TextAlign="TextAlign.Center" Width="160px" /> *@
+                            <RadzenDataGridColumn Property="@nameof(TransactionRecord.UltimaModificacion)" Title="Fecha Modificacion" TextAlign="TextAlign.Center" Width="160px" />
+                            <RadzenDataGridColumn Property="@nameof(TransactionRecord.IdPadron)" Title="Id Padron" TextAlign="TextAlign.Center" Width="120px" />
+                            <RadzenDataGridColumn Property="@nameof(TransactionRecord.FechaAplicacion)" Title="Fecha Aplicacion Comercial" TextAlign="TextAlign.Left" Width="180px" />
+                            <RadzenDataGridColumn Property="@nameof(TransactionRecord.MensajeAplicacion)" Title="Mensaje Apliacion Comercial" TextAlign="TextAlign.Left" Width="240px" ShowCellDataAsTooltip="true" />
+                        </Columns>
+                    </RadzenDataGrid>
                 </div>
             </div>
         }
@@ -169,7 +165,7 @@
 
 
 @* ****** Dialogos y ventanas secundarias ****** *@
-<BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
+<BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
 
 <style>
     .pagoAnalitycLayout {

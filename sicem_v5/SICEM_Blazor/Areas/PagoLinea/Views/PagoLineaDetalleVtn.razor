@@ -1,8 +1,8 @@
-@using Syncfusion.Blazor.Grids
 @using Sicem_Blazor.PagoLinea.Models;
 @namespace Sicem_Blazor.PagoLinea.Views
 
-@if (mostrarVentana) {
+@if (mostrarVentana)
+{
     <VentanaSecundaria Titulo="@titulo" CerrarVentana="@HandleCloseModal" Filas="@(new double[] { 50, 610 })" Columnas="@(new double[]{.9})">
         <Content>
 
@@ -15,7 +15,7 @@
 
                 @if(showButton)
                 {
-                    <MatButton Class="mx-2 bg-info" Raised="true" Style="height:2.5rem;" OnClick="@AplicarPagosClick" Disabled="@taskOnProgress">
+                    <MatButton Class="mx-2 bg-info" Raised="true" Style="height:2.5rem;" OnClick="@AplicarPagosClick" Disabled="@_taskOnProgress">
                         Aplicar Pagos
                         <i class="fa fa-check-double ml-2" aria-hidden="true"></i>
                     </MatButton>
@@ -23,9 +23,9 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <SfGrid @ref="DataGrid" DataSource="@Datos" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true">
-                    <GridColumns>
-                        <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="40">
+                <RadzenDataGrid TItem="PagoLineaDetalle" @ref="DataGrid" Data="@Datos" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                    <Columns>
+                        <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="40px">
                             <Template>
                                 @{
                                     var data = (context as PagoLineaDetalle);
@@ -41,7 +41,8 @@
                                         }
                                         else
                                         {
-                                            @switch (data.aplicarPagoResult.Estatus) {
+                                            @switch (data.aplicarPagoResult.Estatus)
+                                            {
                                                 case ResumenOficinaEstatus.Completado:
                                                     <i class="fas fa-check-circle" style="color:green; font-size:1.5rem;"></i>
                                                     break;
@@ -58,20 +59,20 @@
                                     }
                                 }
                             </Template>
-                        </GridColumn>
-                        <GridColumn Field="@nameof(PagoLineaDetalle.Folio)" HeaderText="Folio" TextAlign="TextAlign.Left" Width="160" />
-                        <GridColumn Field="@nameof(PagoLineaDetalle.Fecha)" HeaderText="Fecha de Pago" TextAlign="TextAlign.Center" Width="120" />
-                        <GridColumn Field="@nameof(PagoLineaDetalle.MedioPago)" HeaderText="MedioPago" TextAlign="TextAlign.Center" Width="100" />
-                        <GridColumn Field="@nameof(PagoLineaDetalle.Referencia)" HeaderText="Referencia" TextAlign="TextAlign.Left" Width="120"/>
-                        <GridColumn Field="@nameof(PagoLineaDetalle.TipoTarjeta)" HeaderText="Tipo Tarjeta" TextAlign="TextAlign.Center" Width="80" />
-                        <GridColumn Field="@nameof(PagoLineaDetalle.Autorizacion)" HeaderText="Autorizacion" TextAlign="TextAlign.Center" Width="90" />
-                        @* <GridColumn Field="@nameof(PagoLineaDetalle.Cuenta)" HeaderText="Cuenta" TextAlign="TextAlign.Center" Width="75"/> *@
-                        @* <GridColumn Field="@nameof(PagoLineaDetalle.Localidad)" HeaderText="Localidad" TextAlign="TextAlign.Center" Width="90"/> *@
-                        <GridColumn Field="@nameof(PagoLineaDetalle.Importe)" HeaderText="Importe" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                        <GridColumn Field="@nameof(PagoLineaDetalle.ImporteAplicado)" HeaderText="Importe Aplicado" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                        @* <GridColumn Field="@nameof(PagoLineaDetalle.Diferencia)" HeaderText="Diferencia" TextAlign="TextAlign.Right" Width="120" Format="c2" /> *@
-                    </GridColumns>
-                </SfGrid>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn Property="@nameof(PagoLineaDetalle.Folio)" Title="Folio" TextAlign="TextAlign.Left" Width="160px" />
+                        <RadzenDataGridColumn Property="@nameof(PagoLineaDetalle.Fecha)" Title="Fecha de Pago" TextAlign="TextAlign.Center" Width="120px" />
+                        <RadzenDataGridColumn Property="@nameof(PagoLineaDetalle.MedioPago)" Title="MedioPago" TextAlign="TextAlign.Center" Width="100px" />
+                        <RadzenDataGridColumn Property="@nameof(PagoLineaDetalle.Referencia)" Title="Referencia" TextAlign="TextAlign.Left" Width="120px" />
+                        <RadzenDataGridColumn Property="@nameof(PagoLineaDetalle.TipoTarjeta)" Title="Tipo Tarjeta" TextAlign="TextAlign.Center" Width="80px" />
+                        <RadzenDataGridColumn Property="@nameof(PagoLineaDetalle.Autorizacion)" Title="Autorizacion" TextAlign="TextAlign.Center" Width="90px" />
+                        @* <RadzenDataGridColumn Property="@nameof(PagoLineaDetalle.Cuenta)" Title="Cuenta" TextAlign="TextAlign.Center" Width="75px" /> *@
+                        @* <RadzenDataGridColumn Property="@nameof(PagoLineaDetalle.Localidad)" Title="Localidad" TextAlign="TextAlign.Center" Width="90px" /> *@
+                        <RadzenDataGridColumn Property="@nameof(PagoLineaDetalle.Importe)" Title="Importe" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(PagoLineaDetalle.ImporteAplicado)" Title="Importe Aplicado" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                        @* <RadzenDataGridColumn Property="@nameof(PagoLineaDetalle.Diferencia)" Title="Diferencia" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" /> *@
+                    </Columns>
+                </RadzenDataGrid>
             </div>
 
         </Content>

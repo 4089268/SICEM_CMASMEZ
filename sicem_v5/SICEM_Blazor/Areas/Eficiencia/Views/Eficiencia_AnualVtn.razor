@@ -1,9 +1,9 @@
 @using Sicem_Blazor.Eficiencia.Data
 @using Sicem_Blazor.Eficiencia.Models
-@using Syncfusion.Blazor.Grids
 @inject IJSRuntime JSRuntime
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
-<VentanaSecundaria Titulo="@Titulo" Filas="@GridFilas" Columnas="GridColumnas" CerrarVentana="Cerrar_Modal">
+<VentanaSecundaria Titulo="@Titulo" Filas="@_gridFilas" Columnas="_gridColumnas" CerrarVentana="Cerrar_Modal">
     <Content>
 
         <div class="m-1 p-2 border rounded bg-white" style="grid-row: 1/2; grid-column: 1/2;">
@@ -14,41 +14,44 @@
         </div>
 
         <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-            <SfGrid @ref="dataGrid" DataSource="@DatosGrid" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true">
-                <GridColumns>
-                    <GridColumn Field="@nameof(EficienciaResumen.Oficina)" HeaderText="Oficina" TextAlign="TextAlign.Left" Width="170" Visible="false" />
-                    <GridColumn Field="@nameof(EficienciaResumen.Mes)" HeaderText="Mes" TextAlign="TextAlign.Left" Width="100" />
-                    <GridColumn Field="@nameof(EficienciaResumen.Facturado)" HeaderText="Facturado" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                    <GridColumn Field="@nameof(EficienciaResumen.Refacturado)" HeaderText="Refacturado" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                    <GridColumn Field="@nameof(EficienciaResumen.Anticipado)" HeaderText="Anticipado" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                    <GridColumn Field="@nameof(EficienciaResumen.Descontado)" HeaderText="Descontado" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                    <GridColumn Field="@nameof(EficienciaResumen.Cobrado)" HeaderText="Cobrado" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                    <GridColumn Field="@nameof(EficienciaResumen.Porcentaje)" HeaderText="Eficiencia" TextAlign="TextAlign.Center" Width="110" Format="n2" />
-                </GridColumns>
-            </SfGrid>
+            <RadzenDataGrid TItem="EficienciaResumen" @ref="_dataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                <Columns>
+                    <RadzenDataGridColumn Property="@nameof(EficienciaResumen.Oficina)" Title="Oficina" TextAlign="TextAlign.Left" Width="170px" Visible="false" />
+                    <RadzenDataGridColumn Property="@nameof(EficienciaResumen.Mes)" Title="Mes" TextAlign="TextAlign.Left" Width="100px" />
+                    <RadzenDataGridColumn Property="@nameof(EficienciaResumen.Facturado)" Title="Facturado" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                    <RadzenDataGridColumn Property="@nameof(EficienciaResumen.Refacturado)" Title="Refacturado" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                    <RadzenDataGridColumn Property="@nameof(EficienciaResumen.Anticipado)" Title="Anticipado" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                    <RadzenDataGridColumn Property="@nameof(EficienciaResumen.Descontado)" Title="Descontado" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                    <RadzenDataGridColumn Property="@nameof(EficienciaResumen.Cobrado)" Title="Cobrado" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                    <RadzenDataGridColumn Property="@nameof(EficienciaResumen.Porcentaje)" Title="Eficiencia" TextAlign="TextAlign.Center" Width="110px" FormatString="{0:n2}" />
+                </Columns>
+            </RadzenDataGrid>
         </div>
 
         <div class="m-1 p-2 border rounded bg-white" style="grid-row: 3/4; grid-column: 1/2;">
-            <SfChart title="EFICIENCIA ANUAL">
-                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-                <ChartPrimaryYAxis Visible="false" LabelFormat="n2" />
-                <ChartTooltipSettings Enable="true" Header="Usuarios" Format="<b>${series.name}</b> : ${point.y}" Shared="true"></ChartTooltipSettings>
-                <ChartLegendSettings Position="LegendPosition.Right" Visible="false" />
-                <ChartSeriesCollection>
-                    <ChartSeries DataSource="@itemsGrafica" Name="Eficiencia" XName="Descripcion" YName="Valor1" Type="ChartSeriesType.Line">
-                        <ChartMarker Visible="true" Height="10" Width="10" Shape="ChartShape.Circle">
-                            <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Outer" />
-                        </ChartMarker>
-                    </ChartSeries>
-                </ChartSeriesCollection>
-            </SfChart>
+            <RadzenChart title="EFICIENCIA ANUAL" Style="width:100%; height:100%;">
+                <RadzenCategoryAxis />
+                <RadzenValueAxis Visible="false" FormatString="{0:n2}" />
+                <RadzenChartTooltipOptions Shared="true" />
+                <RadzenLegend Visible="false" Position="LegendPosition.Right" />
+                <RadzenLineSeries Data="@itemsGrafica" Title="Eficiencia" CategoryProperty="Descripcion" ValueProperty="Valor1">
+                    <TooltipTemplate Context="item">
+                        <b>Eficiencia</b> : @item.Valor1
+                    </TooltipTemplate>
+                    <ChildContent>
+                        <RadzenMarkers MarkerType="MarkerType.Circle" />
+                        <RadzenSeriesDataLabels Visible="true" />
+                    </ChildContent>
+                </RadzenLineSeries>
+            </RadzenChart>
         </div>
 
     </Content>
 </VentanaSecundaria>
 
 
-@code {
+@code
+{
 
     [Parameter] public EventCallback CerrarModal { get; set; }
     [Parameter] public DateTime Fecha1 { get; set; }
@@ -60,9 +63,9 @@
     [Parameter] public String Titulo {get;set;} = "EFICIENCIA COMERCIAL ANUAL";
     
     
-    private SfGrid<EficienciaResumen> dataGrid;
-    private List<double> GridFilas = new List<double>() { 50, 460, 240 };
-    private List<double> GridColumnas = new List<double>() { .8 };
+    private RadzenDataGrid<EficienciaResumen> _dataGrid;
+    private List<double> _gridFilas = new List<double>() { 50, 460, 240 };
+    private List<double> _gridColumnas = new List<double>() { .8 };
     public List<ChartItem> itemsGrafica = new List<ChartItem>();
     
 
@@ -70,9 +73,11 @@
 
     protected override void OnInitialized()
     {
-        foreach(var item in DatosGrid){
+        foreach(var item in DatosGrid)
+        {
             itemsGrafica.Add(
-                new ChartItem(){
+                new ChartItem()
+                {
                     Descripcion = item.Mes,
                     Valor1 = (decimal) item.Porcentaje
                 }
@@ -80,14 +85,17 @@
         }
     }
 
-    private async Task GenerarExcel() {
-        await this.dataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this._dataGrid, new ExcelExportProperties
+        {
             IncludeHiddenColumn = true,
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
 
-    private async Task Cerrar_Modal() {
+    private async Task Cerrar_Modal()
+    {
         await CerrarModal.InvokeAsync("");
     }
 

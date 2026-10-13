@@ -1,11 +1,12 @@
-@using Syncfusion.Blazor.Grids
 @using Sicem_Blazor.Recaudacion.Data
 @using Sicem_Blazor.Recaudacion.Models
 @inject IJSRuntime JSRuntime
 @inject IMatToaster Toaster
 @inject IRecaudacionService recaudacionService
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
-@if (MostrarVentana) {
+@if (MostrarVentana)
+{
     <VentanaSecundaria Titulo="@Titulo" CerrarVentana="@Cerrar_Modal" Filas="@(new double[]{50, 620})" Columnas="@(new double[]{.80})" >
         <Content>
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 1/2; grid-column: 1/2;">
@@ -15,44 +16,45 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <SfGrid @ref="DataGrid" DataSource="@IngresosRezago" TValue="Recaudacion_Rezago" AllowResizing="true" AllowSorting="true" AllowFiltering="false" 
-                        AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="100%" EnableHover="true" RowHeight="20">
-                    <GridColumns>
-                        <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="55" Visible="false">
+                <RadzenDataGrid TItem="Recaudacion_Rezago" @ref="DataGrid" Data="@IngresosRezago" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:100%;">
+                    <Columns>
+                        <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="55px" Visible="false">
                             <Template>
                                 @{
                                     var data = (context as Recaudacion_Rezago);
-                                    @if (!data.Mes.Contains("TOTAL")) {
+                                    @if (!data.Mes.Contains("TOTAL"))
+                                    {
                                         <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Ver detalle" @onclick="@( e => MostrarVentanaDetalle(data))">
                                             <i class="fa fa-th" aria-hidden="true"></i>
                                         </button>
                                     }
                                 }
                             </Template>
-                        </GridColumn>
-                        <GridColumn Field="@nameof(Recaudacion_Rezago.Mes)" HeaderText="Mes" TextAlign="TextAlign.Center" Width="80" Format="n0" />
-                        <GridColumn Field="@nameof(Recaudacion_Rezago.Usuarios)" HeaderText="Usuarios" TextAlign="TextAlign.Center" Width="90" Format="n0" />
-                        <GridColumn Field="@nameof(Recaudacion_Rezago.Rez_agua)" HeaderText="Rez. Agua" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(Recaudacion_Rezago.Rez_dren)" HeaderText="Rez. Drenaje" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(Recaudacion_Rezago.Rez_sane)" HeaderText="Rez. Saneamiento" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(Recaudacion_Rezago.Rez_otros)" HeaderText="Rez. Otros" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(Recaudacion_Rezago.Rez_recargos)" HeaderText="Recargos" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(Recaudacion_Rezago.Subtotal)" HeaderText="Sub Total" TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(Recaudacion_Rezago.Iva)" HeaderText="I.V.A." TextAlign="TextAlign.Right" Width="130" Format="c2" />
-                        <GridColumn Field="@nameof(Recaudacion_Rezago.Total)" HeaderText="TOTAL" TextAlign="TextAlign.Right" Width="130" Format="c2" />
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago.Mes)" Title="Mes" TextAlign="TextAlign.Center" Width="80px" FormatString="{0:n0}" />
+                        <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago.Usuarios)" Title="Usuarios" TextAlign="TextAlign.Center" Width="90px" FormatString="{0:n0}" />
+                        <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago.Rez_agua)" Title="Rez. Agua" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago.Rez_dren)" Title="Rez. Drenaje" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago.Rez_sane)" Title="Rez. Saneamiento" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago.Rez_otros)" Title="Rez. Otros" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago.Rez_recargos)" Title="Recargos" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago.Subtotal)" Title="Sub Total" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago.Iva)" Title="I.V.A." TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago.Total)" Title="TOTAL" TextAlign="TextAlign.Right" Width="130px" FormatString="{0:c2}" />
 
-                    </GridColumns>
-                </SfGrid>
+                    </Columns>
+                </RadzenDataGrid>
             </div>
 
         </Content>
     </VentanaSecundaria>
      
-    <BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
-    <Recaudacion_IngresosRezago_detalle @ref="vtn_detalle" MostrarVentana="@mostrarDetalle" CerrarModal="@(x => mostrarDetalle = false)" />
+    <BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
+    <Recaudacion_IngresosRezago_detalle @ref="_vtn_detalle" MostrarVentana="@_mostrarDetalle" CerrarModal="@(x => _mostrarDetalle = false)" />
 }
 
-@code {
+@code
+{
 
     [Parameter] public bool MostrarVentana { get; set; }
     [Parameter] public EventCallback CerrarModal { get; set; }
@@ -63,40 +65,46 @@
     public string Titulo {get;set;} = "ANALISIS DE REZAGO";
     public IEnlace Enlace { get; set; }
 
-    SfGrid<Recaudacion_Rezago> DataGrid {get;set;}
+    RadzenDataGrid<Recaudacion_Rezago> DataGrid {get;set;}
     public List<Recaudacion_Rezago> IngresosRezago {get;set;}
-    private Recaudacion_IngresosRezago_detalle vtn_detalle;
-    private bool mostrarDetalle = false;
-    private bool busyDialog = false;
+    private Recaudacion_IngresosRezago_detalle _vtn_detalle;
+    private bool _mostrarDetalle = false;
+    private bool _busyDialog = false;
 
 
     //******** Funciones ********"
-    public async Task Inicializar(IEnlace enlace, IEnumerable<Recaudacion_Rezago> datos) {
+    public async Task Inicializar(IEnlace enlace, IEnumerable<Recaudacion_Rezago> datos)
+    {
         this.Enlace = enlace;
         this.IngresosRezago = datos.ToList();
         await Task.Delay(100);
     }
-    private async Task Cerrar_Modal() {
-        if(IngresosRezago != null){
+    private async Task Cerrar_Modal()
+    {
+        if(IngresosRezago != null)
+        {
             IngresosRezago.Clear();
         }
         await CerrarModal.InvokeAsync("");
     }
-    private async Task GenerarExcel() {
-        await this.DataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this.DataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_rezago_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    private async Task MostrarVentanaDetalle(Recaudacion_Rezago param) {
+    private async Task MostrarVentanaDetalle(Recaudacion_Rezago param)
+    {
         Toaster.Add("NO IMPLEMENTADO", MatToastType.Danger);
         await Task.Delay(100);
         return;
 
         /*
-        if (mostrarDetalle) {
+        if (_mostrarDetalle) {
             return;
         }
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(200);
 
         int tmpMes = -1;
@@ -106,7 +114,7 @@
             default: tmpMes = int.Parse(param.Mes); break;
         }
         if (tmpMes == -1) {
-            this.busyDialog = false;
+            this._busyDialog = false;
             return;
         }
 
@@ -116,8 +124,8 @@
         }
         else {
             if (tmpData.Count() > 0) {
-                this.mostrarDetalle = true;
-                vtn_detalle.Inicializar(Enlace, tmpData, tmpMes);
+                this._mostrarDetalle = true;
+                _vtn_detalle.Inicializar(Enlace, tmpData, tmpMes);
             }
             else {
                 Toaster.Add("No hay datos disponibles.", MatToastType.Info);
@@ -125,7 +133,7 @@
         }
         
         await Task.Delay(200);
-        this.busyDialog = false;
+        this._busyDialog = false;
         */
     }
 

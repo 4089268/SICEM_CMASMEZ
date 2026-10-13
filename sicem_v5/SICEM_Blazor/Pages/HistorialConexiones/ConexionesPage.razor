@@ -1,5 +1,6 @@
 @page "/HistorialConexiones"
 @inject SicemService sicemService
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
 <div class="histLayout">
     <div style="grid-area:1/1/2/3;">
@@ -19,7 +20,8 @@
         <SeleccionarFecha ProcesarParam="ProcesarConsulta" OcultarSector="true" />
 
         @**** Boton Exportar Excel ****@
-        @if(datosGrid != null){
+        @if(DatosGrid != null)
+        {
             <div class="button px-3 py-2 bg-success mx-3" @onclick="OnExportExcel_Click" >
                 <i class="fa fa-file-excel mr-2"></i>
                 <span>Exportar Historial</span>
@@ -46,29 +48,29 @@
         <div class="d-flex align-items-center p-1" style="height:4rem;">
             <div class="d-flex align-items-center border rounded p-2" style="width: 24rem; height:100%; font-size:1.1rem;">
                 <i class="fa fa-search ml-2 mr-2" style="color:#555;"></i>
-                <input type="text" placeholder="Buscar" @bind-value="searchText" @onkeyup="OnGridSearch_KeyUp" style="border: none; outline:none; background-color:#fff; width:100%; box-shadow:none;" />
-                @if(searchText.Trim().Length > 1){
+                <input type="text" placeholder="Buscar" @bind-value="_searchText" @onkeyup="OnGridSearch_KeyUp" style="border: none; outline:none; background-color:#fff; width:100%; box-shadow:none;" />
+                @if(_searchText.Trim().Length > 1)
+                {
                     <i class="fa fa-close link-btn aling ali align-self-start m m-1" aria-hidden="true" style="width: 1rem;height: 1rem;color: #333;text-decoration: none !important;" @onclick="ClearSearch_Click"></i>
                 }
             </div>
         </div>
 
         <div class="p-1" style="width: 100%; height: calc(100% - 4.5rem);">
-            <SfGrid @ref="dataGrid" DataSource="@datosGrid" TValue="SesionInfo" AllowResizing="true" AllowSorting="true" AllowFiltering="false"
-                AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true">
-                <GridColumns>
-                    <GridColumn Width="15">
+            <RadzenDataGrid TItem="SesionInfo" @ref="DataGrid" Data="@(Sicem_Blazor.Helpers.BusquedaGrid.Filtrar(DatosGrid, _textoBusquedaGrid))" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:100%;">
+                <Columns>
+                    <RadzenDataGridColumn Width="15px">
                         <Template>
                             <div class="px-2">
                                 <i class="fa fa-user"></i>
                             </div>
                         </Template>
-                    </GridColumn>
-                    <GridColumn Field="@nameof(SesionInfo.Usuario)" HeaderText="Usuario" TextAlign="TextAlign.Left" Width="200" />
-                    <GridColumn Field="@nameof(SesionInfo.Fecha_Inicio)" HeaderText="Inicio" TextAlign="TextAlign.Center" Width="180" />
-                    <GridColumn Field="@nameof(SesionInfo.Fecha_Fin)" HeaderText="Expira" TextAlign="TextAlign.Center" Width="180" />
-                    <GridColumn Field="@nameof(SesionInfo.IpAddress)" HeaderText="Ip Address" TextAlign="TextAlign.Center" Width="180" />
-                    <GridColumn HeaderText="Total Tiempo">
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn Property="@nameof(SesionInfo.Usuario)" Title="Usuario" TextAlign="TextAlign.Left" Width="200px" />
+                    <RadzenDataGridColumn Property="@nameof(SesionInfo.Fecha_Inicio)" Title="Inicio" TextAlign="TextAlign.Center" Width="180px" />
+                    <RadzenDataGridColumn Property="@nameof(SesionInfo.Fecha_Fin)" Title="Expira" TextAlign="TextAlign.Center" Width="180px" />
+                    <RadzenDataGridColumn Property="@nameof(SesionInfo.IpAddress)" Title="Ip Address" TextAlign="TextAlign.Center" Width="180px" />
+                    <RadzenDataGridColumn Title="Total Tiempo">
                         <Template>
                             <div class="px-2">
                                 @{
@@ -79,53 +81,62 @@
                                 }
                             </div>
                         </Template>
-                    </GridColumn>
+                    </RadzenDataGridColumn>
                     
-                </GridColumns>
-            </SfGrid>
+                </Columns>
+            </RadzenDataGrid>
         </div>
 
     </div>
 
 </div>
 
-<BusyIndicator Busy="@cargando" ContentText="Cargando datos..." />
+<BusyIndicator Busy="@_cargando" ContentText="Cargando datos..." />
 
-@code {
-    private SfGrid<SesionInfo> dataGrid {get;set;}
-    private List<SesionInfo> datosGrid {get;set;}
+@code
+{
+    private string _textoBusquedaGrid = "";
+    private RadzenDataGrid<SesionInfo> DataGrid {get;set;}
+    private List<SesionInfo> DatosGrid {get;set;}
 
     private DateTime fecha1 {get;set;} = DateTime.Now;
     private DateTime fecha2 {get;set;} = DateTime.Now;
-    private bool cargando = false;
-    private string searchText = "";
+    private bool _cargando = false;
+    private string _searchText = "";
 
-    private async Task ProcesarConsulta(SeleccionarFechaEventArgs e){
-        cargando = true;
+    private async Task ProcesarConsulta(SeleccionarFechaEventArgs e)
+    {
+        _cargando = true;
         await Task.Delay(200);
 
         this.fecha1 = e.Fecha1;
         this.fecha2 = e.Fecha2;
-        this.datosGrid = sicemService.ObtenerHistorialSessiones(this.fecha1, this.fecha2);
+        this.DatosGrid = sicemService.ObtenerHistorialSessiones(this.fecha1, this.fecha2);
 
         await Task.Delay(200);
-        cargando = false;
+        _cargando = false;
     }
-    private async Task OnExportExcel_Click(){
+    private async Task OnExportExcel_Click()
+    {
         var _name = $"Sicem_HistorialConexiones_{fecha1.ToString("ddMMyyyy")}-{fecha2.ToString("ddMMyyyy")}_{Guid.NewGuid().ToString().Replace("-","").Substring(0,10)}.xlsx";
-        var _options = new ExcelExportProperties(){
+        var _options = new ExcelExportProperties()
+        {
             IncludeHiddenColumn = true,
             FileName = _name
         };
-        await this.dataGrid.ExportToExcelAsync(_options);
+        await ExportacionExcel.ExportarAsync(this.DataGrid, _options);
     }
-    private async Task OnGridSearch_KeyUp(KeyboardEventArgs e){
-        if(e.Key == "Enter"){
-            await dataGrid.SearchAsync(searchText);
+    private async Task OnGridSearch_KeyUp(KeyboardEventArgs e)
+    {
+        if(e.Key == "Enter")
+        {
+            _textoBusquedaGrid = _searchText; // SfGrid.SearchAsync -> filtro en memoria (Helpers/BusquedaGrid)
+            await DataGrid.FirstPage();
         }
     }
-    private async Task ClearSearch_Click(){
-        this.searchText = "";
+    private async Task ClearSearch_Click()
+    {
+        this._searchText = "";
         await OnGridSearch_KeyUp(new KeyboardEventArgs(){Key = "Enter"});
     }
 }

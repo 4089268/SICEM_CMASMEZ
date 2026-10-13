@@ -1,14 +1,11 @@
-@using Syncfusion.Blazor
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Buttons
-@using Syncfusion.Blazor.Grids
 @using Sicem_Blazor.Padron.Models
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavManager
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
-@if (Visible) {
-    <VentanaSecundaria Titulo="@Titulo" Columnas="@GridColumnas" Filas="@GridFilas" CerrarVentana="@( e => Cerrar_Modal() )">
+@if (Visible)
+{
+    <VentanaSecundaria Titulo="@_titulo" Columnas="@_gridColumnas" Filas="@_gridFilas" CerrarVentana="@( e => Cerrar_Modal() )">
         <Content>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 1/2; grid-column: 1/2;">
@@ -18,10 +15,9 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <SfGrid @ref="dataGrid" DataSource="@datosGrid" AllowPaging="@allowPagesGrid" AllowSorting="true" AllowResizing="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true">
-                    <GridPageSettings PageSize="1000"></GridPageSettings>
-                    <GridColumns>
-                        <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="55">
+                <RadzenDataGrid TItem="Padron_DetallePadron" @ref="_dataGrid" Data="@datosGrid" AllowPaging="@_allowPagesGrid" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" PageSize="1000" Style="height:100%; width:auto;">
+                    <Columns>
+                        <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="55px">
                             <Template>
                                 @{
                                     var data = (context as Padron_DetallePadron);
@@ -30,45 +26,47 @@
                                     </button>
                                 }
                             </Template>
-                        </GridColumn>
-                        @* <GridColumn Field="@nameof(Padron_DetallePadron.Id_Padron)" HeaderText="Cuenta" TextAlign="TextAlign.Center" Width="120" /> *@
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Cuenta)" HeaderText="Cuenta" TextAlign="TextAlign.Left" Width="110" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Nombre)" HeaderText="Nombre" TextAlign="TextAlign.Left" Width="180" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Estatus)" HeaderText="Estatus" TextAlign="TextAlign.Left" Width="120" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Localizacion)" HeaderText="Localizacion" TextAlign="TextAlign.Left" Width="210" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Direccion)" HeaderText="Direccion" TextAlign="TextAlign.Left" Width="190" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Tarifa)" HeaderText="Tarifa" TextAlign="TextAlign.Left" Width="180" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Colonia)" HeaderText="Colonia" TextAlign="TextAlign.Left" Width="180" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Lec_Ant)" HeaderText="Lect. Ant." TextAlign="TextAlign.Center" Width="80" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Lec_Act)" HeaderText="Lect. Act." TextAlign="TextAlign.Center" Width="80" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Consumo)" HeaderText="Consumo" TextAlign="TextAlign.Center" Width="80" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Calculo)" HeaderText="Calculo" TextAlign="TextAlign.Center" Width="80" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Promedio)" HeaderText="Promedio" TextAlign="TextAlign.Center" Width="80" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Medidor)" HeaderText="Medidor" TextAlign="TextAlign.Center" Width="80" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Agua)" HeaderText="Agua" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Dren)" HeaderText="Dren" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Sane)" HeaderText="Sane" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Act)" HeaderText="Actuali" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Ragua)" HeaderText="Rez Agua" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Rdren)" HeaderText="Rez Dren" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Rtrat)" HeaderText="Rez Trat" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Subtotal)" HeaderText="Subtotal" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Iva)" HeaderText="IVA" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                        <GridColumn Field="@nameof(Padron_DetallePadron.Total)" HeaderText="Total" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                    </GridColumns>
-                </SfGrid>
+                        </RadzenDataGridColumn>
+                        @* <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Id_Padron)" Title="Cuenta" TextAlign="TextAlign.Center" Width="120px" /> *@
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Cuenta)" Title="Cuenta" TextAlign="TextAlign.Left" Width="110px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Nombre)" Title="Nombre" TextAlign="TextAlign.Left" Width="180px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Estatus)" Title="Estatus" TextAlign="TextAlign.Left" Width="120px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Localizacion)" Title="Localizacion" TextAlign="TextAlign.Left" Width="210px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Direccion)" Title="Direccion" TextAlign="TextAlign.Left" Width="190px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Tarifa)" Title="Tarifa" TextAlign="TextAlign.Left" Width="180px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Colonia)" Title="Colonia" TextAlign="TextAlign.Left" Width="180px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Lec_Ant)" Title="Lect. Ant." TextAlign="TextAlign.Center" Width="80px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Lec_Act)" Title="Lect. Act." TextAlign="TextAlign.Center" Width="80px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Consumo)" Title="Consumo" TextAlign="TextAlign.Center" Width="80px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Calculo)" Title="Calculo" TextAlign="TextAlign.Center" Width="80px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Promedio)" Title="Promedio" TextAlign="TextAlign.Center" Width="80px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Medidor)" Title="Medidor" TextAlign="TextAlign.Center" Width="80px" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Agua)" Title="Agua" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Dren)" Title="Dren" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Sane)" Title="Sane" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Act)" Title="Actuali" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Ragua)" Title="Rez Agua" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Rdren)" Title="Rez Dren" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Rtrat)" Title="Rez Trat" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Subtotal)" Title="Subtotal" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Iva)" Title="IVA" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Padron_DetallePadron.Total)" Title="Total" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                    </Columns>
+                </RadzenDataGrid>
             </div>
             
         </Content>
     </VentanaSecundaria>
 
-    @if(DatosGenerales_visible){
-        <DatosGenerales_Dialog IdOficina="@Enlace.Id" Cuenta="@CuentaActual" CerrarVentana="@(e => DatosGenerales_visible = false)"/>
+    @if(_datosGenerales_visible)
+    {
+        <DatosGenerales_Dialog IdOficina="@Enlace.Id" Cuenta="@CuentaActual" CerrarVentana="@(e => _datosGenerales_visible = false)"/>
     }
 
 }
 
-@code {
+@code
+{
 
     [Parameter] public bool Visible { get; set; }
     [Parameter] public EventCallback CerrarModal { get; set; }
@@ -79,35 +77,41 @@
     public IEnlace Enlace {get;set;}
 
 
-    SfGrid<Padron_DetallePadron> dataGrid;
+    RadzenDataGrid<Padron_DetallePadron> _dataGrid;
     public Padron_DetallePadron[] datosGrid;
-    string Titulo = "";
-    bool allowPagesGrid = false;
-    private List<double> GridFilas = new List<double>() { 50, .75 };
-    private List<double> GridColumnas = new List<double>() { .95 };
+    string _titulo = "";
+    bool _allowPagesGrid = false;
+    private List<double> _gridFilas = new List<double>() { 50, .75 };
+    private List<double> _gridColumnas = new List<double>() { .95 };
     public string CuentaActual = "0";
-    private bool DatosGenerales_visible = false;
+    private bool _datosGenerales_visible = false;
 
     
-    private async Task Cerrar_Modal() {
+    private async Task Cerrar_Modal()
+    {
         this.datosGrid = new Padron_DetallePadron[] { };
-        this.allowPagesGrid = false;
+        this._allowPagesGrid = false;
         await CerrarModal.InvokeAsync("");
     }
-    public async Task Inicializar(Padron_DetallePadron[] datos, string t) {
+    public async Task Inicializar(Padron_DetallePadron[] datos, string t)
+    {
         await JSRuntime.InvokeVoidAsync("ConfigurateDragg", null);
-        this.Titulo = t;
-        if (datos.Length > 3000) {
-            this.allowPagesGrid = true;
+        this._titulo = t;
+        if (datos.Length > 3000)
+        {
+            this._allowPagesGrid = true;
         }
         this.datosGrid = datos;
     }
-    private void MostrarEnConsultaGeneral(Padron_DetallePadron e) {
+    private void MostrarEnConsultaGeneral(Padron_DetallePadron e)
+    {
         this.CuentaActual = e.Cuenta.ToString();
-        DatosGenerales_visible = true;
+        _datosGenerales_visible = true;
     }
-    private async Task GenerarExcel() {
-        await this.dataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this._dataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }

@@ -1,42 +1,30 @@
-@using Syncfusion.Blazor.Grids
 @using Sicem_Blazor.Micromedicion.Models
-@using Syncfusion.Blazor.Navigations
-
-@if(Visible){
+@if(Visible)
+{
     <VentanaSecundaria Titulo="@Titulo" CerrarVentana="@CerrarModalClick" Filas="@(new double[] {.85 })" Columnas="@(new double[]{.85})">
         <Content>
 
-            <SfTab Height="100%">
-                <TabItems>
-                    <TabItem>
-                        <ChildContent>
-                            <TabHeader Text="Resumen Global"></TabHeader>
-                        </ChildContent>
-                        <ContentTemplate>
-                            <div class="h-100">
-                                <Micromedicion_ResumenTarifasGlobal DatosGrid="@DatosGrid" Enlace="@Enlace"/>
-                            </div>
-                        </ContentTemplate>
-                    </TabItem>
-                    <TabItem Content="Facebook is an online social networking service headquartered in Menlo Park, California. Its website waslaunched on February 4, 2004, by Mark Zuckerberg with his Harvard College roommates and fellow students EduardoSaverin, Andrew McCollum, Dustin Moskovitz and Chris Hughes.">
-                        <ChildContent>
-                            <TabHeader Text="Resumen Por Localidades"></TabHeader>
-                        </ChildContent>
-                        <ContentTemplate>
-                            <div class="h-100">
-                                <Micromedicion_ResumenTarifasLocalidad DatosGrid="@DatosGridLocalidad" Enlace="@Enlace"/>
-                            </div>
-                        </ContentTemplate>
-                    </TabItem>
-
-                </TabItems>
-            </SfTab>
+            <RadzenTabs Style="height:100%;">
+                <Tabs>
+                    <RadzenTabsItem Text="Resumen Global">
+                        <div class="h-100">
+                            <Micromedicion_ResumenTarifasGlobal DatosGrid="@DatosGrid" Enlace="@Enlace"/>
+                        </div>
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Resumen Por Localidades">
+                        <div class="h-100">
+                            <Micromedicion_ResumenTarifasLocalidad DatosGrid="@DatosGridLocalidad" Enlace="@Enlace"/>
+                        </div>
+                    </RadzenTabsItem>
+                </Tabs>
+            </RadzenTabs>
 
         </Content>
     </VentanaSecundaria>
 }
 
-@code {
+@code
+{
     [Parameter] public bool Visible {get;set;} = false;
     [Parameter] public EventCallback CerrarModal { get; set; }
     [Parameter] public DateTime Fecha1 { get; set; }
@@ -51,13 +39,15 @@
 
 
     //"******** Funciones ********"
-    public void Inicializar(IEnlace e, IEnumerable<Resumen_Tarifa> datos, IEnumerable<Resumen_Tarifa> datos2) {
+    public void Inicializar(IEnlace e, IEnumerable<Resumen_Tarifa> datos, IEnumerable<Resumen_Tarifa> datos2)
+    {
         this.Enlace = e;
         Titulo = $"{Enlace.Nombre.ToUpper()} - RESUMEN TOMAS POR TARIFAS";
         this.DatosGrid = datos.ToList();
         this.DatosGridLocalidad = datos2.ToList();
     }
-    private async Task CerrarModalClick(){
+    private async Task CerrarModalClick()
+    {
         await CerrarModal.InvokeAsync(null);
     }
 

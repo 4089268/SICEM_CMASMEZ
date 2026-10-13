@@ -1,8 +1,8 @@
-@using Syncfusion.Blazor.Grids
 @using Sicem_Blazor.PagoLinea.Models;
 @namespace Sicem_Blazor.PagoLinea.Views
 
-@if (mostrarVentana) {
+@if (mostrarVentana)
+{
     <VentanaSecundaria Titulo="@titulo" CerrarVentana="@HandleCloseModal" Filas="@(new double[] { 50, 610 })" Columnas="@(new double[]{1100})">
         <Content>
 
@@ -13,19 +13,19 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <SfGrid @ref="DataGrid" DataSource="@Datos" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true">
-                    <GridColumns>
-                        <GridColumn Field="@nameof(OprVenta.Id)" HeaderText="ID" TextAlign="TextAlign.Left" Width="120" />
-                        <GridColumn Field="@nameof(OprVenta.Fecha)" HeaderText="Fecha de Pago" TextAlign="TextAlign.Center" Width="180" Format="d" />
-                        <GridColumn Field="@nameof(OprVenta.Periodo)" HeaderText="Periodo" TextAlign="TextAlign.Center" Width="100" />
-                        <GridColumn Field="@nameof(OprVenta.IdCuenta)" HeaderText="Cuenta" TextAlign="TextAlign.Center" Width="150"/>
-                        <GridColumn Field="@nameof(OprVenta.Subtotal)" HeaderText="Subtotal" TextAlign="TextAlign.Right" Width="150" Format="c2" />
-                        <GridColumn Field="@nameof(OprVenta.Iva)" HeaderText="Iva" TextAlign="TextAlign.Right" Width="150" Format="c2" />
-                        <GridColumn Field="@nameof(OprVenta.Total)" HeaderText="Total" TextAlign="TextAlign.Right" Width="150" Format="c2" />
-                        <GridColumn Field="@nameof(OprVenta.Cobrado)" HeaderText="Cobrado" TextAlign="TextAlign.Right" Width="140" Format="c2" />
-                        <GridColumn Field="@nameof(OprVenta.ReferenciaComercio)" HeaderText="Referencia" TextAlign="TextAlign.Left" Width="140" Format="n0" />
-                    </GridColumns>
-                </SfGrid>
+                <RadzenDataGrid TItem="OprVenta" @ref="DataGrid" Data="@Datos" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                    <Columns>
+                        <RadzenDataGridColumn Property="@nameof(OprVenta.Id)" Title="ID" TextAlign="TextAlign.Left" Width="120px" />
+                        <RadzenDataGridColumn Property="@nameof(OprVenta.Fecha)" Title="Fecha de Pago" TextAlign="TextAlign.Center" Width="180px" FormatString="{0:d}" />
+                        <RadzenDataGridColumn Property="@nameof(OprVenta.Periodo)" Title="Periodo" TextAlign="TextAlign.Center" Width="100px" />
+                        <RadzenDataGridColumn Property="@nameof(OprVenta.IdCuenta)" Title="Cuenta" TextAlign="TextAlign.Center" Width="150px" />
+                        <RadzenDataGridColumn Property="@nameof(OprVenta.Subtotal)" Title="Subtotal" TextAlign="TextAlign.Right" Width="150px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(OprVenta.Iva)" Title="Iva" TextAlign="TextAlign.Right" Width="150px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(OprVenta.Total)" Title="Total" TextAlign="TextAlign.Right" Width="150px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(OprVenta.Cobrado)" Title="Cobrado" TextAlign="TextAlign.Right" Width="140px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(OprVenta.ReferenciaComercio)" Title="Referencia" TextAlign="TextAlign.Left" Width="140px" FormatString="{0:n0}" />
+                    </Columns>
+                </RadzenDataGrid>
             </div>
 
         </Content>

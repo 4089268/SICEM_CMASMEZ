@@ -1,11 +1,10 @@
 @using Sicem_Blazor.Eficiencia.Data
 @using Sicem_Blazor.Eficiencia.Models
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Calendars
-@using Syncfusion.Blazor.DropDowns
 @inject IJSRuntime JSRuntime
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
-@if (Visible) {
+@if (Visible)
+{
     <div class="busy-control">
 
         <div id="draggable2" class="SicemDialog-control" style="width:auto; height:auto;">
@@ -27,20 +26,20 @@
                 </div>
 
                 <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                    <SfGrid @ref="dataGrid" DataSource="@datosGrid" AllowSorting="true" AllowResizing="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true">
-                        <GridColumns> 
-                            <GridColumn Field="@nameof(Eficiencia_Detalle.Tipo_Usuario)" HeaderText="Tipo Usuario" TextAlign="TextAlign.Left" Width="120" />
-                            <GridColumn Field="@nameof(Eficiencia_Detalle.Facturacion)" HeaderText="Facturado" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Detalle.Por_Fac)" HeaderText="% Fact." TextAlign="TextAlign.Center" Width="80" />
-                            <GridColumn Field="@nameof(Eficiencia_Detalle.Cobrado)" HeaderText="Cobrado" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Detalle.Por_Cob)" HeaderText="% Cobr." TextAlign="TextAlign.Center" Width="80" />
-                            <GridColumn Field="@nameof(Eficiencia_Detalle.Descontado)" HeaderText="Descontado" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Detalle.Por_Des)" HeaderText="% Desc." TextAlign="TextAlign.Center" Width="80" />
-                            <GridColumn Field="@nameof(Eficiencia_Detalle.Anticipado)" HeaderText="Anticipado" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(Eficiencia_Detalle.Por_Ant)" HeaderText="% Anti." TextAlign="TextAlign.Center" Width="80" />
-                            <GridColumn Field="@nameof(Eficiencia_Detalle.Por_Efi)" HeaderText="Eficiencia" TextAlign="TextAlign.Center" Width="90" />
-                        </GridColumns>
-                    </SfGrid>
+                    <RadzenDataGrid TItem="Eficiencia_Detalle" @ref="_dataGrid" Data="@datosGrid" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                        <Columns> 
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Detalle.Tipo_Usuario)" Title="Tipo Usuario" TextAlign="TextAlign.Left" Width="120px" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Detalle.Facturacion)" Title="Facturado" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Detalle.Por_Fac)" Title="% Fact." TextAlign="TextAlign.Center" Width="80px" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Detalle.Cobrado)" Title="Cobrado" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Detalle.Por_Cob)" Title="% Cobr." TextAlign="TextAlign.Center" Width="80px" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Detalle.Descontado)" Title="Descontado" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Detalle.Por_Des)" Title="% Desc." TextAlign="TextAlign.Center" Width="80px" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Detalle.Anticipado)" Title="Anticipado" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Detalle.Por_Ant)" Title="% Anti." TextAlign="TextAlign.Center" Width="80px" />
+                            <RadzenDataGridColumn Property="@nameof(Eficiencia_Detalle.Por_Efi)" Title="Eficiencia" TextAlign="TextAlign.Center" Width="90px" />
+                        </Columns>
+                    </RadzenDataGrid>
                 </div>
 
             </div>
@@ -50,7 +49,8 @@
 
 }
 
-@code {
+@code
+{
 
     #region  "******** Parametros ********"
     [Parameter]
@@ -67,26 +67,30 @@
     [Parameter]
     public int Sector { get; set; }
 
-    List<int> GridFilas = new List<int>() { 50, 350};
-    List<int> GridColumnas = new List<int>() { 1020 };
+    List<int> _gridFilas = new List<int>() { 50, 350};
+    List<int> _gridColumnas = new List<int>() { 1020 };
     #endregion
     #region "******** Funciones Base ********"
-    private async Task Cerrar_Modal() {
+    private async Task Cerrar_Modal()
+    {
         this.datosGrid = new Eficiencia_Detalle[]{ };
         await CerrarModal.InvokeAsync("");
     }
-    private string ObtnerDimensiones() {
+    private string ObtnerDimensiones()
+    {
         var xB = new System.Text.StringBuilder();
         xB.Append("height: 100%; width:100%; ");
         xB.Append("display:grid; ");
         xB.Append("grid-template-rows: ");
-        foreach (int FilaH in GridFilas) {
+        foreach (int FilaH in _gridFilas)
+        {
             xB.Append(string.Format("{0}px ", FilaH));
         }
         xB.Append("; ");
 
         xB.Append("grid-template-columns: ");
-        foreach (int ColW in GridColumnas) {
+        foreach (int ColW in _gridColumnas)
+        {
             xB.Append(string.Format("{0}px ", ColW));
         }
         xB.Append("; ");
@@ -98,21 +102,26 @@
 
     //"******** Variables ********"
 
-    SfGrid<Eficiencia_Detalle> dataGrid;
+    RadzenDataGrid<Eficiencia_Detalle> _dataGrid;
     public Eficiencia_Detalle[] datosGrid;
 
 
     //"******** Funciones Generales ********"
-    public async Task Inicializar(Eficiencia_Detalle[] datos) {
+    public async Task Inicializar(Eficiencia_Detalle[] datos)
+    {
         await JSRuntime.InvokeVoidAsync("ConfigurateDragg2", "#draggable2");
         this.datosGrid = datos;
     }
 
-    private async Task GenerarExcel() {
-        await this.dataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this._dataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
+    // TODO-EXPORT-RADZEN: exportación a PDF pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task GenerarPdf() {
         string titulo = string.Format("Ingresos por Conceptos del {0} al {1}", this.Fecha1.ToString("dd/MM/yyyy"), this.Fecha2.ToString("dd/MM/yyyy"));
         List<PdfHeaderFooterContent> xconts = new List<PdfHeaderFooterContent>();
@@ -128,7 +137,7 @@
             }
         );
 
-        await this.dataGrid.PdfExport(new PdfExportProperties {
+        await this._dataGrid.PdfExport(new PdfExportProperties {
             PageOrientation = PageOrientation.Landscape,
             Header = new PdfHeader {
                 Contents = xconts
@@ -136,6 +145,7 @@
             FileName = string.Format("sicem_IngresosxDias{0}.pdf", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
+    */
         
 
 }

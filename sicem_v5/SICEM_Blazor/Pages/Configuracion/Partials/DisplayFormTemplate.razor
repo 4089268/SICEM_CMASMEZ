@@ -19,12 +19,12 @@
 
         <div class="col-12 p-3" style="height:80px;">
             <label class="pb-1" style="font-size:1.5em;">Titulo</label>
-            <SfTextBox Multiline=false Placeholder="Titulo" @bind-Value="@NotificacionTemplate1.Titulo"></SfTextBox>
+            <RadzenTextBox Placeholder="Titulo" @bind-Value="@NotificacionTemplate1.Titulo" class="w-100" />
         </div>
 
         <div class="col-9 p-3">
             <label class="pb-1" style="font-size:1.5em;">Mensaje</label>
-            <SfTextBox Multiline=true Placeholder="Mensaje a notificar" Style="height:20rem;" @bind-Value="@NotificacionTemplate1.Texto"></SfTextBox>
+            <RadzenTextArea Placeholder="Mensaje a notificar" Style="height:20rem;" @bind-Value="@NotificacionTemplate1.Texto" class="w-100" />
         </div>
 
         <div class="col-3 p-3" style="overflow-y: scroll; overflow-x: hidden; height: 24rem;">
@@ -41,10 +41,10 @@
         @if(UseImage)
         {
         <div class="col-12 p-3">
-            <label class="pb-1" for="selecctBanner" style="font-size:1.25em;">Imagenes Disponibles</label>
+            <label class="pb-1" for="selecctBanner" style="font-size:1.25em;">_imagenes Disponibles</label>
 
             <div class="row border rounded p-2 bg-light">
-                @foreach(var image in Imagenes)
+                @foreach(var image in _imagenes)
                 {
                     <div class="col-4 p-2">
                         <div class="car border">
@@ -135,9 +135,11 @@
     public NotificacionTemplate NotificacionTemplate1 {get; set;}
 
     private bool _useImage = false;
-    private bool UseImage {
+    private bool UseImage
+    {
         get => _useImage;
-        set {
+        set
+        {
             _useImage = value;
             if(!_useImage)
             {
@@ -145,9 +147,9 @@
             }
         }
     }
-    private List<CatImagenesTemplate> Imagenes = new List<CatImagenesTemplate>();
-    private CatPadron catPadron;
-    private Guid TemplateImageUUID = Guid.NewGuid();
+    private List<CatImagenesTemplate> _imagenes = new List<CatImagenesTemplate>();
+    private CatPadron _catPadron;
+    private Guid _templateImageUUID = Guid.NewGuid();
 
 
     protected override async Task OnInitializedAsync()
@@ -164,9 +166,9 @@
 
     private async Task LoadTemplateImages()
     {
-        this.Imagenes = NotificacionesTemplateService1.GetImagenesTemplates().ToList();
+        this._imagenes = NotificacionesTemplateService1.GetImagenesTemplates().ToList();
         StateHasChanged();
-        Logger.LogDebug("Total imagesTemplate: {total}", this.Imagenes.Count);
+        Logger.LogDebug("Total imagesTemplate: {total}", this._imagenes.Count);
         await Task.CompletedTask;
     }
 
@@ -192,13 +194,13 @@
         //     LoadRandomAccountInfo();
 
         //     // * Generate the message text
-        //     var message = MessageUtils.GenerateMessage(NotificacionTemplate1.Texto, catPadron);
+        //     var message = MessageUtils.GenerateMessage(NotificacionTemplate1.Texto, _catPadron);
 
-        //     var destinationPath = Path.Join(this.Configuration["TempFolder"], TemplateImageUUID.ToString());
+        //     var destinationPath = Path.Join(this.Configuration["TempFolder"], _templateImageUUID.ToString());
         //     Logger.LogDebug("Temporal path: {path}", destinationPath);
 
         //     // * get the original image path
-        //     var originalImagePath = this.Imagenes.FirstOrDefault(item => item.Id == NotificacionTemplate1.ImageId)?.Path;
+        //     var originalImagePath = this._imagenes.FirstOrDefault(item => item.Id == NotificacionTemplate1.ImageId)?.Path;
         //     if(originalImagePath == null)
         //    {
         //        Toaster.Add("No se ha seleccionado una imagen", MatToastType.Warning);
@@ -237,7 +239,7 @@
             .FirstOrDefault() ?? throw new ArgumentNullException($"Can't retrive the a random account info of the office {_office.Nombre}");
 
         var ruta = _office as Ruta ?? throw new InvalidCastException("The IEnlace instance could not be cast to Ruta.");
-        catPadron = new CatPadron(ruta, accountInfo);
+        _catPadron = new CatPadron(ruta, accountInfo);
     }
 
 }

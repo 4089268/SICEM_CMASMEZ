@@ -1,6 +1,4 @@
 @page "/lecturas"
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
 @using Sicem_Blazor.Lecturas.Data
 @using Sicem_Blazor.Lecturas.Models
 @inject IMatToaster Toaster
@@ -13,7 +11,7 @@
 
     <div class="title-page" style="grid-area:1/1/2/2;">CONSULTA DE LECTURAS</div>
 
-    <MatTabGroup @ref="tabGroup" Class="mx-1 mt-2 mb-1 p-1 border rounded bg-white" Style="grid-row:2/6; grid-column:1/2;">
+    <MatTabGroup @ref="_tabGroup" Class="mx-1 mt-2 mb-1 p-1 border rounded bg-white" Style="grid-row:2/6; grid-column:1/2;">
         <MatTab >
             <LabelContent><span class="h5">Desempeño Lecturistas</span></LabelContent>
             <ChildContent>
@@ -30,6 +28,7 @@
 
 </div>
 
-@code{
-      MatTabGroup tabGroup;
+@code
+{
+      MatTabGroup _tabGroup;
 }

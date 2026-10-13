@@ -1,12 +1,9 @@
-@using Syncfusion.Blazor
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Buttons
-@using Syncfusion.Blazor.Grids
 @using Sicem_Blazor.Micromedicion.Models
 @inject IJSRuntime JSRuntime
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
-@if (Visible){
+@if (Visible)
+{
 
     <VentanaSecundaria Titulo="@Titulo" CerrarVentana="@CerrarModal" Filas="@(new double[] { 50, 620})" Columnas="@(new double[]{ 1150 })">
         <Content>
@@ -18,35 +15,35 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <SfGrid @ref="dataGrid" DataSource="@datosGrid" AllowPaging="@allowPaging" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true">
-                    <GridPageSettings PageSize="500"></GridPageSettings>
-                    <GridColumns>
-                        <GridColumn Field="@nameof(Micromedicion_Padron.Estatus)" HeaderText="Estatus" TextAlign="TextAlign.Left" Width="100" />
-                        <GridColumn Field="@nameof(Micromedicion_Padron.Contrato)" HeaderText="Contrato" TextAlign="TextAlign.Center" Width="90" />
-                        <GridColumn Field="@nameof(Micromedicion_Padron.Usuario)" HeaderText="Usuario" TextAlign="TextAlign.Left" Width="200" />
-                        <GridColumn Field="@nameof(Micromedicion_Padron.Sb)" HeaderText="Subsitema" TextAlign="TextAlign.Center" Width="60" />
-                        <GridColumn Field="@nameof(Micromedicion_Padron.Sector)" HeaderText="Sector" TextAlign="TextAlign.Center" Width="60" />
-                        <GridColumn Field="@nameof(Micromedicion_Padron.Localidad)" HeaderText="Localidad" TextAlign="TextAlign.Left" Width="180" />
-                        <GridColumn Field="@nameof(Micromedicion_Padron.Colonia)" HeaderText="Colonia" TextAlign="TextAlign.Left" Width="180" />
-                        <GridColumn Field="@nameof(Micromedicion_Padron.Tipo_usuario)" HeaderText="Tipo Usuario" TextAlign="TextAlign.Left" Width="160" />
-                        <GridColumn Field="@nameof(Micromedicion_Padron.Servicio)" HeaderText="Servicio" TextAlign="TextAlign.Left" Width="190" />
-                        <GridColumn Field="@nameof(Micromedicion_Padron.Medidor)" HeaderText="Medidor" TextAlign="TextAlign.Center" Width="90" />
-                        <GridColumn Field="@nameof(Micromedicion_Padron.Diametro)" HeaderText="Diametro" TextAlign="TextAlign.Center" Width="80" />
-                        <GridColumn Field="@nameof(Micromedicion_Padron.Marca)" HeaderText="Marca" TextAlign="TextAlign.Left" Width="100" />
-                        <GridColumn Field="@nameof(Micromedicion_Padron.Funcionando)" HeaderText="Funcionando" TextAlign="TextAlign.Center" Width="120" />
-                        <GridColumn Field="@nameof(Micromedicion_Padron.Modelo)" HeaderText="Modelo" TextAlign="TextAlign.Left" Width="90" />
-                        <GridColumn Field="@nameof(Micromedicion_Padron.Fecha_inst)" HeaderText="Fecha Inst." TextAlign="TextAlign.Center" Width="160" />
-                        <GridColumn Field="@nameof(Micromedicion_Padron.Trabajo)" HeaderText="Trabajo" TextAlign="TextAlign.Left" Width="200" />
-                        <GridColumn Field="@nameof(Micromedicion_Padron.Fecha_realizo)" HeaderText="Fecha Reali." TextAlign="TextAlign.Center" Width="160" />
-                    </GridColumns>
-                </SfGrid>
+                <RadzenDataGrid TItem="Micromedicion_Padron" @ref="_dataGrid" Data="@datosGrid" AllowPaging="@_allowPaging" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" PageSize="500" Style="height:100%; width:auto;">
+                    <Columns>
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Estatus)" Title="Estatus" TextAlign="TextAlign.Left" Width="100px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Contrato)" Title="Contrato" TextAlign="TextAlign.Center" Width="90px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Usuario)" Title="Usuario" TextAlign="TextAlign.Left" Width="200px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Sb)" Title="Subsitema" TextAlign="TextAlign.Center" Width="60px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Sector)" Title="Sector" TextAlign="TextAlign.Center" Width="60px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Localidad)" Title="Localidad" TextAlign="TextAlign.Left" Width="180px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Colonia)" Title="Colonia" TextAlign="TextAlign.Left" Width="180px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Tipo_usuario)" Title="Tipo Usuario" TextAlign="TextAlign.Left" Width="160px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Servicio)" Title="Servicio" TextAlign="TextAlign.Left" Width="190px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Medidor)" Title="Medidor" TextAlign="TextAlign.Center" Width="90px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Diametro)" Title="Diametro" TextAlign="TextAlign.Center" Width="80px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Marca)" Title="Marca" TextAlign="TextAlign.Left" Width="100px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Funcionando)" Title="Funcionando" TextAlign="TextAlign.Center" Width="120px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Modelo)" Title="Modelo" TextAlign="TextAlign.Left" Width="90px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Fecha_inst)" Title="Fecha Inst." TextAlign="TextAlign.Center" Width="160px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Trabajo)" Title="Trabajo" TextAlign="TextAlign.Left" Width="200px" />
+                        <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Fecha_realizo)" Title="Fecha Reali." TextAlign="TextAlign.Center" Width="160px" />
+                    </Columns>
+                </RadzenDataGrid>
             </div>
         </Content>
     </VentanaSecundaria>
 
 }
 
-@code {
+@code
+{
 
     [Parameter] public bool Visible { get; set; }
     [Parameter] public EventCallback CerrarModal { get; set; }
@@ -55,30 +52,36 @@
     [Parameter] public int Subsistema { get; set; }
     [Parameter] public int Sector { get; set; }
     public string Titulo { get; set; } = "Detalle Padron";
-    private bool allowPaging = false;
+    private bool _allowPaging = false;
 
-    SfGrid<Micromedicion_Padron> dataGrid;
+    RadzenDataGrid<Micromedicion_Padron> _dataGrid;
     public Micromedicion_Padron[] datosGrid;
 
-    private async Task Cerrar_Modal() {
+    private async Task Cerrar_Modal()
+    {
         this.datosGrid = new Micromedicion_Padron[] { };
         await CerrarModal.InvokeAsync("");
     }
 
 
     //"******** Funciones Generales ********"
-    public async Task Inicializar(Micromedicion_Padron[] datos){
-        if(datos.Length > 1000) {
-            allowPaging = true;
+    public async Task Inicializar(Micromedicion_Padron[] datos)
+    {
+        if(datos.Length > 1000)
+        {
+            _allowPaging = true;
         }
-        else{
-            allowPaging = false;
+        else
+        {
+            _allowPaging = false;
         }
         this.datosGrid = datos;
         await Task.Delay(100);
     }
-    private async Task GenerarExcel() {
-        await this.dataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this._dataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }

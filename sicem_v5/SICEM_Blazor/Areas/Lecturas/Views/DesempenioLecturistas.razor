@@ -1,16 +1,15 @@
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
 @using Sicem_Blazor.Lecturas.Data
 @using Sicem_Blazor.Lecturas.Models
 @inject IMatToaster Toaster
 @inject IJSRuntime JSRuntime
 @inject SicemService sicemService
 @inject LecturasService lecturasService  
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
 <div style="width: 100%; height: calc(100vh - 20rem); display: grid; grid-template-columns: 100%; grid-template-rows: 5rem 4.5rem 1fr 1fr; grid-gap: .4rem .4rem;">
 
     <div role="filter" class="border rounded bg-white px-2 d-flex align-items-center" style="grid-area:1/1/2/2;">
-        <SeleccionarFechaDia fecha1="@Fecha1" fecha2="@Fecha2" ProcesarParam="@Procesar" />
+        <SeleccionarFechaDia fecha1="@_fecha1" fecha2="@_fecha2" ProcesarParam="@Procesar" />
     </div>
 
     <div role="actions" class="border rounded bg-white px-2 d-flex align-items-center" style="grid-area:2/1/3/2;">
@@ -19,23 +18,22 @@
 
     @* ****** DataGrid ****** *@
     <div class="border rounded bg-white p-2 d-flex" style="grid-area:3/1/4/2;">
-        <SfGrid @ref="dataGrid" DataSource="@datosLecturas" TValue="Lecturista" AllowResizing="true" AllowSorting="true" AllowFiltering="false"
-                AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true">
-            <GridColumns>
-                <GridColumn Field="@nameof(Lecturista.Nombre)" HeaderText="Lecturista" TextAlign="TextAlign.Left" Width="170" />
-                <GridColumn Field="@nameof(Lecturista.TotalLecturas)" HeaderText="Lecturas" TextAlign="TextAlign.Center" Width="115" Format="n0" />
-                <GridColumn Field="@nameof(Lecturista.H0708)" HeaderText="H 07-08" TextAlign="TextAlign.Center" Width="115" Format="n0" />
-                <GridColumn Field="@nameof(Lecturista.H0809)" HeaderText="H 08-09" TextAlign="TextAlign.Center" Width="115" Format="n0" />
-                <GridColumn Field="@nameof(Lecturista.H0910)" HeaderText="H 09-10" TextAlign="TextAlign.Center" Width="115" Format="n0" />
-                <GridColumn Field="@nameof(Lecturista.H1011)" HeaderText="H 10-11" TextAlign="TextAlign.Center" Width="115" Format="n0" />
-                <GridColumn Field="@nameof(Lecturista.H1112)" HeaderText="H 11-12" TextAlign="TextAlign.Center" Width="115" Format="n0" />
-                <GridColumn Field="@nameof(Lecturista.H1213)" HeaderText="H 12-13" TextAlign="TextAlign.Center" Width="115" Format="n0" />
-                <GridColumn Field="@nameof(Lecturista.H1314)" HeaderText="H 13-14" TextAlign="TextAlign.Center" Width="115" Format="n0" />
-                <GridColumn Field="@nameof(Lecturista.H1415)" HeaderText="H 14-15" TextAlign="TextAlign.Center" Width="115" Format="n0" />
-                <GridColumn Field="@nameof(Lecturista.H1516)" HeaderText="H 15-16" TextAlign="TextAlign.Center" Width="115" Format="n0" />
-                <GridColumn Field="@nameof(Lecturista.H1617)" HeaderText="H 16-17" TextAlign="TextAlign.Center" Width="115" Format="n0" />
+        <RadzenDataGrid TItem="Lecturista" @ref="dataGrid" Data="@DatosLecturas" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:100%;">
+            <Columns>
+                <RadzenDataGridColumn Property="@nameof(Lecturista.Nombre)" Title="Lecturista" TextAlign="TextAlign.Left" Width="170px" />
+                <RadzenDataGridColumn Property="@nameof(Lecturista.TotalLecturas)" Title="Lecturas" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Lecturista.H0708)" Title="H 07-08" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Lecturista.H0809)" Title="H 08-09" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Lecturista.H0910)" Title="H 09-10" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Lecturista.H1011)" Title="H 10-11" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Lecturista.H1112)" Title="H 11-12" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Lecturista.H1213)" Title="H 12-13" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Lecturista.H1314)" Title="H 13-14" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Lecturista.H1415)" Title="H 14-15" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Lecturista.H1516)" Title="H 15-16" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Lecturista.H1617)" Title="H 16-17" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />
 
-                <GridColumn HeaderText="Acciones" TextAlign="TextAlign.Left" Width="240">
+                <RadzenDataGridColumn Title="Acciones" TextAlign="TextAlign.Left" Width="240px">
                     <Template>
                         @{
                         var data = (context as Lecturista);
@@ -46,138 +44,150 @@
                         </div>
                         }
                     </Template>
-                </GridColumn>
-            </GridColumns>
-        </SfGrid>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
     </div>
 
     @****** Graficas ******@
     <div class="d-flex" style="grid-area:4/1/5/2;">
         <div class="border rounded bg-white mr-1 d-flex flex-column align-items-center" style="width:100%; height:100%;">
-            <SfChart @ref="grafica" Title="TARIFAS FACTURADAS" Height="100%">
-                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-                <ChartPrimaryYAxis Visible="false" LabelFormat="n0" />
-                <ChartTooltipSettings Enable="true" Header="Usuarios" Format="<b>${series.name}</b> : {point.y}" Shared="true"></ChartTooltipSettings>
-                <ChartLegendSettings Position="LegendPosition.Right" />
-                <ChartSeriesCollection>
-                    <ChartSeries DataSource="@datosGrafica" Name="Lecturas" XName="Descripcion" YName="Valor1" Type="ChartSeriesType.StackingBar">
-                        <ChartMarker>
-                            <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Outer" />
-                        </ChartMarker>
-                    </ChartSeries>
-                </ChartSeriesCollection>
-            </SfChart>
+            <div class="text-center font-weight-bold">TARIFAS FACTURADAS</div>
+            <RadzenChart @ref="Grafica" Style="height:100%; width:100%;">
+                <RadzenCategoryAxis />
+                <RadzenValueAxis Visible="false" FormatString="{0:n0}" />
+                <RadzenChartTooltipOptions Shared="true" />
+                <RadzenLegend Visible="true" Position="LegendPosition.Right" />
+                <RadzenStackedBarSeries Data="@DatosGrafica" Title="Lecturas" CategoryProperty="Descripcion" ValueProperty="Valor1">
+                    <TooltipTemplate Context="item">
+                        <b>Lecturas</b> : {point.y}
+                    </TooltipTemplate>
+                    <ChildContent>
+                        <RadzenSeriesDataLabels Visible="true" />
+                    </ChildContent>
+                </RadzenStackedBarSeries>
+            </RadzenChart>
         </div>
     </div>
 
-    <BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
+    <BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
 
-    @if(VentanaDetalleVisible){
-        <DetalleLecturistaVtn Title="@VentanaDetalleTitle" Oficina="@EnlaceSeleccionado" Datos="@DatosDetalleLecturista" Cerrar="@( e => VentanaDetalleVisible = false )" />
+    @if(_ventanaDetalleVisible)
+    {
+        <DetalleLecturistaVtn Title="@VentanaDetalleTitle" Oficina="@_enlaceSeleccionado" Datos="@DatosDetalleLecturista" Cerrar="@( e => _ventanaDetalleVisible = false )" />
     }
 </div>
 
-@code{
+@code
+{
 
-    private SfGrid<Lecturista> dataGrid {get;set;}
-    private SfChart grafica {get;set;}
-    private List<Lecturista> datosLecturas {get;set;}
-    private List<ChartItem> datosGrafica {get;set;}
-    private bool busyDialog = false;
+    private RadzenDataGrid<Lecturista> dataGrid {get;set;}
+    private RadzenChart Grafica {get;set;}
+    private List<Lecturista> DatosLecturas {get;set;}
+    private List<ChartItem> DatosGrafica {get;set;}
+    private bool _busyDialog = false;
 
-    private DateTime Fecha1, Fecha2;
-    private int Subsistema, Sector;
-    private IEnlace EnlaceSeleccionado;
+    private DateTime _fecha1, _fecha2;
+    private int _subsistema, _sector;
+    private IEnlace _enlaceSeleccionado;
 
     private IEnumerable<DetalleLecturista> DatosDetalleLecturista {get;set;}
-    private bool VentanaDetalleVisible = false;
-    private Lecturista LecturistaSeleccionado;
+    private bool _ventanaDetalleVisible = false;
+    private Lecturista _lecturistaSeleccionado;
     private string VentanaDetalleTitle
     {
-        get => $"LECTURISTA -  {LecturistaSeleccionado.Nombre}";
+        get => $"LECTURISTA -  {_lecturistaSeleccionado.Nombre}";
     }
 
     //********* Funciones  *********
-    protected override void OnInitialized() {
-        this.Fecha1 = DateTime.Now;
-        this.Fecha2 = DateTime.Now;
-        this.Subsistema = 0;
-        this.Sector = 0;
+    protected override void OnInitialized()
+    {
+        this._fecha1 = DateTime.Now;
+        this._fecha2 = DateTime.Now;
+        this._subsistema = 0;
+        this._sector = 0;
     }
 
-    protected override void OnAfterRender(bool firstRender){
-        if(firstRender){
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if(firstRender)
+        {
             Procesar(new SeleccionarFechaEventArgs());
         }
     }
 
-    public void Procesar(SeleccionarFechaEventArgs e) {
-        this.Fecha1 = e.Fecha1;
-        this.Fecha2 = e.Fecha2;
-        this.Subsistema = e.Subsistema;
-        this.Sector = e.Sector;
+    public void Procesar(SeleccionarFechaEventArgs e)
+    {
+        this._fecha1 = e.Fecha1;
+        this._fecha2 = e.Fecha2;
+        this._subsistema = e.Subsistema;
+        this._sector = e.Sector;
 
-        datosLecturas = new List<Lecturista>();
-        datosGrafica = new List<ChartItem>();
+        DatosLecturas = new List<Lecturista>();
+        DatosGrafica = new List<ChartItem>();
         var enlaces = sicemService.ObtenerOficinasDelUsuario();
         var oficinas = sicemService.ObtenerEnlaces().Where(item => enlaces.Select(i => i.Id).Contains(item.Id)).ToArray();
 
-        this.EnlaceSeleccionado = oficinas.FirstOrDefault();
+        this._enlaceSeleccionado = oficinas.FirstOrDefault();
         
-        ProcesarConsulta(this.EnlaceSeleccionado);
+        ProcesarConsulta(this._enlaceSeleccionado);
 
     }
 
-    private async void ProcesarConsulta(IEnlace oficina){
-        this.busyDialog = true;
+    private async void ProcesarConsulta(IEnlace oficina)
+    {
+        this._busyDialog = true;
         await Task.Delay(100);
     
-        var dateRange = new DateRange(Fecha1, Fecha2);
+        var dateRange = new DateRange(_fecha1, _fecha2);
         
-        this.datosLecturas = lecturasService.ObtenerLecturasPorLecturisa(dateRange, oficina).ToList();
+        this.DatosLecturas = lecturasService.ObtenerLecturasPorLecturisa(dateRange, oficina).ToList();
 
-        // Actualizar grafica
+        // Actualizar Grafica
         var items = new List<ChartItem>();
-        foreach(var item in this.datosLecturas){
-            items.Add( new ChartItem(){
+        foreach(var item in this.DatosLecturas)
+        {
+            items.Add( new ChartItem()
+            {
                 Id = (int) item.IdLecturista,
                 Descripcion = item.Nombre,
                 Valor1 = item.TotalLecturas
             });
         }
-        this.datosGrafica = items;
+        this.DatosGrafica = items;
 
 
 
         await Task.Delay(100);
-        this.busyDialog = false;
+        this._busyDialog = false;
         StateHasChanged();
     }
 
     private async Task MostrarDetalle(Lecturista lecturista)
     {
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(200);
-        this.LecturistaSeleccionado = lecturista;
-        this.DatosDetalleLecturista = this.lecturasService.DetalleLecturista( new DateRange(lecturista.Inicio, lecturista.Fin), this.EnlaceSeleccionado, (int) lecturista.IdLecturista).ToArray();
+        this._lecturistaSeleccionado = lecturista;
+        this.DatosDetalleLecturista = this.lecturasService.DetalleLecturista( new DateRange(lecturista.Inicio, lecturista.Fin), this._enlaceSeleccionado, (int) lecturista.IdLecturista).ToArray();
 
         if(this.DatosDetalleLecturista.Count() > 0)
         {
-            this.VentanaDetalleVisible = true;
+            this._ventanaDetalleVisible = true;
         }else
         {
             Toaster.Add("No hay datos disponibles para esta fecha", MatToastType.Info);
         }
         await Task.Delay(200);
-        this.busyDialog = false;
+        this._busyDialog = false;
         
     }
 
     private async Task ExportarExcel_Click()
     {
-        var _options = new ExcelExportProperties(){
+        var _options = new ExcelExportProperties()
+        {
             IncludeHiddenColumn = true
         };
-        await this.dataGrid.ExportToExcelAsync(_options);
+        await ExportacionExcel.ExportarAsync(this.dataGrid, _options);
     }
 }

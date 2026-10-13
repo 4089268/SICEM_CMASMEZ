@@ -1,10 +1,10 @@
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Grids
 @using Sicem_Blazor.ControlRezago.Models
 @inject IJSRuntime JSRuntime
 @inject ControlRezagoService controlRezService
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
-@if (Visible) {
+@if (Visible)
+{
     <div class="busy-control">
 
         <div id="draggable" class="SicemDialog-control" style="width:auto; height:auto;">
@@ -21,16 +21,12 @@
                 <div class="d-flex align-items-center m-1 p-2 border rounded bg-white" style="grid-row: 1/2; grid-column: 1/2;">
                     <div class="d-flex mx-2 align-items-center">
                         <div class="mr-2 font-weight-bold" style="width:15rem;">Meses Morosos:</div>
-                        <SfNumericTextBox Value="@mesesMorozo" TValue="int?" Format="n0" ShowSpinButton="false" CssClass="e-small">
-                            <NumericTextBoxEvents TValue="int?" ValueChange="OnChange_Meses"></NumericTextBoxEvents>
-                        </SfNumericTextBox>
+                        <RadzenNumeric TValue="int?" Value="@mesesMorozo" Format="n0" ShowUpDown="false" Change="OnChange_Meses" class="w-100" />
                     </div>
 
                     <div class="d-flex mx-2 align-items-center">
                         <div class="mr-2 font-weight-bold" style="width:14rem;">Saldo Moroso:</div>
-                        <SfNumericTextBox Value="@saldoMorozo" TValue="double?" Format="c2" ShowSpinButton="false" CssClass="e-small">
-                            <NumericTextBoxEvents TValue="double?" ValueChange="OnChange_Saldo"></NumericTextBoxEvents>
-                        </SfNumericTextBox>
+                        <RadzenNumeric TValue="double?" Value="@saldoMorozo" Format="c2" ShowUpDown="false" Change="OnChange_Saldo" class="w-100" />
                     </div>
 
                     <MatButton Class="ml-1 mr-2" Raised="true" Style="height:2.5rem; padding: 0rem 3rem;" OnClick="@Procesar">Procesar</MatButton>
@@ -44,48 +40,53 @@
 
 
                 <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                    <SfGrid @ref="dataGrid" DataSource="@datosGrid" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true">
-                        <GridColumns>
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Resumen.Tipo_Usuario)" HeaderText="Tipo Usuario" TextAlign="TextAlign.Left" Width="180" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Resumen.Usu_Regular)" HeaderText="Usu Regular" TextAlign="TextAlign.Center" Width="90" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Resumen.Imp_Regular)" HeaderText="Imp Regular" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Resumen.Usu_Moroso)" HeaderText="Usu Moroso" TextAlign="TextAlign.Center" Width="90" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Resumen.Imp_Moroso)" HeaderText="Imp Moroso" TextAlign="TextAlign.Right" Width="90" Format="c2" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Resumen.Usu_Total)" HeaderText="Usu Total" TextAlign="TextAlign.Center" Width="90" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Resumen.Imp_Total)" HeaderText="Imp Total" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                        </GridColumns>
-                    </SfGrid>
+                    <RadzenDataGrid TItem="ControlRezago_AnalisisCart_Resumen" @ref="_dataGrid" Data="@datosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                        <Columns>
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Resumen.Tipo_Usuario)" Title="Tipo Usuario" TextAlign="TextAlign.Left" Width="180px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Resumen.Usu_Regular)" Title="Usu Regular" TextAlign="TextAlign.Center" Width="90px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Resumen.Imp_Regular)" Title="Imp Regular" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Resumen.Usu_Moroso)" Title="Usu Moroso" TextAlign="TextAlign.Center" Width="90px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Resumen.Imp_Moroso)" Title="Imp Moroso" TextAlign="TextAlign.Right" Width="90px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Resumen.Usu_Total)" Title="Usu Total" TextAlign="TextAlign.Center" Width="90px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Resumen.Imp_Total)" Title="Imp Total" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                        </Columns>
+                    </RadzenDataGrid>
                 </div>
 
                 <div class="m-1 p-2 border rounded bg-white" style="grid-row: 3/4; grid-column: 1/2;">
-                    <SfChart Title="" Height="185">
-                        <ChartPrimaryXAxis Title="" ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-                        <ChartPrimaryYAxis Title="Usuarios"></ChartPrimaryYAxis>
-                        <ChartTooltipSettings Enable="true" Header="${point.x}" Shared="true" Format="${series.name}: ${point.y}"></ChartTooltipSettings>
-                        <ChartLegendSettings Visible="false" Position="LegendPosition.Right"></ChartLegendSettings>
-                        <ChartSeriesCollection>
-                            @*<ChartSeries DataSource="@datosGrafica" Name="Usu Regulares" XName="Descripcion" YName="Valor1" Type="ChartSeriesType.StackingColumn">
-                                <ChartMarker>
-                                    <ChartDataLabel Visible="true"></ChartDataLabel>
-                                </ChartMarker>
-                            </ChartSeries>*@
-                            <ChartSeries DataSource="@datosGrafica" Name="Usu Morosos" XName="Descripcion" YName="Valor2" Type="ChartSeriesType.StackingColumn">
-                                <ChartMarker>
-                                    <ChartDataLabel Visible="true"></ChartDataLabel>
-                                </ChartMarker>
-                            </ChartSeries>
-                        </ChartSeriesCollection>
-                    </SfChart>
+                    <RadzenChart Style="height:185px; width:100%;">
+                        <RadzenCategoryAxis />
+                        <RadzenValueAxis ><RadzenAxisTitle Text="Usuarios" /></RadzenValueAxis>
+                        <RadzenChartTooltipOptions Shared="true" />
+                        <RadzenLegend Visible="false" Position="LegendPosition.Right" />
+                        @*<RadzenStackedColumnSeries Data="@datosGrafica" Title="Usu Regulares" CategoryProperty="Descripcion" ValueProperty="Valor1">
+                        <TooltipTemplate Context="item">
+                            Usu Regulares: @item.Valor1
+                        </TooltipTemplate>
+                        <ChildContent>
+                            <RadzenSeriesDataLabels Visible="true" />
+                        </ChildContent>
+                    </RadzenStackedColumnSeries>*@
+                    <RadzenStackedColumnSeries Data="@datosGrafica" Title="Usu Morosos" CategoryProperty="Descripcion" ValueProperty="Valor2">
+                        <TooltipTemplate Context="item">
+                            Usu Morosos: @item.Valor2
+                        </TooltipTemplate>
+                        <ChildContent>
+                            <RadzenSeriesDataLabels Visible="true" />
+                        </ChildContent>
+                    </RadzenStackedColumnSeries>
+                    </RadzenChart>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <BusyIndicator Busy="@busyDiaglog" ContentText="Cargando datos...." />
+    <BusyIndicator Busy="@_busyDiaglog" ContentText="Cargando datos...." />
 }
 
-@code {
+@code
+{
 
     #region  "******** Parametros ********"
     [Parameter]
@@ -102,26 +103,30 @@
     [Parameter]
     public int Sector { get; set; }
 
-    List<int> GridFilas = new List<int>() { 50, 400, 200 };
-    List<int> GridColumnas = new List<int>() { 1020 };
+    List<int> _gridFilas = new List<int>() { 50, 400, 200 };
+    List<int> _gridColumnas = new List<int>() { 1020 };
     #endregion
     #region "******** Funciones Base ********"
-    private async Task Cerrar_Modal() {
+    private async Task Cerrar_Modal()
+    {
         this.datosGrid = new ControlRezago_AnalisisCart_Resumen[] { };
         await CerrarModal.InvokeAsync("");
     }
-    private string ObtnerDimensiones() {
+    private string ObtnerDimensiones()
+    {
         var xB = new System.Text.StringBuilder();
         xB.Append("height: 100%; width:100%; ");
         xB.Append("display:grid; ");
         xB.Append("grid-template-rows: ");
-        foreach (int FilaH in GridFilas) {
+        foreach (int FilaH in _gridFilas)
+        {
             xB.Append(string.Format("{0}px ", FilaH));
         }
         xB.Append("; ");
 
         xB.Append("grid-template-columns: ");
-        foreach (int ColW in GridColumnas) {
+        foreach (int ColW in _gridColumnas)
+        {
             xB.Append(string.Format("{0}px ", ColW));
         }
         xB.Append("; ");
@@ -132,24 +137,28 @@
 
 
     //"******** Variables ********"
-    SfGrid<ControlRezago_AnalisisCart_Resumen> dataGrid;
+    RadzenDataGrid<ControlRezago_AnalisisCart_Resumen> _dataGrid;
     public ControlRezago_AnalisisCart_Resumen[] datosGrid;
     public CharItem[] datosGrafica = new CharItem[] { };
     public int Id_Oficina = 0;
-    private bool busyDiaglog = false;
+    private bool _busyDiaglog = false;
     public int mesesMorozo { get; set; } = 12;
     public double saldoMorozo { get; set; } = 700;
 
 
     //"******** Funciones Generales ********"
-    public async Task Inicializar(ControlRezago_AnalisisCart_Resumen[] datos) {
+    public async Task Inicializar(ControlRezago_AnalisisCart_Resumen[] datos)
+    {
         await JSRuntime.InvokeVoidAsync("ConfigurateDragg", null);
         this.datosGrid = datos;
 
         var tmpList = new List<CharItem>();
-        foreach (var item in datosGrid) {
-            if (item.Id_Tipo_Usuario > 0) {
-                tmpList.Add(new CharItem {
+        foreach (var item in datosGrid)
+        {
+            if (item.Id_Tipo_Usuario > 0)
+            {
+                tmpList.Add(new CharItem
+                {
                     Descripcion = item.Tipo_Usuario,
                     Valor1 = (decimal)item.Usu_Regular,
                     Valor2 = (decimal)item.Usu_Moroso
@@ -157,29 +166,36 @@
             }
         }
         this.datosGrafica = tmpList.ToArray<CharItem>();
-        busyDiaglog = false;
+        _busyDiaglog = false;
     }
 
-    private async Task Procesar() {
-        this.busyDiaglog = true;
+    private async Task Procesar()
+    {
+        this._busyDiaglog = true;
         var tmpData = controlRezService.ControlRezago_AnalisisResumen(Id_Oficina, 0, 0, mesesMorozo, saldoMorozo);
         await Inicializar(tmpData);
     }
 
-    public void OnChange_Meses(Syncfusion.Blazor.Inputs.ChangeEventArgs<int?> args) {
-        mesesMorozo = (int)args.Value;
+    public void OnChange_Meses(int? valor)
+    {
+        mesesMorozo = valor ?? 0;
         StateHasChanged();
     }
-    public void OnChange_Saldo(Syncfusion.Blazor.Inputs.ChangeEventArgs<double?> args) {
-        saldoMorozo = (double)args.Value;
+    public void OnChange_Saldo(double? valor)
+    {
+        saldoMorozo = valor ?? 0;
         StateHasChanged();
     }
 
-    private async Task GenerarExcel() {
-        await this.dataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this._dataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
+    // TODO-EXPORT-RADZEN: exportación a PDF pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task GenerarPdf() {
         string titulo = string.Format("Ingresos por Conceptos del {0} al {1}", this.Fecha1.ToString("dd/MM/yyyy"), this.Fecha2.ToString("dd/MM/yyyy"));
         List<PdfHeaderFooterContent> xconts = new List<PdfHeaderFooterContent>();
@@ -195,7 +211,7 @@
             }
         );
 
-        await this.dataGrid.PdfExport(new PdfExportProperties {
+        await this._dataGrid.PdfExport(new PdfExportProperties {
             PageOrientation = PageOrientation.Landscape,
             Header = new PdfHeader {
                 Contents = xconts
@@ -203,8 +219,10 @@
             FileName = string.Format("sicem_IngresosxDias{0}.pdf", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
+    */
 
-    public class CharItem {
+    public class CharItem
+    {
         public string Descripcion { get; set; }
         public decimal Valor1 { get; set; }
         public decimal Valor2 { get; set; }

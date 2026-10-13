@@ -1,13 +1,14 @@
 @using Sicem_Blazor.Padron.Models
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
 <div class="border rounded bg-white d-flex align-itenms-center p-2">
     <button class="button px-4" @onclick="ExportarExcel"> <i class="fa fa-file-excel mr-3"></i> Exportar Excel</button>
 </div>
 
 <div class="div_grid" style="height: calc(100% - 35px);">
-    <SfGrid @ref="DataGrid" DataSource="@DatosGrid" TValue="ResumenColonia" AllowResizing="true" AllowSorting="true"  AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true">
-        <GridColumns> 
-            <GridColumn HeaderText="" TextAlign="TextAlign.Left" Width="40">
+    <RadzenDataGrid TItem="ResumenColonia" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" Style="height:100%; width:100%;">
+        <Columns> 
+            <RadzenDataGridColumn Title="" TextAlign="TextAlign.Left" Width="40px">
                 <Template>
                     @{
                         var data = (context as ResumenColonia);
@@ -18,29 +19,33 @@
                         </div>
                     }
                 </Template>
-            </GridColumn>
-            <GridColumn Field="@nameof(ResumenColonia.Colonia)" HeaderText="Colonia" TextAlign="TextAlign.Left" Width="170" />
-            <GridColumn Field="@nameof(ResumenColonia.Usuarios)" HeaderText="Usuarios" TextAlign="TextAlign.Center" Width="115" Format="n0" />
-            <GridColumn Field="@nameof(ResumenColonia.Subtotal)" HeaderText="Subtotal" TextAlign="TextAlign.Right" Width="125" Format="c2" />
-            <GridColumn Field="@nameof(ResumenColonia.IVA)" HeaderText="IVA" TextAlign="TextAlign.Right" Width="125" Format="c2" />
-            <GridColumn Field="@nameof(ResumenColonia.Total)" HeaderText="Total" TextAlign="TextAlign.Right" Width="125" Format="c2" />
-        </GridColumns>
-    </SfGrid>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Property="@nameof(ResumenColonia.Colonia)" Title="Colonia" TextAlign="TextAlign.Left" Width="170px" />
+            <RadzenDataGridColumn Property="@nameof(ResumenColonia.Usuarios)" Title="Usuarios" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />
+            <RadzenDataGridColumn Property="@nameof(ResumenColonia.Subtotal)" Title="Subtotal" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" />
+            <RadzenDataGridColumn Property="@nameof(ResumenColonia.IVA)" Title="IVA" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" />
+            <RadzenDataGridColumn Property="@nameof(ResumenColonia.Total)" Title="Total" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" />
+        </Columns>
+    </RadzenDataGrid>
 </div>
 
 
-@code {
-    private SfGrid<ResumenColonia> DataGrid {get;set;}
+@code
+{
+    private RadzenDataGrid<ResumenColonia> DataGrid {get;set;}
     [Parameter] public List<ResumenColonia> DatosGrid {get;set;}
     [Parameter] public EventCallback<string> OnDetailClick {get;set;}
-    private async Task OnClick(ResumenColonia e){
+    private async Task OnClick(ResumenColonia e)
+    {
         await OnDetailClick.InvokeAsync(e.Colonia);
     }
-    public async Task ExportarExcel(){
-        var properties = new ExcelExportProperties(){
+    public async Task ExportarExcel()
+    {
+        var properties = new ExcelExportProperties()
+        {
             FileName = "ResumenxColonia.xlsx"
         };
-        await DataGrid.ExportToExcelAsync(properties);
+        await ExportacionExcel.ExportarAsync(DataGrid, properties);
     }
 
 }

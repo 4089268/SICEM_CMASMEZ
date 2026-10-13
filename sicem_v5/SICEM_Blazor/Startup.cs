@@ -11,9 +11,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Syncfusion.Blazor;
 using System.Net.Http;
 using MatBlazor;
+using Radzen;
 using Sicem_Blazor.Models;
 using Sicem_Blazor.Services;
 using Sicem_Blazor.Helpers;
@@ -26,26 +26,32 @@ using Sicem_Blazor.Descuentos.Data;
 using Sicem_Blazor.SeguimientoCobros.Data;
 using Sicem_Blazor.PagoLinea.Services;
 
-namespace Sicem_Blazor {
-    public class Startup {
+namespace Sicem_Blazor
+{
+    public class Startup
+    {
 
         public IConfiguration Configuration { get; }
         
-        public Startup(IConfiguration configuration) {
+        public Startup(IConfiguration configuration)
+        {
             Configuration = configuration;
         }
 
 
         // This method gets1 called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services){
+        public void ConfigureServices(IServiceCollection services)
+        {
             services.AddRazorPages();
             services.AddMatBlazor();
             services.AddControllers();
-            services.AddDbContext<SicemContext>(options => {
+            services.AddDbContext<SicemContext>(options =>
+            {
                 options.UseSqlServer(Configuration.GetConnectionString("SICEM"));
             });
 
-            services.AddLogging( config => {
+            services.AddLogging( config =>
+            {
                 config.AddConsole();
                 config.AddEventSourceLogger();
             });
@@ -54,6 +60,7 @@ namespace Sicem_Blazor {
             services.Configure<ApiAuthSettings>(Configuration.GetSection("ApiAuth"));
             services.AddSingleton<SessionService>();
             services.AddScoped<SicemService>();
+            services.AddScoped<RadzenDataGridExportacionExcelService>();
             services.AddScoped<ConsultaGralService>();
             services.AddScoped<IRecaudacionService, RecaudacionService>();
             services.AddScoped<ControlRezagoService>();
@@ -69,14 +76,16 @@ namespace Sicem_Blazor {
             services.AddPagoLineaServices();
             services.AddSingleton<IncomeOfficeService>( provider => new IncomeOfficeService( Configuration.GetConnectionString("ARQUOS") ));
             services.AddSingleton<Sicem_Blazor.Lecturas.Data.LecturasService>();
-            services.AddHttpClient("notificacionApi", client => {
+            services.AddHttpClient("notificacionApi", client =>
+            {
                 client.BaseAddress = new Uri("http://nerus.sytes.net:3001/lead");
             });
             services.AddWhatsappService(Configuration);
 
             services.AddServerSideBlazor();
-            services.AddSyncfusionBlazor();
-            services.AddMatToaster(config =>{
+            services.AddRadzenComponents();
+            services.AddMatToaster(config =>
+            {
                 config.Position = MatToastPosition.TopCenter;
                 config.PreventDuplicates = true;
                 config.NewestOnTop = true;
@@ -85,7 +94,8 @@ namespace Sicem_Blazor {
                 config.VisibleStateDuration = 4000;
             });
             
-            services.AddCors(policy => {
+            services.AddCors(policy =>
+            {
                 policy.AddPolicy("CorsPolicy", opt => opt
                     .AllowAnyOrigin()
                     .AllowAnyHeader()
@@ -94,20 +104,22 @@ namespace Sicem_Blazor {
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
             var _ci = new CultureInfo("es-MX");
-            app.UseRequestLocalization( new RequestLocalizationOptions(){
+            app.UseRequestLocalization( new RequestLocalizationOptions()
+            {
                 DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(_ci),
                 SupportedCultures = new List<CultureInfo>(){_ci},
                 SupportedUICultures = new List<CultureInfo>(){_ci}
             });
 
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense( Configuration["SyncfusionLicense"]);
-
-            if(env.IsDevelopment()) {
+            if(env.IsDevelopment())
+            {
                 app.UseDeveloperExceptionPage();
             }
-            else {
+            else
+            {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 //app.UseHsts();
@@ -118,7 +130,8 @@ namespace Sicem_Blazor {
             app.UseRouting();
             app.UseRequestLocalization();
             app.UseCors("CorsPolicy");
-            app.UseEndpoints(endpoints => {
+            app.UseEndpoints(endpoints =>
+            {
                 endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");

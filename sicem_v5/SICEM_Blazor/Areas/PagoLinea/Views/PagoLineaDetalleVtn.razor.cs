@@ -5,7 +5,6 @@ using System.Linq;
 using System.IO;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
-using Syncfusion.Blazor.Grids;
 using MatBlazor;
 using Sicem_Blazor.Data;
 using Sicem_Blazor.Data.Contracts;
@@ -15,9 +14,14 @@ using Sicem_Blazor.PagoLinea.Models;
 using Sicem_Blazor.PagoLinea.Data;
 using Sicem_Blazor.PagoLinea.Services;
 
+using Radzen;
+using Radzen.Blazor;
 namespace Sicem_Blazor.PagoLinea.Views;
 public partial class PagoLineaDetalleVtn
 {
+    [Inject]
+    public RadzenDataGridExportacionExcelService ExportacionExcel { get; set; }
+
     [Inject]
     public IMatToaster Toaster {get;set;} = default!;
     
@@ -37,14 +41,14 @@ public partial class PagoLineaDetalleVtn
 
     public bool mostrarVentana = false;
     
-    private IEnlace enlace = default!;
+    private IEnlace _enlace = default!;
 
     public string titulo = "Detalle venta en linea";
 
-    private SfGrid<PagoLineaDetalle> DataGrid {get;set;}
+    private RadzenDataGrid<PagoLineaDetalle> DataGrid {get;set;}
     public List<PagoLineaDetalle> Datos {get;set;}
 
-    private bool taskOnProgress = false;
+    private bool _taskOnProgress = false;
     private bool showButton
     {
         get => this.Datos.Where(item => item.Aplicado).Any();
@@ -56,7 +60,7 @@ public partial class PagoLineaDetalleVtn
         {
             this.titulo = titulo;
         }
-        this.enlace = enlace;
+        this._enlace = enlace;
         this.Datos = datos.ToList();
         mostrarVentana = true;
         StateHasChanged();
@@ -71,7 +75,7 @@ public partial class PagoLineaDetalleVtn
     
     private async Task ExportData()
     {
-        await this.DataGrid.ExcelExport(new ExcelExportProperties
+        await ExportacionExcel.ExportarAsync(this.DataGrid, new ExcelExportProperties
         {
             FileName = string.Format("sicem_detallePagoLinea_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
@@ -97,7 +101,7 @@ public partial class PagoLineaDetalleVtn
         // this.DataGrid.Refresh();
 
         // // * attempt to send the paymeny
-        // var response = await this.PagoLineaService1.AplicarPago(this.enlace, detallePago);
+        // var response = await this.PagoLineaService1.AplicarPago(this._enlace, detallePago);
         // if(response.Error > 0)
         // {
         //     if(response.Mensaje.Contains("->"))
@@ -130,7 +134,7 @@ public partial class PagoLineaDetalleVtn
         await Task.CompletedTask;
         throw new NotImplementedException("No implementado");
 
-        // if(taskOnProgress) return;
+        // if(_taskOnProgress) return;
 
         // // * confirmation modal
         // var result = await MatDialogService.AskAsync("Está por aplicar los pagos pendientes, ¿Desea continuar?", new string[] {"Aplicar Pagos", "Cancelar"});
@@ -138,7 +142,7 @@ public partial class PagoLineaDetalleVtn
 
 
         // // * Preparar filas
-        // taskOnProgress = true;
+        // _taskOnProgress = true;
         // var detallesPorAplicar = this.Datos.Where(item => item.Aplicado <= 0).ToList();
         // foreach(var detalle in detallesPorAplicar)
         // {
@@ -162,7 +166,7 @@ public partial class PagoLineaDetalleVtn
         // }
 
 
-        // taskOnProgress = false;
+        // _taskOnProgress = false;
         // await InvokeAsync( () => StateHasChanged());
 
 

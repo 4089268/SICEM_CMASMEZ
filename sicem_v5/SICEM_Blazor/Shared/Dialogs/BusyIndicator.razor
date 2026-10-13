@@ -1,6 +1,6 @@
-﻿@using Syncfusion.Blazor.ProgressBar
 
-@if(Busy) {
+@if(Busy)
+{
     <div class="busy-control">
         <div class="busy-content">
             <div>@ContentText</div>
@@ -10,7 +10,8 @@
     </div>
 }
 
-@code {
+@code
+{
     [Parameter]
     public string ContentText { get; set; }
 

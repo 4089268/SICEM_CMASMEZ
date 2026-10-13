@@ -3,8 +3,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using Syncfusion.Blazor.Charts;
-using Syncfusion.Blazor.Grids;
+using Radzen;
+using Radzen.Blazor;
 using MatBlazor;
 using Sicem_Blazor.OrdenesTrabajos.Models;
 using Sicem_Blazor.Data;
@@ -18,6 +18,9 @@ namespace Sicem_Blazor.OrdenesTrabajos.Views;
 public partial class OrdenesPage : ComponentBase
 {
     [Inject]
+    public RadzenDataGridExportacionExcelService ExportacionExcel { get; set; }
+
+    [Inject]
     private NavigationManager navigationManager { get; set; }
 
     [Inject]
@@ -29,21 +32,21 @@ public partial class OrdenesPage : ComponentBase
     [Inject]
     private SicemService sicemService { get; set; }
 
-    private SfGrid<OrdenesResumenOficina> DataGrid { get; set; }
-    private SfChart GraficaUsuarios { get; set; }
+    private RadzenDataGrid<OrdenesResumenOficina> DataGrid { get; set; }
+    private RadzenChart GraficaUsuarios { get; set; }
 
-    private bool busyDialog = false;
+    private bool _busyDialog = false;
     private List<OrdenesResumenOficina> DatosGrid { get; set; }
     private List<ChartItem> DatosGrafica { get; set; }
-    private DateTime f1, f2;
-    private int subsistema, sector;
+    private DateTime _f1, _f2;
+    private int _subsistema, _sector;
 
-    Ordenes_DetalleVtn vtn_detalle;
-    Ordenes_ColoniasVtn vtn_colonias;
-    Ordenes_TrabajosVtn vtn_trabajos;
-    Ordenes_RealizacionVtn vtn_realizacion;
-    Ordenes_CapturacionVtn vtn_capturacion;
-    private bool vtn_detalle_visible = false, vtn_colonias_visible = false, vtn_trabajos_visible = false, vtn_realizacion_visible = false, vtn_capturacion_visible = false;
+    Ordenes_DetalleVtn _vtn_detalle;
+    Ordenes_ColoniasVtn _vtn_colonias;
+    Ordenes_TrabajosVtn _vtn_trabajos;
+    Ordenes_RealizacionVtn _vtn_realizacion;
+    Ordenes_CapturacionVtn _vtn_capturacion;
+    private bool _vtn_detalle_visible = false, vtn_colonias_visible = false, vtn_trabajos_visible = false, vtn_realizacion_visible = false, vtn_capturacion_visible = false;
 
     protected override void OnInitialized()
     {
@@ -55,18 +58,18 @@ public partial class OrdenesPage : ComponentBase
         }
 
         var _now = DateTime.Now;
-        this.f1 = new DateTime(_now.Year, _now.Month, 1);
-        this.f2 = new DateTime(_now.Year, _now.Month, DateTime.DaysInMonth(_now.Year, _now.Month));
-        this.subsistema = 0;
-        this.sector = 0;
+        this._f1 = new DateTime(_now.Year, _now.Month, 1);
+        this._f2 = new DateTime(_now.Year, _now.Month, DateTime.DaysInMonth(_now.Year, _now.Month));
+        this._subsistema = 0;
+        this._sector = 0;
     }
 
     public void Procesar(SeleccionarFechaEventArgs e)
     {
-        this.f1 = e.Fecha1;
-        this.f2 = e.Fecha2;
-        this.subsistema = e.Subsistema;
-        this.sector = e.Sector;
+        this._f1 = e.Fecha1;
+        this._f2 = e.Fecha2;
+        this._subsistema = e.Subsistema;
+        this._sector = e.Sector;
 
         this.DatosGrid = new List<OrdenesResumenOficina>();
         this.DatosGrafica = new List<ChartItem>();
@@ -107,7 +110,17 @@ public partial class OrdenesPage : ComponentBase
 
     private void ProcesarConsulta(IEnlace oficina)
     {
-        var tmpDatos = ordenesService.ObtenerOrdenesPorOficina(oficina, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), subsistema, sector);
+        // Un error en esta oficina no debe detener a las demás (CLAUDE.md)
+        OrdenesResumenOficina tmpDatos;
+        try
+        {
+            tmpDatos = ordenesService.ObtenerOrdenesPorOficina(oficina, _f1.ToString("yyyyMMdd"), _f2.ToString("yyyyMMdd"), _subsistema, _sector);
+        }
+        catch (Exception)
+        {
+            tmpDatos = null;
+        }
+        tmpDatos ??= new OrdenesResumenOficina(oficina) { Estatus = ResumenOficinaEstatus.Error };
 
         var _random = new Random();
         var _sleepTime = _random.Next(100, 3000);
@@ -128,8 +141,8 @@ public partial class OrdenesPage : ComponentBase
                 _itemGrid.Total = tmpDatos.Total;
             }
             RecalcularFilaTotal();
-            DataGrid.Refresh();
         }
+        _ = InvokeAsync(() => DataGrid.Reload());
 
         lock (DatosGrafica)
         {
@@ -141,11 +154,7 @@ public partial class OrdenesPage : ComponentBase
                 _itemGrafica.Valor3 = (decimal)tmpDatos.Reali;
                 _itemGrafica.Valor4 = (decimal)tmpDatos.Cance;
             }
-            try
-            {
-                GraficaUsuarios.RefreshLiveData();
-            }
-            catch (Exception) { }
+            _ = InvokeAsync(() => GraficaUsuarios.Reload());
         }
     }
 
@@ -188,9 +197,9 @@ public partial class OrdenesPage : ComponentBase
     // * Funciones Ventanas Secundarias
     private async Task Mostrar_Vtn_Detalle(OrdenesResumenOficina data, int opcion)
     {
-        if (!vtn_detalle_visible)
+        if (!_vtn_detalle_visible)
         {
-            this.busyDialog = true;
+            this._busyDialog = true;
             await Task.Delay(100);
 
             Ordenes_Detalle[] datos = new Ordenes_Detalle[] { };
@@ -198,53 +207,53 @@ public partial class OrdenesPage : ComponentBase
             switch (opcion)
             {
                 case 0:
-                    datos = ordenesService.ObtenerOrdenesDetalle(data.Enlace, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), subsistema, sector, "0");
-                    titulo = $"Ordenes Generadas del {f1.ToString("dd/MM/yyyy")} al  {f2.ToString("dd/MM/yyyy")}";
+                    datos = ordenesService.ObtenerOrdenesDetalle(data.Enlace, _f1.ToString("yyyyMMdd"), _f2.ToString("yyyyMMdd"), _subsistema, _sector, "0");
+                    titulo = $"Ordenes Generadas del {_f1.ToString("dd/MM/yyyy")} al  {_f2.ToString("dd/MM/yyyy")}";
                     break;
                 case 1:
-                    datos = ordenesService.ObtenerOrdenesDetalle(data.Enlace, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), subsistema, sector, "7");
-                    titulo = $"Ordenes Pendientes del {f1.ToString("dd/MM/yyyy")} al  {f2.ToString("dd/MM/yyyy")}";
+                    datos = ordenesService.ObtenerOrdenesDetalle(data.Enlace, _f1.ToString("yyyyMMdd"), _f2.ToString("yyyyMMdd"), _subsistema, _sector, "7");
+                    titulo = $"Ordenes Pendientes del {_f1.ToString("dd/MM/yyyy")} al  {_f2.ToString("dd/MM/yyyy")}";
                     break;
                 case 2:
-                    datos = ordenesService.ObtenerOrdenesDetalle(data.Enlace, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), subsistema, sector, "8");
-                    titulo = $"Ordenes En Ejecucion del {f1.ToString("dd/MM/yyyy")} al  {f2.ToString("dd/MM/yyyy")}";
+                    datos = ordenesService.ObtenerOrdenesDetalle(data.Enlace, _f1.ToString("yyyyMMdd"), _f2.ToString("yyyyMMdd"), _subsistema, _sector, "8");
+                    titulo = $"Ordenes En Ejecucion del {_f1.ToString("dd/MM/yyyy")} al  {_f2.ToString("dd/MM/yyyy")}";
                     break;
                 case 3:
-                    datos = ordenesService.ObtenerOrdenesDetalle(data.Enlace, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), subsistema, sector, "9");
-                    titulo = $"Ordenes Realizadas del {f1.ToString("dd/MM/yyyy")} al  {f2.ToString("dd/MM/yyyy")}";
+                    datos = ordenesService.ObtenerOrdenesDetalle(data.Enlace, _f1.ToString("yyyyMMdd"), _f2.ToString("yyyyMMdd"), _subsistema, _sector, "9");
+                    titulo = $"Ordenes Realizadas del {_f1.ToString("dd/MM/yyyy")} al  {_f2.ToString("dd/MM/yyyy")}";
                     break;
                 case 4:
-                    datos = ordenesService.ObtenerOrdenesDetalle(data.Enlace, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), subsistema, sector, "10");
-                    titulo = $"Ordenes Canceladas del {f1.ToString("dd/MM/yyyy")} al  {f2.ToString("dd/MM/yyyy")}";
+                    datos = ordenesService.ObtenerOrdenesDetalle(data.Enlace, _f1.ToString("yyyyMMdd"), _f2.ToString("yyyyMMdd"), _subsistema, _sector, "10");
+                    titulo = $"Ordenes Canceladas del {_f1.ToString("dd/MM/yyyy")} al  {_f2.ToString("dd/MM/yyyy")}";
                     break;
                 case 5:
-                    datos = ordenesService.ObtenerOrdenesDetalle(data.Enlace, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), subsistema, sector, "9,1");
-                    titulo = $"Ordenes Ejecutadas del {f1.ToString("dd/MM/yyyy")} al  {f2.ToString("dd/MM/yyyy")}";
+                    datos = ordenesService.ObtenerOrdenesDetalle(data.Enlace, _f1.ToString("yyyyMMdd"), _f2.ToString("yyyyMMdd"), _subsistema, _sector, "9,1");
+                    titulo = $"Ordenes Ejecutadas del {_f1.ToString("dd/MM/yyyy")} al  {_f2.ToString("dd/MM/yyyy")}";
                     break;
                 case 6:
-                    datos = ordenesService.ObtenerOrdenesDetalle(data.Enlace, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), subsistema, sector, "9,0");
-                    titulo = $"Ordenes No Ejecutadas del {f1.ToString("dd/MM/yyyy")} al  {f2.ToString("dd/MM/yyyy")}";
+                    datos = ordenesService.ObtenerOrdenesDetalle(data.Enlace, _f1.ToString("yyyyMMdd"), _f2.ToString("yyyyMMdd"), _subsistema, _sector, "9,0");
+                    titulo = $"Ordenes No Ejecutadas del {_f1.ToString("dd/MM/yyyy")} al  {_f2.ToString("dd/MM/yyyy")}";
                     break;
             }
 
             if (datos == null)
             {
-                busyDialog = false;
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
             if (datos.Length <= 0)
             {
-                busyDialog = false;
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
 
-            vtn_detalle_visible = true;
-            await vtn_detalle.Inicializar(datos, titulo);
+            _vtn_detalle_visible = true;
+            await _vtn_detalle.Inicializar(datos, titulo);
 
             await Task.Delay(100);
-            this.busyDialog = false;
+            this._busyDialog = false;
         }
     }
 
@@ -252,20 +261,20 @@ public partial class OrdenesPage : ComponentBase
     {
         if (!vtn_colonias_visible)
         {
-            this.busyDialog = true;
+            this._busyDialog = true;
             await Task.Delay(100);
 
-            Ordenes_Agrupado[] datos = ordenesService.ObtenerOrdenesColonias(data.Enlace, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), subsistema, sector, "");
+            Ordenes_Agrupado[] datos = ordenesService.ObtenerOrdenesColonias(data.Enlace, _f1.ToString("yyyyMMdd"), _f2.ToString("yyyyMMdd"), _subsistema, _sector, "");
 
             if (datos == null)
             {
-                busyDialog = false;
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
             if (datos.Length <= 0)
             {
-                busyDialog = false;
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
@@ -274,13 +283,13 @@ public partial class OrdenesPage : ComponentBase
             if (tmpOfi != null)
             {
                 vtn_colonias_visible = true;
-                vtn_colonias.Titulo = $"{data.Oficina} / Ordenes agrupadas por colonias";
-                vtn_colonias.OficinaActual = tmpOfi;
-                await vtn_colonias.Inicializar(datos);
+                _vtn_colonias.Titulo = $"{data.Oficina} / Ordenes agrupadas por colonias";
+                _vtn_colonias.OficinaActual = tmpOfi;
+                await _vtn_colonias.Inicializar(datos);
             }
 
             await Task.Delay(100);
-            this.busyDialog = false;
+            this._busyDialog = false;
         }
     }
 
@@ -288,34 +297,34 @@ public partial class OrdenesPage : ComponentBase
     {
         if (!vtn_trabajos_visible)
         {
-            this.busyDialog = true;
+            this._busyDialog = true;
             await Task.Delay(100);
-            Ordenes_Agrupado[] datos = ordenesService.ObtenerOrdenesTrabajos(data.Enlace, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), subsistema, sector).ToArray();
+            Ordenes_Agrupado[] datos = ordenesService.ObtenerOrdenesTrabajos(data.Enlace, _f1.ToString("yyyyMMdd"), _f2.ToString("yyyyMMdd"), _subsistema, _sector).ToArray();
             if (datos == null)
             {
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 await Task.Delay(100);
-                busyDialog = false;
+                _busyDialog = false;
                 return;
             }
             if (datos.Length <= 0)
             {
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 await Task.Delay(100);
-                busyDialog = false;
+                _busyDialog = false;
                 return;
             }
             var tmpOfi = sicemService.ObtenerEnlaces(data.IdOficina).FirstOrDefault();
             if (tmpOfi != null)
             {
                 vtn_trabajos_visible = true;
-                vtn_trabajos.OficinaActual = tmpOfi;
-                vtn_trabajos.Titulo = $"{data.Oficina} / Ordenes por Trabajos";
-                await vtn_trabajos.Inicializar(datos);
+                _vtn_trabajos.OficinaActual = tmpOfi;
+                _vtn_trabajos.Titulo = $"{data.Oficina} / Ordenes por Trabajos";
+                await _vtn_trabajos.Inicializar(datos);
             }
 
             await Task.Delay(100);
-            this.busyDialog = false;
+            this._busyDialog = false;
         }
     }
 
@@ -323,20 +332,20 @@ public partial class OrdenesPage : ComponentBase
     {
         if (!vtn_realizacion_visible)
         {
-            this.busyDialog = true;
+            this._busyDialog = true;
             await Task.Delay(100);
 
-            Ordenes_Realizacion[] datos = ordenesService.ObtenerOrdenesRealizacion(data.Enlace, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), subsistema, sector, "").ToArray();
+            Ordenes_Realizacion[] datos = ordenesService.ObtenerOrdenesRealizacion(data.Enlace, _f1.ToString("yyyyMMdd"), _f2.ToString("yyyyMMdd"), _subsistema, _sector, "").ToArray();
 
             if (datos == null)
             {
-                busyDialog = false;
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
             if (datos.Length <= 0)
             {
-                busyDialog = false;
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
@@ -345,13 +354,13 @@ public partial class OrdenesPage : ComponentBase
             if (tmpOfi != null)
             {
                 vtn_realizacion_visible = true;
-                vtn_realizacion.OficinaActual = tmpOfi;
-                vtn_realizacion.Titulo = $"{data.Oficina} / Ordenes Agrupadas por Realizacion";
-                await vtn_realizacion.Inicializar(datos);
+                _vtn_realizacion.OficinaActual = tmpOfi;
+                _vtn_realizacion.Titulo = $"{data.Oficina} / Ordenes Agrupadas por Realizacion";
+                await _vtn_realizacion.Inicializar(datos);
             }
 
             await Task.Delay(100);
-            this.busyDialog = false;
+            this._busyDialog = false;
         }
     }
 
@@ -359,20 +368,20 @@ public partial class OrdenesPage : ComponentBase
     {
         if (!vtn_capturacion_visible)
         {
-            this.busyDialog = true;
+            this._busyDialog = true;
             await Task.Delay(100);
 
-            Ordenes_Capturacion[] datos = ordenesService.ObtenerOrdenesCapturacion(data.Enlace, f1.ToString("yyyyMMdd"), f2.ToString("yyyyMMdd"), subsistema, sector, "");
+            Ordenes_Capturacion[] datos = ordenesService.ObtenerOrdenesCapturacion(data.Enlace, _f1.ToString("yyyyMMdd"), _f2.ToString("yyyyMMdd"), _subsistema, _sector, "");
 
             if (datos == null)
             {
-                busyDialog = false;
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
             if (datos.Length <= 0)
             {
-                busyDialog = false;
+                _busyDialog = false;
                 Toaster.Add("No hay datos disponibles", MatToastType.Info, "Sin Datos", null);
                 return;
             }
@@ -381,13 +390,13 @@ public partial class OrdenesPage : ComponentBase
             if (tmpOfi != null)
             {
                 vtn_capturacion_visible = true;
-                vtn_capturacion.OficinaActual = tmpOfi;
-                vtn_capturacion.Titulo = $"{data.Oficina} /  Ordenes Agrupadas Por Captura";
-                await vtn_capturacion.Inicializar(datos);
+                _vtn_capturacion.OficinaActual = tmpOfi;
+                _vtn_capturacion.Titulo = $"{data.Oficina} /  Ordenes Agrupadas Por Captura";
+                await _vtn_capturacion.Inicializar(datos);
             }
 
             await Task.Delay(100);
-            this.busyDialog = false;
+            this._busyDialog = false;
         }
     }
 
@@ -398,6 +407,6 @@ public partial class OrdenesPage : ComponentBase
             FileName = $"Sicem_{Guid.NewGuid().ToString().Replace("-", "")}.xlsx",
             IncludeHiddenColumn = true
         };
-        await DataGrid.ExportToExcelAsync(excelExportProperties: p);
+        await ExportacionExcel.ExportarAsync(DataGrid, p);
     }
 }

@@ -6,7 +6,6 @@ using System.IO;
 using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
-using Syncfusion.Blazor.Grids;
 using MatBlazor;
 using Sicem_Blazor.Services;
 using Sicem_Blazor.Models;
@@ -16,10 +15,16 @@ using Sicem_Blazor.PagoLinea.Data;
 using Sicem_Blazor.PagoLinea.Models;
 using Sicem_Blazor.PagoLinea.Services;
 
+using Radzen;
+using Radzen.Blazor;
+using DateRange = Sicem_Blazor.Data.DateRange;
 namespace Sicem_Blazor.PagoLinea.Views
 {
     public partial class PagoLineaResumePage
     {
+        [Inject]
+        public RadzenDataGridExportacionExcelService ExportacionExcel { get; set; }
+
 
         [Inject]
         public NavigationManager NavManager {get;set;} = default!;
@@ -37,37 +42,37 @@ namespace Sicem_Blazor.PagoLinea.Views
         public ILogger<PagoLineaPage> Logger {get;set;} = default!;
 
 
-        private SfGrid<PagoLineaResumen> DataGrid {get;set;}
-        private bool busyDialog = false;
-        private DateTime f1, f2;
-        private int Subsistema, Sector;
+        private RadzenDataGrid<PagoLineaResumen> DataGrid {get;set;}
+        private bool _busyDialog = false;
+        private DateTime _f1, _f2;
+        private int _subsistema, _sector;
         private List<PagoLineaResumen> DataOffices {get;set;}
-        private PagoLineaResumen TotalData;
-        private CultureInfo currentCultureInfo = new("es-MX");
+        private PagoLineaResumen _totalData;
+        private CultureInfo _currentCultureInfo = new("es-MX");
 
-        private ResumenDiasVtn resumenDiasVtn;
-        private bool resumenDiasVisible = false;
+        private ResumenDiasVtn _resumenDiasVtn;
+        private bool _resumenDiasVisible = false;
 
-        private PagoLineaDetalleVtn pagoLineaDetalleVtn;
-        private bool detalleVtnVisible = false;
+        private PagoLineaDetalleVtn _pagoLineaDetalleVtn;
+        private bool _detalleVtnVisible = false;
         
         protected override async Task OnInitializedAsync()
         {
             var _now = DateTime.Now;
-            this.f1 = new DateTime(_now.Year, _now.Month, 1);
-            this.f2 = new DateTime(_now.Year, _now.Month, DateTime.DaysInMonth(_now.Year, _now.Month));
-            this.Subsistema = 0;
-            this.Sector = 0;
+            this._f1 = new DateTime(_now.Year, _now.Month, 1);
+            this._f2 = new DateTime(_now.Year, _now.Month, DateTime.DaysInMonth(_now.Year, _now.Month));
+            this._subsistema = 0;
+            this._sector = 0;
 
             await Task.CompletedTask;
         }
 
         public async Task Procesar(SeleccionarFechaEventArgs e)
         {
-            this.f1 = e.Fecha1;
-            this.f2 = e.Fecha2;
-            this.Subsistema = e.Subsistema;
-            this.Sector = e.Sector;
+            this._f1 = e.Fecha1;
+            this._f2 = e.Fecha2;
+            this._subsistema = e.Subsistema;
+            this._sector = e.Sector;
 
             // * obtener enlaces del usuario
             IEnlace[] enlaces = SicemService.ObtenerOficinasDelUsuario().ToArray();
@@ -85,7 +90,7 @@ namespace Sicem_Blazor.PagoLinea.Views
             }
 
             // * Agregar fila total
-            TotalData = new PagoLineaResumen( new Ruta() { Oficina = "TOTAL", Id = 999 });
+            _totalData = new PagoLineaResumen( new Ruta() { Oficina = "TOTAL", Id = 999 });
             
 
             // * Iniciar tareas
@@ -101,7 +106,7 @@ namespace Sicem_Blazor.PagoLinea.Views
             try
             {
                 // * Realizar consulta
-                var dateRange = new DateRange(f1, f2, Subsistema, Sector);
+                var dateRange = new DateRange(_f1, _f2, _subsistema, _sector);
                 var tmpData = await PagoLineaService1.ObtenerRumenPagos(enlace, dateRange);
                 
                 var _random = new Random();
@@ -132,20 +137,21 @@ namespace Sicem_Blazor.PagoLinea.Views
                     }
 
                     RecalcularFilaTotal();
-                    DataGrid.Refresh();
+                    _ = InvokeAsync(() => DataGrid.Reload());
                 }
             }
             catch(Exception ex)
             {
                 this.Logger.LogError(ex, "Fail at attemt to get data from {Oficina}", enlace.Nombre);
-                lock(DataOffices){
+                lock(DataOffices)
+                {
                     var item = DataOffices.Where(item => item.Enlace.Id == enlace.Id).FirstOrDefault();
                     if(item != null)
                     {
                         item.Estatus = ResumenOficinaEstatus.Error;
                     }
                     RecalcularFilaTotal();
-                    DataGrid.Refresh();
+                    _ = InvokeAsync(() => DataGrid.Reload());
                 }
             }
         }
@@ -153,12 +159,12 @@ namespace Sicem_Blazor.PagoLinea.Views
         private void RecalcularFilaTotal()
         {
             //*** Recalcular fila total
-            TotalData.TotalPagos = DataOffices.Sum(item => item.TotalPagos);
-            TotalData.TotalPagosAplicados = DataOffices.Sum(item => item.TotalPagosAplicados);
-            TotalData.TotalPagosPorAplicar = DataOffices.Sum(item => item.TotalPagosPorAplicar);
-            TotalData.ImportePagos = DataOffices.Sum(item => item.ImportePagos);
-            TotalData.ImportePagosAplicados = DataOffices.Sum(item => item.ImportePagosAplicados);
-            TotalData.ImportePagosPorAplicar = DataOffices.Sum(item => item.ImportePagosPorAplicar);
+            _totalData.TotalPagos = DataOffices.Sum(item => item.TotalPagos);
+            _totalData.TotalPagosAplicados = DataOffices.Sum(item => item.TotalPagosAplicados);
+            _totalData.TotalPagosPorAplicar = DataOffices.Sum(item => item.TotalPagosPorAplicar);
+            _totalData.ImportePagos = DataOffices.Sum(item => item.ImportePagos);
+            _totalData.ImportePagosAplicados = DataOffices.Sum(item => item.ImportePagosAplicados);
+            _totalData.ImportePagosPorAplicar = DataOffices.Sum(item => item.ImportePagosPorAplicar);
             InvokeAsync(() => StateHasChanged());
         }
 
@@ -168,18 +174,19 @@ namespace Sicem_Blazor.PagoLinea.Views
             {
                 IncludeHiddenColumn = true
             };
-            await this.DataGrid.ExportToExcelAsync(_options);
+            await ExportacionExcel.ExportarAsync(this.DataGrid, _options);
         }
 
         private async Task ResumenDiasClick(PagoLineaResumen data)
         {
-            if (resumenDiasVisible) {
+            if (_resumenDiasVisible)
+            {
                 return;
             }
 
-            this.busyDialog = true;
+            this._busyDialog = true;
             await Task.Delay(200);
-            var dateRange = new DateRange(f1, f2, Subsistema, Sector);
+            var dateRange = new DateRange(_f1, _f2, _subsistema, _sector);
             var tmpData = await PagoLineaService1.ObtenerRumenPagosDia(data.Enlace, dateRange);
             if (tmpData == null)
             {
@@ -189,9 +196,9 @@ namespace Sicem_Blazor.PagoLinea.Views
             {
                 if(tmpData.Any())
                 {
-                    resumenDiasVisible = true;
+                    _resumenDiasVisible = true;
                     var titulo = $"{data.Enlace.Nombre.ToUpper()} - Resumen por dias";
-                    resumenDiasVtn.Show(tmpData, titulo);
+                    _resumenDiasVtn.Show(tmpData, titulo);
                 }
                 else
                 {
@@ -199,18 +206,19 @@ namespace Sicem_Blazor.PagoLinea.Views
                 }
             }
             await Task.Delay(200);
-            this.busyDialog = false;
+            this._busyDialog = false;
         }
 
         private async Task DetalleClick(PagoLineaResumen data)
         {
-            if (detalleVtnVisible) {
+            if (_detalleVtnVisible)
+            {
                 return;
             }
 
-            this.busyDialog = true;
+            this._busyDialog = true;
             await Task.Delay(200);
-            var dateRange = new DateRange(f1,f2, 0, 0);
+            var dateRange = new DateRange(_f1,_f2, 0, 0);
             var tmpData = await PagoLineaService1.ObtenerDetallePagos2(data.Enlace, dateRange);
             if (tmpData == null)
             {
@@ -220,9 +228,9 @@ namespace Sicem_Blazor.PagoLinea.Views
             {
                 if(tmpData.Any())
                 {
-                    detalleVtnVisible = true;
-                    var titulo = $"{data.Enlace.Nombre.ToUpper()} - PAGOS DEL MES {f1.ToString("MMMM yyyy").ToUpper()}";
-                    pagoLineaDetalleVtn.Show(data.Enlace, tmpData, titulo);
+                    _detalleVtnVisible = true;
+                    var titulo = $"{data.Enlace.Nombre.ToUpper()} - PAGOS DEL MES {_f1.ToString("MMMM yyyy").ToUpper()}";
+                    _pagoLineaDetalleVtn.Show(data.Enlace, tmpData, titulo);
                 }
                 else
                 {
@@ -230,7 +238,7 @@ namespace Sicem_Blazor.PagoLinea.Views
                 }
             }
             await Task.Delay(200);
-            this.busyDialog = false;
+            this._busyDialog = false;
         }
     }
 }

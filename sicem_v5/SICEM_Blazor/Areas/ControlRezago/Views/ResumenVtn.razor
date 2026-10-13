@@ -1,55 +1,40 @@
 @using Sicem_Blazor.ControlRezago.Models
-@using Syncfusion.Blazor
-@using Syncfusion.Blazor.Navigations
 @inject IMatToaster Toaster
 
-<VentanaSecundaria Titulo="@Titulo" Filas="@gridFilas" Columnas="@gridColumnas" CerrarVentana="CerrarModal" >
+<VentanaSecundaria Titulo="@Titulo" Filas="@_gridFilas" Columnas="@_gridColumnas" CerrarVentana="CerrarModal" >
     <Content>
         <div class="border rounded bg-white p-2">
-            <SfTab @ref="sfTab" Height="100%">
-                <TabItems>
-                    <TabItem>
-                        <ChildContent>
-                            <TabHeader Text="Resumen Por Sectores"></TabHeader>
-                        </ChildContent>
-                        <ContentTemplate>
-                            <div class="h-100">
-                                <ResumenSectorView @ref="resumenSectorView" DatosGrid="@DatosResumenSector" OnDetailClick="@(e => MostrarVentanaDetalle(1,e))"/>
-                            </div>
-                        </ContentTemplate>
-                    </TabItem>
-                    <TabItem Content="Facebook is an online social networking service headquartered in Menlo Park, California. Its website waslaunched on February 4, 2004, by Mark Zuckerberg with his Harvard College roommates and fellow students EduardoSaverin, Andrew McCollum, Dustin Moskovitz and Chris Hughes.">
-                        <ChildContent>
-                            <TabHeader Text="Resumen Por Tarifas"></TabHeader>
-                        </ChildContent>
-                        <ContentTemplate>
-                            <div class="h-100">
-                                <ResumenTarifaView @ref="resumenTarifaView" DatosGrid="@DatosResumenTarifa" OnDetailClick="@(e => MostrarVentanaDetalle(2,e))" />
-                            </div>
-                        </ContentTemplate>
-                    </TabItem>
-                    <TabItem>
-                        <ChildContent>
-                            <TabHeader Text="Resumen Por Colonias"></TabHeader>
-                        </ChildContent>
-                        <ContentTemplate>
-                            <div class="h-100">
-                                <ResumenColoniaView @ref="resumenColoniaView" DatosGrid="@DatosResumenColonia" OnDetailClick="@(e => MostrarVentanaDetalle(3,e))"/>
-                            </div>
-                        </ContentTemplate>
-                    </TabItem>
-                </TabItems>
-            </SfTab>
+            <RadzenTabs Style="height:100%;">
+                <Tabs>
+                    <RadzenTabsItem Text="Resumen Por Sectores">
+                        <div class="h-100">
+                            <ResumenSectorView @ref="_resumenSectorView" DatosGrid="@DatosResumenSector" OnDetailClick="@(e => MostrarVentanaDetalle(1,e))"/>
+                        </div>
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Resumen Por Tarifas">
+                        <div class="h-100">
+                            <ResumenTarifaView @ref="_resumenTarifaView" DatosGrid="@DatosResumenTarifa" OnDetailClick="@(e => MostrarVentanaDetalle(2,e))" />
+                        </div>
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Resumen Por Colonias">
+                        <div class="h-100">
+                            <ResumenColoniaView @ref="_resumenColoniaView" DatosGrid="@DatosResumenColonia" OnDetailClick="@(e => MostrarVentanaDetalle(3,e))"/>
+                        </div>
+                    </RadzenTabsItem>
+                </Tabs>
+            </RadzenTabs>
         </div>
     </Content>
 </VentanaSecundaria>
 
-@if(DetalleRezagoVisible){
-    <DetalleRezagoVtn Titulo="@TituloDetalle" CerrarModal="@( e => DetalleRezagoVisible = false)" Fecha1="@FechaDesde" Fecha2="@FechaHasta" Subsistema="@Subsistema" Sector="@Sector" DatosGrid="@DatosDetalleRezago" EnlaceSeleccionado="@Enlace" />
+@if(_detalleRezagoVisible)
+{
+    <DetalleRezagoVtn Titulo="@_tituloDetalle" CerrarModal="@( e => _detalleRezagoVisible = false)" Fecha1="@FechaDesde" Fecha2="@FechaHasta" Subsistema="@Subsistema" Sector="@Sector" DatosGrid="@_datosDetalleRezago" EnlaceSeleccionado="@Enlace" />
 }
-<BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
+<BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
 
-@code{
+@code
+{
     [Parameter] public EventCallback OnClosed {get;set;}
     [Parameter] public IEnumerable<DetalleRezago> Datos {get;set;}
     [Parameter] public string Titulo {get;set;} = "RESUMEN DE USUARIOS CON ESTATUS XXXX DEL XXX AL XXXX";
@@ -60,30 +45,31 @@
     [Parameter] public int Sector {get;set;}
 
     
-    private double[] gridFilas = new double[]{.8};
-    private double[] gridColumnas = new double[]{900};
+    private double[] _gridFilas = new double[]{.8};
+    private double[] _gridColumnas = new double[]{900};
 
-    private bool busyDialog = false;
+    private bool _busyDialog = false;
     private List<ResumenSector> DatosResumenSector {get;set;}
     private List<ResumenTarifa> DatosResumenTarifa {get;set;}
     private List<ResumenColonia> DatosResumenColonia {get;set;}
     
-    private SfTab sfTab;
-    private ResumenColoniaView resumenColoniaView;
-    private ResumenSectorView resumenSectorView;
-    private ResumenTarifaView resumenTarifaView;
+    private ResumenColoniaView _resumenColoniaView;
+    private ResumenSectorView _resumenSectorView;
+    private ResumenTarifaView _resumenTarifaView;
     
     
-    private bool DetalleRezagoVisible = false;
-    private string TituloDetalle = "";
-    private List<DetalleRezago> DatosDetalleRezago = new List<DetalleRezago>();
+    private bool _detalleRezagoVisible = false;
+    private string _tituloDetalle = "";
+    private List<DetalleRezago> _datosDetalleRezago = new List<DetalleRezago>();
         
 
-    private async Task CerrarModal(){
+    private async Task CerrarModal()
+    {
         await OnClosed.InvokeAsync();
     }
 
-    protected override void OnInitialized() {
+    protected override void OnInitialized()
+    {
         var _task = new List<Task>();
         _task.Add( Task.Factory.StartNew( () => CalcularDatosSector() ));
         _task.Add( Task.Factory.StartNew( () => CalcularDatosTarifa() ));
@@ -93,8 +79,10 @@
     }
 
 
-    private void CalcularDatosSector(){
-        var _tmpData = Datos.GroupBy(item => item.Sector).Select(g => new ResumenSector(){
+    private void CalcularDatosSector()
+    {
+        var _tmpData = Datos.GroupBy(item => item.Sector).Select(g => new ResumenSector()
+        {
             Sector = g.Key,
             Usuarios = g.Count(),
             Subtotal = g.Sum(i => i.Subtotal),
@@ -103,7 +91,8 @@
         }).OrderBy(item => item.Sector).ToList();
 
         _tmpData.Add(
-            new ResumenSector(){
+            new ResumenSector()
+            {
                 Sector = "TOTAL",
                 Usuarios = _tmpData.Sum(i=>i.Usuarios),
                 Subtotal = _tmpData.Sum(i=>i.Subtotal),
@@ -114,8 +103,10 @@
 
         DatosResumenSector = _tmpData;
     }
-    private void CalcularDatosTarifa(){
-        var _tmpData = Datos.GroupBy(item => item.Tarifa).Select(g => new ResumenTarifa(){
+    private void CalcularDatosTarifa()
+    {
+        var _tmpData = Datos.GroupBy(item => item.Tarifa).Select(g => new ResumenTarifa()
+        {
             Tarifa = g.Key,
             Usuarios = g.Count(),
             Subtotal = g.Sum(i => i.Subtotal),
@@ -124,7 +115,8 @@
         }).OrderBy(item => item.Tarifa).ToList();
 
         _tmpData.Add(
-            new ResumenTarifa(){
+            new ResumenTarifa()
+            {
                 Tarifa = "TOTAL",
                 Usuarios = _tmpData.Sum(i=>i.Usuarios),
                 Subtotal = _tmpData.Sum(i=>i.Subtotal),
@@ -135,8 +127,10 @@
 
         DatosResumenTarifa = _tmpData;
     }
-    private void CalcularDatosColonias(){
-        var _tmpData = Datos.GroupBy(item => item.Colonia).Select(g => new ResumenColonia(){
+    private void CalcularDatosColonias()
+    {
+        var _tmpData = Datos.GroupBy(item => item.Colonia).Select(g => new ResumenColonia()
+        {
             Colonia = g.Key,
             Usuarios = g.Count(),
             Subtotal = g.Sum(i => i.Subtotal),
@@ -145,7 +139,8 @@
         }).OrderBy(item => item.Colonia).ToList();
 
         _tmpData.Add(
-            new ResumenColonia(){
+            new ResumenColonia()
+            {
                 Colonia = "TOTAL",
                 Usuarios = _tmpData.Sum(i=>i.Usuarios),
                 Subtotal = _tmpData.Sum(i=>i.Subtotal),
@@ -157,49 +152,58 @@
         DatosResumenColonia = _tmpData;
     }
 
-    private async Task MostrarVentanaDetalle(int op, string filtro){
-        if(DetalleRezagoVisible){
+    private async Task MostrarVentanaDetalle(int op, string filtro)
+    {
+        if(_detalleRezagoVisible)
+        {
             return;
         }
 
-        busyDialog = true;
+        _busyDialog = true;
         await Task.Delay(100);
         
         var newTitle = Titulo;
-        if(filtro == "TOTAL"){
-            DatosDetalleRezago = Datos.ToList();
+        if(filtro == "TOTAL")
+        {
+            _datosDetalleRezago = Datos.ToList();
         
-        }else{
-            switch(op){
+        }
+        else
+        {
+            switch(op)
+            {
                 // Sectores
                 case 1:
-                    DatosDetalleRezago = Datos.Where( item => item.Sector == filtro).ToList();
+                    _datosDetalleRezago = Datos.Where( item => item.Sector == filtro).ToList();
                     newTitle = newTitle + $" DEL SECTOR {filtro} ";
                     break;
 
                 // Tarifas
                 case 2:
-                    DatosDetalleRezago = Datos.Where( item => item.Tarifa == filtro).ToList();
+                    _datosDetalleRezago = Datos.Where( item => item.Tarifa == filtro).ToList();
                     newTitle = newTitle + $" CON TARIFA {filtro} ";
                     break;
 
                 // Colonias
                 case 3:
-                    DatosDetalleRezago = Datos.Where( item => item.Colonia == filtro).ToList();
+                    _datosDetalleRezago = Datos.Where( item => item.Colonia == filtro).ToList();
                     newTitle = newTitle + $" DEL LA COLONIA {filtro} ";
                     break;
             }
         }
         
-        if(DatosDetalleRezago.Count() <= 0){
+        if(_datosDetalleRezago.Count() <= 0)
+        {
             Toaster.Add("No hay datos disponibles para mostrar", MatToastType.Warning);
-        }else {
-            this.TituloDetalle = newTitle;
-            DetalleRezagoVisible = true;
+        }
+        else
+        {
+            this._tituloDetalle = newTitle;
+            _detalleRezagoVisible = true;
         }
 
         await Task.Delay(100);
-        busyDialog = false;
+        _busyDialog = false;
     }
 
 }

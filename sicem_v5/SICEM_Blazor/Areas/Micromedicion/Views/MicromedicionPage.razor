@@ -1,7 +1,5 @@
 @page "/Micromedicion"
 @using System.Text
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
 @using Sicem_Blazor.Micromedicion.Models
 @inject NavigationManager navigationManager
 @inject IMatToaster Toaster
@@ -13,7 +11,7 @@
     <div class="title-page" style="grid-area:1/1/2/2;">MICROMEDICIÓN</div>
 
     <div class="border rounded bg-white px-2 d-flex align-items-center" style="grid-area:2/1/3/2;">
-        <SeleccionarFecha fecha1="@f1" fecha2="@f2" ProcesarParam="@Procesar" />
+        <SeleccionarFecha fecha1="@_f1" fecha2="@_f2" ProcesarParam="@Procesar" />
     </div>
 
     @* ****** Acciones ****** *@
@@ -24,15 +22,16 @@
 
     @* ****** DataGrid ****** *@
     <div class="border rounded bg-white p-2 d-flex" style="grid-area:4/1/5/2;">
-        <SfGrid @ref="dataGrid" DataSource="@DatosGrid" TValue="Micromedicion_Oficina" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" 
-                Height="99%" Width="100%" EnableHover="true">
-            <GridColumns>
-                <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="40">
+        <RadzenDataGrid TItem="Micromedicion_Oficina" @ref="dataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:99%; width:100%;">
+            <Columns>
+                <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="40px">
                     <Template>
                         @{
                             var data = (context as Micromedicion_Oficina);
-                            if (data.Id > 0 && data.Id < 999) {
-                                @switch (data.Estatus) {
+                            if (data.Id > 0 && data.Id < 999)
+                            {
+                                @switch (data.Estatus)
+                                {
 
                                     case ResumenOficinaEstatus.Completado:
                                         <i class="fas fa-check-circle" style="color:green; font-size:1.5rem;"></i>
@@ -49,18 +48,19 @@
                             }
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn Field="@nameof(Micromedicion_Oficina.Oficina)" HeaderText="Oficina" TextAlign="TextAlign.Left" Width="160" />
-                <GridColumn Field="@nameof(Micromedicion_Oficina.Reales)" HeaderText="Reales" TextAlign="TextAlign.Center" Width="150" Format="n0" />
-                <GridColumn Field="@nameof(Micromedicion_Oficina.Promedios)" HeaderText="Promedios" TextAlign="TextAlign.Center" Width="115" Format="n0" />
-                <GridColumn Field="@nameof(Micromedicion_Oficina.Medidos)" HeaderText="Medidos" TextAlign="TextAlign.Center" Width="150" Format="n0" />
-                <GridColumn Field="@nameof(Micromedicion_Oficina.Fijos)" HeaderText="Fijos" TextAlign="TextAlign.Center" Width="150" Format="n0" />
-                <GridColumn Field="@nameof(Micromedicion_Oficina.Total)" HeaderText="Total" TextAlign="TextAlign.Center" Width="160" Format="n0" />
-                <GridColumn HeaderText="Acciones" TextAlign="TextAlign.Left" Width="auto">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Property="@nameof(Micromedicion_Oficina.Oficina)" Title="Oficina" TextAlign="TextAlign.Left" Width="160px" />
+                <RadzenDataGridColumn Property="@nameof(Micromedicion_Oficina.Reales)" Title="Reales" TextAlign="TextAlign.Center" Width="150px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Micromedicion_Oficina.Promedios)" Title="Promedios" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Micromedicion_Oficina.Medidos)" Title="Medidos" TextAlign="TextAlign.Center" Width="150px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Micromedicion_Oficina.Fijos)" Title="Fijos" TextAlign="TextAlign.Center" Width="150px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(Micromedicion_Oficina.Total)" Title="Total" TextAlign="TextAlign.Center" Width="160px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Title="Acciones" TextAlign="TextAlign.Left" Width="auto">
                     <Template>
                         @{
                             var data = (context as Micromedicion_Oficina);
-                            if (data.Id > 0 && data.Id < 999) {
+                            if (data.Id > 0 && data.Id < 999)
+                            {
                                 <div class="d-flex p-1">
                                     <button type="button" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="top" title="Mostar Anomalias Anual" disabled="@(data.Estatus != ResumenOficinaEstatus.Completado)" @onclick="@(e => MostarVentanaAnomalias(data))">
                                         <i class="fa fa-bookmark" aria-hidden="true"></i>
@@ -78,89 +78,101 @@
                             }
                         }
                     </Template>
-                </GridColumn>
-            </GridColumns>
-        </SfGrid>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
     </div>
 
     <!--- ****** Graficas ****** -->
     <div class="d-flex" style="grid-area:5/1/6/2;">
-        <SfChart @ref="graficaUsuarios" Title="TIPOS USUARIOS" Width="100%" Height="100%">
-            <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-            <ChartPrimaryYAxis Visible="false" LabelFormat="n0" />
-            <ChartTooltipSettings Enable="true" Header="Usuarios" Format="<b>${series.name}</b> : ${point.y}" Shared="true"></ChartTooltipSettings>
-            <ChartLegendSettings Visible="true" Position="LegendPosition.Right"></ChartLegendSettings>
-            <ChartSeriesCollection>
-                <ChartSeries DataSource="@DatosGrafica" Name="Medidos Reales" XName="Descripcion" YName="Valor1" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" />
-                    </ChartMarker>
-                </ChartSeries>
-                <ChartSeries DataSource="@DatosGrafica" Name="Medidos Promedios" XName="Descripcion" YName="Valor2" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" />
-                    </ChartMarker>
-                </ChartSeries>
-                <ChartSeries DataSource="@DatosGrafica" Name="Fijos" XName="Descripcion" YName="Valor3" Type="ChartSeriesType.StackingBar">
-                    <ChartMarker>
-                        <ChartDataLabel Visible="true" />
-                    </ChartMarker>
-                </ChartSeries>
-            </ChartSeriesCollection>
-        </SfChart>
+        <div class="text-center font-weight-bold">TIPOS USUARIOS</div>
+        <RadzenChart @ref="GraficaUsuarios" Style="width:100%; height:100%;">
+            <RadzenCategoryAxis />
+            <RadzenValueAxis Visible="false" FormatString="{0:n0}" />
+            <RadzenChartTooltipOptions Shared="true" />
+            <RadzenLegend Visible="true" Position="LegendPosition.Right" />
+            <RadzenStackedBarSeries Data="@DatosGrafica" Title="Medidos Reales" CategoryProperty="Descripcion" ValueProperty="Valor1">
+                <TooltipTemplate Context="item">
+                    <b>Medidos Reales</b> : @item.Valor1
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="true" />
+                </ChildContent>
+            </RadzenStackedBarSeries>
+            <RadzenStackedBarSeries Data="@DatosGrafica" Title="Medidos Promedios" CategoryProperty="Descripcion" ValueProperty="Valor2">
+                <TooltipTemplate Context="item">
+                    <b>Medidos Promedios</b> : @item.Valor2
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="true" />
+                </ChildContent>
+            </RadzenStackedBarSeries>
+            <RadzenStackedBarSeries Data="@DatosGrafica" Title="Fijos" CategoryProperty="Descripcion" ValueProperty="Valor3">
+                <TooltipTemplate Context="item">
+                    <b>Fijos</b> : @item.Valor3
+                </TooltipTemplate>
+                <ChildContent>
+                    <RadzenSeriesDataLabels Visible="true" />
+                </ChildContent>
+            </RadzenStackedBarSeries>
+        </RadzenChart>
     </div>
 
 </div>
 
 @* ****** Dialogos y ventanas secundarias ****** *@
-<BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
-<Micromedicion_AnomaliasVtn @ref="@vnt_anomalias" Visible="@vtn_anomalias_visible" CerrarModal="@(()=> vtn_anomalias_visible = false)" />
-<Micromedicion_PadronVtn @ref="vnt_padron" Visible="@vtn_padron_visible" CerrarModal="@(()=> vtn_padron_visible = false)" />
-<ResumenTarifasVtn @ref="ResumenTarifasVtn" Visible="@ResumenTarifasVisible" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" CerrarModal="@(e => ResumenTarifasVisible = false)" />
-<ResumenSectoresVtn @ref="ResumenSectoresVtn" Visible="@ResumenSectoreVisible" Fecha1="@f1" Fecha2="@f2" Subsistema="@Subsistema" Sector="@Sector" CerrarModal="@(e => ResumenSectoreVisible = false)" />
+<BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
+<Micromedicion_AnomaliasVtn @ref="@_vnt_anomalias" Visible="@_vtn_anomalias_visible" CerrarModal="@(()=> _vtn_anomalias_visible = false)" />
+<Micromedicion_PadronVtn @ref="_vnt_padron" Visible="@vtn_padron_visible" CerrarModal="@(()=> vtn_padron_visible = false)" />
+<ResumenTarifasVtn @ref="_resumenTarifasVtn" Visible="@ResumenTarifasVisible" Fecha1="@_f1" Fecha2="@_f2" Subsistema="@_subsistema" Sector="@_sector" CerrarModal="@(e => ResumenTarifasVisible = false)" />
+<ResumenSectoresVtn @ref="_resumenSectoresVtn" Visible="@ResumenSectoreVisible" Fecha1="@_f1" Fecha2="@_f2" Subsistema="@_subsistema" Sector="@_sector" CerrarModal="@(e => ResumenSectoreVisible = false)" />
 
 
-@code{
-    private SfGrid<Micromedicion_Oficina> dataGrid { get; set; }
-    private SfChart graficaUsuarios { get; set; }
+@code
+{
+    private RadzenDataGrid<Micromedicion_Oficina> dataGrid { get; set; }
+    private RadzenChart GraficaUsuarios { get; set; }
 
-    private bool busyDialog = false;
-    private DateTime f1, f2;
-    private int Subsistema, Sector;
+    private bool _busyDialog = false;
+    private DateTime _f1, _f2;
+    private int _subsistema, _sector;
     private List<Micromedicion_Oficina> DatosGrid { get; set; }
     private List<ChartItem> DatosGrafica{ get; set; }
-    private IEnlace EnlaceSeleccionado = null;
+    private IEnlace _enlaceSeleccionado = null;
 
-    private bool vtn_anomalias_visible = false, vtn_padron_visible = false, ResumenTarifasVisible = false, ResumenSectoreVisible = false;
-    private Micromedicion_AnomaliasVtn vnt_anomalias;
-    private Micromedicion_PadronVtn vnt_padron;
-    private ResumenTarifasVtn ResumenTarifasVtn;
-    private ResumenSectoresVtn ResumenSectoresVtn;
+    private bool _vtn_anomalias_visible = false, vtn_padron_visible = false, ResumenTarifasVisible = false, ResumenSectoreVisible = false;
+    private Micromedicion_AnomaliasVtn _vnt_anomalias;
+    private Micromedicion_PadronVtn _vnt_padron;
+    private ResumenTarifasVtn _resumenTarifasVtn;
+    private ResumenSectoresVtn _resumenSectoresVtn;
 
 
     //********* Funciones  *********
-    protected override void OnInitialized() {
+    protected override void OnInitialized()
+    {
         // Validar si se cuenta con la opcion
-        if(!sicemService.Usuario.OpcionSistemas.Select(item => item.Id).Contains(OpcionesSistema.MICROMEDICION)){
+        if(!sicemService.Usuario.OpcionSistemas.Select(item => item.Id).Contains(OpcionesSistema.MICROMEDICION))
+        {
             navigationManager.NavigateTo("/");
             return;
         }
 
         var _now = DateTime.Now.AddMonths(-1);
-        this.f1 = new DateTime(_now.Year, _now.Month, 1);
-        this.f2 = new DateTime(_now.Year, _now.Month, DateTime.DaysInMonth(_now.Year, _now.Month));
-        this.Subsistema = 0;
-        this.Sector = 0;
+        this._f1 = new DateTime(_now.Year, _now.Month, 1);
+        this._f2 = new DateTime(_now.Year, _now.Month, DateTime.DaysInMonth(_now.Year, _now.Month));
+        this._subsistema = 0;
+        this._sector = 0;
 
         this.DatosGrid = new List<Micromedicion_Oficina>();
         this.DatosGrafica = new List<ChartItem>();
     }
-    public void Procesar(SeleccionarFechaEventArgs e) {
+    public void Procesar(SeleccionarFechaEventArgs e)
+    {
 
-        this.f1 = e.Fecha1;
-        this.f2 = e.Fecha2;
-        this.Subsistema = e.Subsistema;
-        this.Sector = e.Sector;
+        this._f1 = e.Fecha1;
+        this._f2 = e.Fecha2;
+        this._subsistema = e.Subsistema;
+        this._sector = e.Sector;
 
         //*** Realizar consulta
         var enlaces = sicemService.ObtenerOficinasDelUsuario();
@@ -170,14 +182,17 @@
         DatosGrafica = new List<ChartItem>();
         var Tareas = new List<Task>();
 
-        foreach(var oficina in oficinas){
+        foreach(var oficina in oficinas)
+        {
 
-            var _itemGrid = new Micromedicion_Oficina(){
+            var _itemGrid = new Micromedicion_Oficina()
+            {
                 Enlace = oficina
             };
             DatosGrid.Add(_itemGrid);
 
-            var _itemGrafica = new ChartItem(){
+            var _itemGrafica = new ChartItem()
+            {
                 Id = oficina.Id,
                 Descripcion = oficina.Oficina,
                 Valor1 = 0m,
@@ -190,23 +205,37 @@
         }
 
         //*** Fila total
-        if(oficinas.Length > 1){
+        if(oficinas.Length > 1)
+        {
             var _itemTotal = new Micromedicion_Oficina();
             DatosGrid.Add(_itemTotal);
         }
 
         Tareas.ForEach(item => item.Start());
     }
-    private void ProcesarConsulta(Ruta oficina){
-        var tmpDatos = micromedicionService.ObtenerMicromedicionPorOficina(oficina, f1.Year, f1.Month, Subsistema, Sector);
+    private void ProcesarConsulta(Ruta oficina)
+    {
+        // Un error en esta oficina no debe detener a las demás (CLAUDE.md)
+        Micromedicion_Oficina tmpDatos;
+        try
+        {
+            tmpDatos = micromedicionService.ObtenerMicromedicionPorOficina(oficina, _f1.Year, _f1.Month, _subsistema, _sector);
+        }
+        catch (Exception)
+        {
+            tmpDatos = null;
+        }
+        tmpDatos ??= new Micromedicion_Oficina() { Estatus = ResumenOficinaEstatus.Error };
 
         var _random = new Random();
         var _sleepTime = _random.Next(100,3000);
         System.Threading.Thread.Sleep(_sleepTime);
 
-        lock(DatosGrid){
+        lock(DatosGrid)
+        {
             var _itemGrid = DatosGrid.Where(item => item.Id == oficina.Id).FirstOrDefault();
-            if(_itemGrid != null) {
+            if(_itemGrid != null)
+            {
                 _itemGrid.Estatus = tmpDatos.Estatus;
                 _itemGrid.Reales = tmpDatos.Reales;
                 _itemGrid.Reales_Porc = tmpDatos.Reales_Porc;
@@ -219,24 +248,28 @@
                 _itemGrid.Total = tmpDatos.Total;
             }
             RecalcularFilaTotal();
-            dataGrid.Refresh();
         }
+        _ = InvokeAsync(() => dataGrid.Reload());
 
         System.Threading.Thread.Sleep(_random.Next(100,3000));
 
-        lock(DatosGrafica){
+        lock(DatosGrafica)
+        {
             var _itemGrafica = DatosGrafica.Where(item => item.Id == oficina.Id).FirstOrDefault();
-            if (_itemGrafica != null) {
+            if (_itemGrafica != null)
+            {
                 _itemGrafica.Valor1 = (decimal)tmpDatos.Reales;
                 _itemGrafica.Valor3 = (decimal)tmpDatos.Fijos;
             }
-            graficaUsuarios.RefreshLiveData();
+            _ = InvokeAsync(() => GraficaUsuarios.Reload());
         }
         
     }
-    private void RecalcularFilaTotal(){
+    private void RecalcularFilaTotal()
+    {
         var _itemTotal = DatosGrid.Where(item => item.Id == 999).FirstOrDefault();
-        if(_itemTotal != null) {
+        if(_itemTotal != null)
+        {
             var _datos = DatosGrid.Where(item => item.Id != 999).ToList();
             _itemTotal.Reales = _datos.Sum(item => item.Reales);
             _itemTotal.Reales_Porc = _datos.Sum(item => item.Reales_Porc);
@@ -251,102 +284,120 @@
     }
 
     // **** Ventana Secundarias
-    private async Task MostarVentanaAnomalias(Micromedicion_Oficina context) {
-        if (vtn_anomalias_visible){
+    private async Task MostarVentanaAnomalias(Micromedicion_Oficina context)
+    {
+        if (_vtn_anomalias_visible)
+        {
             return;
         }
 
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(100);
         
         var _enlaces = sicemService.ObtenerOficinasDelUsuario();
-        EnlaceSeleccionado = context.Enlace;
-        var _datos = micromedicionService.ObtenerMicromedicionAnomalias(EnlaceSeleccionado, f1.Year, Subsistema, Sector).ToArray();
-        if(_datos == null) {
+        _enlaceSeleccionado = context.Enlace;
+        var _datos = micromedicionService.ObtenerMicromedicionAnomalias(_enlaceSeleccionado, _f1.Year, _subsistema, _sector).ToArray();
+        if(_datos == null)
+        {
             Toaster.Add("No hay datos disponibles para mostrar", type: MatToastType.Warning);
             await Task.Delay(100);
-            this.busyDialog = false;
+            this._busyDialog = false;
         }
-        if(_datos.Length <= 0) {
+        if(_datos.Length <= 0)
+        {
             Toaster.Add("No hay datos disponibles para mostrar", type: MatToastType.Warning);
             await Task.Delay(100);
-            this.busyDialog = false;
+            this._busyDialog = false;
         }
-        vtn_anomalias_visible = true;
-        await vnt_anomalias.Inicializar(_datos);
+        _vtn_anomalias_visible = true;
+        await _vnt_anomalias.Inicializar(_datos);
 
         await Task.Delay(100);
-        this.busyDialog = false;
+        this._busyDialog = false;
 
     }
-    private async Task MostrarVentanaPadron(Micromedicion_Oficina context){
-        if (vtn_padron_visible) {
+    private async Task MostrarVentanaPadron(Micromedicion_Oficina context)
+    {
+        if (vtn_padron_visible)
+        {
             return;
         }
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(100);
         
         var _enlaces = sicemService.ObtenerOficinasDelUsuario();
-        EnlaceSeleccionado = context.Enlace;
-        var _datos = micromedicionService.ObtenerMicromedicionResumenPadron(EnlaceSeleccionado, f1.Year, f1.Month).ToArray();
-        if (_datos == null) {
+        _enlaceSeleccionado = context.Enlace;
+        var _datos = micromedicionService.ObtenerMicromedicionResumenPadron(_enlaceSeleccionado, _f1.Year, _f1.Month).ToArray();
+        if (_datos == null)
+        {
             Toaster.Add("No hay datos disponibles para mostrar", type: MatToastType.Warning);
             await Task.Delay(100);
-            this.busyDialog = false;
+            this._busyDialog = false;
         }
-        if (_datos.Length <= 0) {
+        if (_datos.Length <= 0)
+        {
             Toaster.Add("No hay datos disponibles para mostrar", type: MatToastType.Warning);
             await Task.Delay(100);
-            this.busyDialog = false;
+            this._busyDialog = false;
         }
         vtn_padron_visible = true;
-        await vnt_padron.Inicializar(_datos);
+        await _vnt_padron.Inicializar(_datos);
 
         await Task.Delay(100);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
-    private async Task MostrarResumenPorTarifas(Micromedicion_Oficina data){
-        if(ResumenTarifasVisible){
+    private async Task MostrarResumenPorTarifas(Micromedicion_Oficina data)
+    {
+        if(ResumenTarifasVisible)
+        {
             return;
         }
 
-        busyDialog = true;
+        _busyDialog = true;
         await Task.Delay(100);
-        this.EnlaceSeleccionado = data.Enlace;
+        this._enlaceSeleccionado = data.Enlace;
         
-        var _datos = micromedicionService.ObtenerResumenPorTarifas(EnlaceSeleccionado, f1.Year, f1.Month, Subsistema, Sector).ToList();
-        var _datos2 = micromedicionService.ObtenerResumenPorTarifasLocalidad(EnlaceSeleccionado, f1.Year, f1.Month, Subsistema, Sector).ToList();
+        var _datos = micromedicionService.ObtenerResumenPorTarifas(_enlaceSeleccionado, _f1.Year, _f1.Month, _subsistema, _sector).ToList();
+        var _datos2 = micromedicionService.ObtenerResumenPorTarifasLocalidad(_enlaceSeleccionado, _f1.Year, _f1.Month, _subsistema, _sector).ToList();
 
-        if(_datos == null){
+        if(_datos == null)
+        {
             Toaster.Add("Error al realizar la consulta, intentelo mas tarde", MatToastType.Danger);
-        }else{
-            if(_datos.Count() > 0 ){
-                ResumenTarifasVtn.Inicializar(EnlaceSeleccionado, _datos, _datos2);
+        }
+        else
+        {
+            if(_datos.Count() > 0 )
+            {
+                _resumenTarifasVtn.Inicializar(_enlaceSeleccionado, _datos, _datos2);
                 ResumenTarifasVisible = true;
-            }else{
+            }
+            else
+            {
                 Toaster.Add("No hay datos disponibles para este periodo", MatToastType.Info);
             }
         }
         
         await Task.Delay(100);
-        busyDialog = false;
+        _busyDialog = false;
 
     }
-    private async Task MostrarResumenPorSectores(Micromedicion_Oficina data){
-        if(ResumenSectoreVisible){
+    private async Task MostrarResumenPorSectores(Micromedicion_Oficina data)
+    {
+        if(ResumenSectoreVisible)
+        {
             return;
         }
 
-        busyDialog = true;
+        _busyDialog = true;
         await Task.Delay(100);
 
-        EnlaceSeleccionado = data.Enlace;
-        var _data = micromedicionService.ObtenerResumenPorSector(EnlaceSeleccionado, f1.Year, f1.Month, Subsistema, Sector).ToList();
-        ResumenSectoresVtn.Inicializar(EnlaceSeleccionado, _data);
+        _enlaceSeleccionado = data.Enlace;
+        var _data = micromedicionService.ObtenerResumenPorSector(_enlaceSeleccionado, _f1.Year, _f1.Month, _subsistema, _sector).ToList();
+        _resumenSectoresVtn.Inicializar(_enlaceSeleccionado, _data);
         ResumenSectoreVisible = true;
 
         await Task.Delay(100);
-        busyDialog = false;
+        _busyDialog = false;
 
     }
 

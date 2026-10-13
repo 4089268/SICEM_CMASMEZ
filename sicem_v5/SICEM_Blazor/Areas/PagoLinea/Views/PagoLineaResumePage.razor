@@ -1,7 +1,5 @@
 @page "/PagoLineaResume"
 @namespace Sicem_Blazor.PagoLinea.Views
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Charts
 @using Sicem_Blazor.PagoLinea.Models
 
 <div class="layoutPage">
@@ -15,25 +13,25 @@
     @* ****** DataGrid ****** *@
     <div class="d-flex align-items-center" style="grid-area: 3/1/4/2;">
     
-        @if(TotalData != null)
+        @if(_totalData != null)
         {
             <div class="border rounded bg-white d-flex flex-column align-items-center justify-content-start p-4 mr-4" style="min-width: 24rem;">
                 <div> Importe Cobrado</div>
                 <div class="d-flex align-items-center justify-content-around">
-                    <div class="fa-3x text-center w-100">@TotalData.ImportePagos.ToString("c2", currentCultureInfo)</div>
+                    <div class="fa-3x text-center w-100">@_totalData.ImportePagos.ToString("c2", _currentCultureInfo)</div>
                 </div>
             </div>
 
             <div class="border rounded bg-white d-flex flex-column align-items-center justify-content-around p-4 mr-4" style="min-width: 24rem;">
                 <div> Importe Aplicado</div>
                 <div class="d-flex align-items-center justify-content-around">
-                    <div class="fa-3x text-center w-100">@TotalData.ImportePagosAplicados.ToString("c2", currentCultureInfo)</div>
+                    <div class="fa-3x text-center w-100">@_totalData.ImportePagosAplicados.ToString("c2", _currentCultureInfo)</div>
                 </div>
             </div>
             <div class="border rounded bg-white d-flex flex-column align-items-center justify-content-around p-4 mr-4" style="min-width: 24rem;">
                 <div> Importe Por Aplicar</div>
                 <div class="d-flex align-items-center justify-content-around">
-                    <div class="fa-3x text-center w-100">@TotalData.ImportePagosPorAplicar.ToString("c2", currentCultureInfo)</div>
+                    <div class="fa-3x text-center w-100">@_totalData.ImportePagosPorAplicar.ToString("c2", _currentCultureInfo)</div>
                 </div>
             </div>
         }
@@ -56,14 +54,16 @@
     </div>
 
     <div class="border rounded bg-white p-1" style="grid-area: 4/1/5/2;">
-        <SfGrid @ref="DataGrid" DataSource="@DataOffices" TValue="PagoLineaResumen" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true" RowHeight="26">
-            <GridColumns>
-                <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="40">
+        <RadzenDataGrid TItem="PagoLineaResumen" @ref="DataGrid" Data="@DataOffices" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:100%;">
+            <Columns>
+                <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="40px">
                     <Template>
                         @{
                             var data = (context as PagoLineaResumen);
-                            if(data.Id > 0 && data.Id < 999) {
-                                @switch (data.Estatus) {
+                            if(data.Id > 0 && data.Id < 999)
+                            {
+                                @switch (data.Estatus)
+                                {
 
                                     case ResumenOficinaEstatus.Completado:
                                         <i class="fas fa-check-circle" style="color:green; font-size:1.5rem;"></i>
@@ -80,22 +80,23 @@
                             }
                         }
                     </Template>
-                </GridColumn>
-                <GridColumn Field="@nameof(PagoLineaResumen.Oficina)" HeaderText="Oficina" TextAlign="TextAlign.Left" Width="100" />
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn Property="@nameof(PagoLineaResumen.Oficina)" Title="Oficina" TextAlign="TextAlign.Left" Width="100px" />
 
-                <GridColumn Field="@nameof(PagoLineaResumen.TotalPagos)" HeaderText="Pagos cobrados" TextAlign="TextAlign.Right" Width="120" Format="n0" />
-                <GridColumn Field="@nameof(PagoLineaResumen.ImportePagos)" HeaderText="Importe cobrado" TextAlign="TextAlign.Right" Width="125" Format="c2" />
+                <RadzenDataGridColumn Property="@nameof(PagoLineaResumen.TotalPagos)" Title="Pagos cobrados" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(PagoLineaResumen.ImportePagos)" Title="Importe cobrado" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" />
                 
-                <GridColumn Field="@nameof(PagoLineaResumen.TotalPagosAplicados)" HeaderText="Pagos aplicados" TextAlign="TextAlign.Right" Width="120" Format="n0" />
-                <GridColumn Field="@nameof(PagoLineaResumen.ImportePagosAplicados)" HeaderText="Importe aplicado" TextAlign="TextAlign.Right" Width="125" Format="c2" />
+                <RadzenDataGridColumn Property="@nameof(PagoLineaResumen.TotalPagosAplicados)" Title="Pagos aplicados" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(PagoLineaResumen.ImportePagosAplicados)" Title="Importe aplicado" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" />
 
-                <GridColumn Field="@nameof(PagoLineaResumen.TotalPagosPorAplicar)" HeaderText="Pagos por aplicar" TextAlign="TextAlign.Right" Width="120" Format="n0" />
-                <GridColumn Field="@nameof(PagoLineaResumen.ImportePagosPorAplicar)" HeaderText="Importe por aplicar" TextAlign="TextAlign.Right" Width="125" Format="c2" />
-                <GridColumn HeaderText="Acciones" TextAlign="TextAlign.Center" Width="40">
+                <RadzenDataGridColumn Property="@nameof(PagoLineaResumen.TotalPagosPorAplicar)" Title="Pagos por aplicar" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:n0}" />
+                <RadzenDataGridColumn Property="@nameof(PagoLineaResumen.ImportePagosPorAplicar)" Title="Importe por aplicar" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" />
+                <RadzenDataGridColumn Title="Acciones" TextAlign="TextAlign.Center" Width="40px">
                     <Template>
                         @{
                             var data = (context as PagoLineaResumen);
-                            if (data.Id > 0 && data.Id < 90) {
+                            if (data.Id > 0 && data.Id < 90)
+                            {
                                 <div class="d-flex align-items-center justify-content-center">
                                     <button type="button" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="top" title="Resumen Dias" disabled="@(data.Estatus != ResumenOficinaEstatus.Completado)" @onclick="@(e => ResumenDiasClick(data))">
                                         <i class="fa fa-calendar" aria-hidden="true"></i>
@@ -108,17 +109,17 @@
                             }
                         }
                     </Template>
-                </GridColumn>
-            </GridColumns>
-        </SfGrid>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
     </div>
 </div>
 
 
 @* ****** Dialogos y ventanas secundarias ****** *@
-<BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
-<ResumenDiasVtn @ref="resumenDiasVtn" CerrarModal="@(e => resumenDiasVisible = false)"/>
-<PagoLineaDetalleVtn @ref="pagoLineaDetalleVtn" CerrarModal="@(e => detalleVtnVisible = false)"/>
+<BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
+<ResumenDiasVtn @ref="_resumenDiasVtn" CerrarModal="@(e => _resumenDiasVisible = false)"/>
+<PagoLineaDetalleVtn @ref="_pagoLineaDetalleVtn" CerrarModal="@(e => _detalleVtnVisible = false)"/>
 
 <style>
     .layoutPage

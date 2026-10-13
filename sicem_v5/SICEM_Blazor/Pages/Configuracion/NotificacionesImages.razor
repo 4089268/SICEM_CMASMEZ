@@ -25,11 +25,9 @@
     
     <!-- ****** Catalog templates ******-->
     <div class="border rounded bg-white p-2 p-1 w-100 h-100" style="grid-area:4/1/5/2">
-        <SfGrid @ref="DataGrid" DataSource="@DatosGrid" TValue="CatImagenesTemplate" AllowResizing="true" AllowSorting="true" AllowFiltering="false"
-            AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true">
-            <GridEvents RowSelected="OnDataGrid_SelectionChanged" TValue="CatImagenesTemplate"></GridEvents>
-            <GridColumns>
-                <GridColumn Field=@nameof(CatImagenesTemplate.Titulo) HeaderText="Titulo" TextAlign="TextAlign.Left" Width="140">
+        <RadzenDataGrid TItem="CatImagenesTemplate" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" RowSelect="OnDataGrid_SelectionChanged" SelectionMode="DataGridSelectionMode.Single" Style="height:100%; width:100%;">
+            <Columns>
+                <RadzenDataGridColumn Property="@nameof(CatImagenesTemplate.Titulo)" Title="Titulo" TextAlign="TextAlign.Left" Width="140px">
                     <Template>
                         @{
                             var data = (context as CatImagenesTemplate);
@@ -37,9 +35,9 @@
                             <span>@data.Titulo</span>
                         }
                     </Template>
-                </GridColumn>
-            </GridColumns>
-        </SfGrid>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
     </div>
 
     <!-- ****** Grid Detalle ******-->
@@ -69,9 +67,9 @@
     
 </div>
 
-<BusyIndicator Busy="@cargando" ContentText="Cargando datos..." />
+<BusyIndicator Busy="@_cargando" ContentText="Cargando datos..." />
 
-@if(displayNotificationImageVtn)
+@if(_displayNotificationImageVtn)
 {
     <CreateNotificationImageVtn OnClose="HandleCreateNotificationImageOnClose"/>
 }

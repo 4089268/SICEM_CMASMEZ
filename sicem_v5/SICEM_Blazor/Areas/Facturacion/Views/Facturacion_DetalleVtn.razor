@@ -1,6 +1,8 @@
 @using Sicem_Blazor.Facturacion.Models
-@if(Visible){
-    <VentanaSecundaria Titulo="@Titulo" Filas="@FilasTemplate" Columnas="@ColumnasTemplate" CerrarVentana="@CerrarClick">
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
+@if(Visible)
+{
+    <VentanaSecundaria Titulo="@Titulo" Filas="@_filasTemplate" Columnas="@_columnasTemplate" CerrarVentana="@CerrarClick">
         <Content>
             <div class="d-flex align-items-center p-2 mb-2 border bg-white runded">
                 <div class="button bg-success px-3 py-2" @onclick="OnExportExcel_Click" >
@@ -10,81 +12,86 @@
             </div>
 
             <div class="p-2 border bg-white runded">
-                <SfGrid @ref="DataGrid" DataSource="@DatosGrid" AllowExcelExport="true" AllowResizing="true" AllowPaging="true" Width="100%" Height="100%" >
-                    <GridPageSettings PageSize="1000"></GridPageSettings>
-                    <GridColumns>
-                        @* <GridColumn Field="@nameof(Factura.IdFactura)" HeaderText="Id Factura" TextAlign="TextAlign.Left" Width="170"/> *@
-                        <GridColumn Field="@nameof(Factura.IdCuenta)" HeaderText="Cuenta" TextAlign="TextAlign.Center" Width="100" />
-                        <GridColumn Field="@nameof(Factura.AguaSb)" HeaderText="Agua" TextAlign="TextAlign.Right" Width="80" Format="c2"/>
-                        <GridColumn Field="@nameof(Factura.DrenajeSb)" HeaderText="Drenaje" TextAlign="TextAlign.Right" Width="80" Format="c2"/>
-                        <GridColumn Field="@nameof(Factura.SaneamientoSb)" HeaderText="Saneamiento" TextAlign="TextAlign.Right" Width="80" Format="c2"/>
-                        <GridColumn Field="@nameof(Factura.ActualizacionSb)" HeaderText="Actualizacion" TextAlign="TextAlign.Right" Width="80" Format="c2"/>
-                        <GridColumn Field="@nameof(Factura.OtrosSb)" HeaderText="Otros" TextAlign="TextAlign.Right" Width="80" Format="c2"/>
-                        <GridColumn Field="@nameof(Factura.Subtotal)" HeaderText="Subtotal" TextAlign="TextAlign.Right" Width="80" Format="c2" />
-                        <GridColumn Field="@nameof(Factura.Iva)" HeaderText="Iva" TextAlign="TextAlign.Right" Width="60" Format="c2" />
-                        <GridColumn Field="@nameof(Factura.Total)" HeaderText="Total" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                        <GridColumn Field="@nameof(Factura.Sucursal)" HeaderText="Sucursal" TextAlign="TextAlign.Center" Width="140" />
-                        <GridColumn Field="@nameof(Factura.Localidad)" HeaderText="Localidad" TextAlign="TextAlign.Center" Width="140" />
-                        <GridColumn Field="@nameof(Factura.Subsistema)" HeaderText="Subsistema" TextAlign="TextAlign.Center" Width="60" />
-                        <GridColumn Field="@nameof(Factura.Sector)" HeaderText="Sector" TextAlign="TextAlign.Center" Width="60" />
-                        <GridColumn Field="@nameof(Factura.Estatus)" HeaderText="Estatus" TextAlign="TextAlign.Center" Width="100" />
-                        <GridColumn Field="@nameof(Factura.Mf)" HeaderText="Mf" TextAlign="TextAlign.Center" Width="60" />
-                        <GridColumn Field="@nameof(Factura.Af)" HeaderText="Af" TextAlign="TextAlign.Center" Width="80" />
-                        <GridColumn Field="@nameof(Factura.Servicio)" HeaderText="Servicio" TextAlign="TextAlign.Left" Width="180" />
-                        <GridColumn Field="@nameof(Factura.Tarifa)" HeaderText="Tarifa" TextAlign="TextAlign.Left" Width="140" />
-                        <GridColumn Field="@nameof(Factura.Consumo)" HeaderText="M3 Consumidos" TextAlign="TextAlign.Center" Width="100" Format="n0" />
-                        <GridColumn Field="@nameof(Factura.ConsumoFacturado)" HeaderText="M3 Facturados" TextAlign="TextAlign.Center" Width="100" Format="n0" />
-                        <GridColumn Field="@nameof(Factura.TipoCalculado)" HeaderText="Tipo Calculo" TextAlign="TextAlign.Center" Width="100" />
+                <RadzenDataGrid TItem="Factura" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowPaging="true" PageSize="1000" Style="width:100%; height:100%;">
+                    <Columns>
+                        @* <RadzenDataGridColumn Property="@nameof(Factura.IdFactura)" Title="Id Factura" TextAlign="TextAlign.Left" Width="170px" /> *@
+                        <RadzenDataGridColumn Property="@nameof(Factura.IdCuenta)" Title="Cuenta" TextAlign="TextAlign.Center" Width="100px" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.AguaSb)" Title="Agua" TextAlign="TextAlign.Right" Width="80px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.DrenajeSb)" Title="Drenaje" TextAlign="TextAlign.Right" Width="80px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.SaneamientoSb)" Title="Saneamiento" TextAlign="TextAlign.Right" Width="80px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.ActualizacionSb)" Title="Actualizacion" TextAlign="TextAlign.Right" Width="80px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.OtrosSb)" Title="Otros" TextAlign="TextAlign.Right" Width="80px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.Subtotal)" Title="Subtotal" TextAlign="TextAlign.Right" Width="80px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.Iva)" Title="Iva" TextAlign="TextAlign.Right" Width="60px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.Total)" Title="Total" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.Sucursal)" Title="Sucursal" TextAlign="TextAlign.Center" Width="140px" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.Localidad)" Title="Localidad" TextAlign="TextAlign.Center" Width="140px" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.Subsistema)" Title="Subsistema" TextAlign="TextAlign.Center" Width="60px" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.Sector)" Title="Sector" TextAlign="TextAlign.Center" Width="60px" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.Estatus)" Title="Estatus" TextAlign="TextAlign.Center" Width="100px" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.Mf)" Title="Mf" TextAlign="TextAlign.Center" Width="60px" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.Af)" Title="Af" TextAlign="TextAlign.Center" Width="80px" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.Servicio)" Title="Servicio" TextAlign="TextAlign.Left" Width="180px" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.Tarifa)" Title="Tarifa" TextAlign="TextAlign.Left" Width="140px" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.Consumo)" Title="M3 Consumidos" TextAlign="TextAlign.Center" Width="100px" FormatString="{0:n0}" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.ConsumoFacturado)" Title="M3 Facturados" TextAlign="TextAlign.Center" Width="100px" FormatString="{0:n0}" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.TipoCalculado)" Title="Tipo Calculo" TextAlign="TextAlign.Center" Width="100px" />
                         
-                        @* <GridColumn Field="@nameof(Factura.Genero)" HeaderText="Genero" TextAlign="TextAlign.Left" Width="auto" />
-                        <GridColumn Field="@nameof(Factura.Lecturista)" HeaderText="Lecturista" TextAlign="TextAlign.Left" Width="auto" />
-                        <GridColumn Field="@nameof(Factura.Capturo)" HeaderText="Capturo" TextAlign="TextAlign.Left" Width="auto" />
-                        <GridColumn Field="@nameof(Factura.Fecha)" HeaderText="Fecha" TextAlign="TextAlign.Center" Width="auto" /> *@
-                    </GridColumns>
-                </SfGrid>
+                        @* <RadzenDataGridColumn Property="@nameof(Factura.Genero)" Title="Genero" TextAlign="TextAlign.Left" Width="auto" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.Lecturista)" Title="Lecturista" TextAlign="TextAlign.Left" Width="auto" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.Capturo)" Title="Capturo" TextAlign="TextAlign.Left" Width="auto" />
+                        <RadzenDataGridColumn Property="@nameof(Factura.Fecha)" Title="Fecha" TextAlign="TextAlign.Center" Width="auto" /> *@
+                    </Columns>
+                </RadzenDataGrid>
             </div>
 
         </Content>
     </VentanaSecundaria>
-    <BusyIndicator Busy="@IsBusy" ContentText="Preparando documento..." />
+    <BusyIndicator Busy="@_isBusy" ContentText="Preparando documento..." />
 }
 
-@code{
+@code
+{
     [Parameter] public bool Visible {get;set;} = false;
     [Parameter] public string Titulo {get;set;} = "Lista Facturas";
     [Parameter] public EventCallback OnClose {get;set;}
-    private SfGrid<Factura> DataGrid {get;set;}
+    private RadzenDataGrid<Factura> DataGrid {get;set;}
     private List<Factura> DatosGrid {get;set;}
     private Ruta Oficina {get;set;}
-    private bool IsBusy = false;
+    private bool _isBusy = false;
 
-    private double[] ColumnasTemplate = new double[]{.85};
-    private double[] FilasTemplate = new double[]{50, .75};
+    private double[] _columnasTemplate = new double[]{.85};
+    private double[] _filasTemplate = new double[]{50, .75};
 
-    public void Inicializar(List<Factura> datos, Ruta oficina){
+    public void Inicializar(List<Factura> datos, Ruta oficina)
+    {
         DatosGrid = datos;
         this.Oficina = oficina;
     }
-    private async Task CerrarClick(){
+    private async Task CerrarClick()
+    {
         await this.OnClose.InvokeAsync(null);
     }
-    private async Task OnExportExcel_Click(){
-        IsBusy = true;
+    private async Task OnExportExcel_Click()
+    {
+        _isBusy = true;
         await Task.Delay(100);
 
-        if(DataGrid == null){
+        if(DataGrid == null)
+        {
             return;
         }
         var _guid = Guid.NewGuid().ToString().Replace("-","").Substring(0,10);
         var _titulo = Titulo.Replace(" - ",".").Replace(" ","_").ToString();
-        var _p = new ExcelExportProperties(){
+        var _p = new ExcelExportProperties()
+        {
             FileName = $"{_titulo}-{_guid}.xlsx",
             IncludeHiddenColumn = true
         };
-        await DataGrid.ExportToExcelAsync(_p);
+        await ExportacionExcel.ExportarAsync(DataGrid, _p);
 
         await Task.Delay(100);
-        IsBusy = false;
+        _isBusy = false;
     }
 
 }

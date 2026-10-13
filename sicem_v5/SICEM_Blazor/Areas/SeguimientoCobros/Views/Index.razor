@@ -12,107 +12,122 @@
 
 <div class="d-flex p-2 justify-content-end" style="height:90vh; position:fixed; right:0; ">
     <div class="border rounded-lg m-2 p-2 bg-white" style=" width: 45rem;">
-        <div style="height:40%" >
-            <SfAccumulationChart @ref="accumulationChartIngresos" Title="Ingresos por Sucursal">
-                <AccumulationChartSeriesCollection>
-                    <AccumulationChartLegendSettings Visible="true" Position="LegendPosition.Top"></AccumulationChartLegendSettings>
-                    <AccumulationChartSeries DataSource="@incomeDataGraph" XName="Office" YName="Income" Name="Ingresos" InnerRadius="40%" Palettes="@palettes">
-                        <AccumulationDataLabelSettings Visible="true" Name="Ingresos"></AccumulationDataLabelSettings>
-                    </AccumulationChartSeries>
-                </AccumulationChartSeriesCollection>
-                <AccumulationChartLegendSettings Visible="false"></AccumulationChartLegendSettings>
-                <AccumulationChartTooltipSettings Enable="true"></AccumulationChartTooltipSettings>
-            </SfAccumulationChart>
+        <div class="d-flex flex-column" style="height:40%" >
+            <div class="text-center font-weight-bold">Ingresos por Sucursal</div>
+            <RadzenChart @ref="_chartIngresos" Style="flex:1; width:100%;">
+                <RadzenLegend Visible="true" Position="LegendPosition.Top" />
+                <RadzenDonutSeries Data="@IncomeDataGraph" CategoryProperty="@nameof(OfficePushpinMap.Office)" ValueProperty="@nameof(OfficePushpinMap.Income)" Title="Ingresos">
+                    <RadzenSeriesDataLabels Visible="true" />
+                </RadzenDonutSeries>
+            </RadzenChart>
         </div>
-        <div style="height:35%">
-            <SfAccumulationChart @ref="accumulationChartRecibos" Title="Recibos por Sucursal">
-                <AccumulationChartSeriesCollection>
-                    <AccumulationChartSeries DataSource="@incomeDataGraph" XName="Office" YName="Bills" Name="Recibos" InnerRadius="40%" Palettes="@palettes">
-                        <AccumulationDataLabelSettings Visible="true" Name="Recibos"></AccumulationDataLabelSettings>
-                    </AccumulationChartSeries>
-                </AccumulationChartSeriesCollection>
-                <AccumulationChartLegendSettings Visible="false"></AccumulationChartLegendSettings>
-                <AccumulationChartTooltipSettings Enable="true"></AccumulationChartTooltipSettings>
-            </SfAccumulationChart>
+        <div class="d-flex flex-column" style="height:35%">
+            <div class="text-center font-weight-bold">Recibos por Sucursal</div>
+            <RadzenChart @ref="_chartRecibos" Style="flex:1; width:100%;">
+                <RadzenLegend Visible="false" />
+                <RadzenDonutSeries Data="@IncomeDataGraph" CategoryProperty="@nameof(OfficePushpinMap.Office)" ValueProperty="@nameof(OfficePushpinMap.Bills)" Title="Recibos">
+                    <RadzenSeriesDataLabels Visible="true" />
+                </RadzenDonutSeries>
+            </RadzenChart>
         </div>
         <div style="height:25%">
-            <SfGrid @ref="dataGrid" DataSource="@incomeData" TValue="OfficePushpinMap" Height="100%" Width="100%" EnableHover="true">
-                <GridColumns>
-                    <GridColumn Field="@nameof(OfficePushpinMap.Office)" HeaderText="Sucursal" TextAlign="TextAlign.Left" />
-                    <GridColumn Field="@nameof(OfficePushpinMap.Bills)" HeaderText="Recibos" TextAlign="TextAlign.Right" Format="n0" />
-                    <GridColumn Field="@nameof(OfficePushpinMap.Income)" HeaderText="Ingresos" TextAlign="TextAlign.Right" Format="c2" />
-                </GridColumns>
-            </SfGrid>
+            <RadzenDataGrid @ref="_dataGrid" TItem="OfficePushpinMap" Data="@IncomeData" Style="height:100%; width:100%;">
+                <Columns>
+                    <RadzenDataGridColumn Property="@nameof(OfficePushpinMap.Office)" Title="Sucursal" TextAlign="TextAlign.Left" />
+                    <RadzenDataGridColumn Property="@nameof(OfficePushpinMap.Bills)" Title="Recibos" TextAlign="TextAlign.Right" FormatString="{0:n0}" />
+                    <RadzenDataGridColumn Property="@nameof(OfficePushpinMap.Income)" Title="Ingresos" TextAlign="TextAlign.Right" FormatString="{0:c2}" />
+                </Columns>
+            </RadzenDataGrid>
         </div>
     </div>
 </div>
 
 
-@code {
-    private static Timer fetchTimer;
-    private List<OfficePushpinMap> incomeData {get; set;}
-    private List<OfficePushpinMap> incomeDataGraph {
-        get => incomeData.Where(item => item.Id < 900 ).ToList();
+@code
+{
+    // Antes era static: el timer se compartía entre todas las sesiones de usuario
+    private Timer _fetchTimer;
+    private List<OfficePushpinMap> IncomeData { get; set; }
+    private List<OfficePushpinMap> IncomeDataGraph
+    {
+        get => IncomeData.Where(item => item.Id < 900).ToList();
     }
-    private SfGrid<OfficePushpinMap> dataGrid;
-    private SfAccumulationChart accumulationChartIngresos;
-    private SfAccumulationChart accumulationChartRecibos;
-    private string[] palettes = {"#2e86c1", "#28b463", "#d68910", "#884ea0"};
+    private RadzenDataGrid<OfficePushpinMap> _dataGrid;
+    private RadzenChart _chartIngresos;
+    private RadzenChart _chartRecibos;
 
     protected override void OnInitialized()
     {
-        incomeData = incomeOfficeService.GetIncomes().ToList();
+        IncomeData = incomeOfficeService.GetIncomes().ToList();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if(firstRender)
+        if (firstRender)
         {
             await JSRuntime.InvokeVoidAsync("initIncomeMap");
-            await JSRuntime.InvokeVoidAsync("actualizarItems", incomeData );
+            await JSRuntime.InvokeVoidAsync("actualizarItems", IncomeData);
             await Task.Delay(8000);
-            fetchTimer = new Timer(FetchData, null, 0, 6000);
+            _fetchTimer = new Timer(FetchData, null, 0, 6000);
         }
     }
 
     private async void FetchData(object state)
     {
-        try{
+        try
+        {
             var tmpIncomeData = incomeOfficeService.GetIncomes().ToList();
-            refreIncomesData(tmpIncomeData);
+            await RefreIncomesData(tmpIncomeData);
 
-            await JSRuntime.InvokeVoidAsync("actualizarItems", tmpIncomeData );
+            await JSRuntime.InvokeVoidAsync("actualizarItems", tmpIncomeData);
 
-        }catch(Exception err){
-            Console.WriteLine( err.Message);
+        }
+        catch (Exception err)
+        {
+            Console.WriteLine(err.Message);
         }
     }
 
-    private void refreIncomesData(List<OfficePushpinMap> data)
+    private async Task RefreIncomesData(List<OfficePushpinMap> data)
     {
-        try{
-            foreach(var newData in data){
-                var refdata = incomeData.Where(item => item.Id == newData.Id ).FirstOrDefault();
-                if(refdata != null ){
+        try
+        {
+            foreach (var newData in data)
+            {
+                var refdata = IncomeData.Where(item => item.Id == newData.Id).FirstOrDefault();
+                if (refdata != null)
+                {
                     refdata.Bills = newData.Bills;
                     refdata.Income = newData.Income;
                 }
             }
-            dataGrid.Refresh();
-            accumulationChartIngresos.Refresh();
-            accumulationChartRecibos.Refresh();
-        }catch(Exception err){
+
+            // El timer corre fuera del hilo de render: refrescar a través de InvokeAsync
+            await InvokeAsync(async () =>
+            {
+                await _dataGrid.Reload();
+                await _chartIngresos.Reload();
+                await _chartRecibos.Reload();
+                StateHasChanged();
+            });
+        }
+        catch (Exception err)
+        {
             Console.WriteLine(err.Message);
         }
     }
-    
+
     public async void Dispose()
     {
         await JSRuntime.InvokeVoidAsync("cerrarVentanaCobroCaja");
 
-        try{
-            fetchTimer.Dispose();
-        }catch(Exception){}
+        try
+        {
+            _fetchTimer?.Dispose();
+        }
+        catch (Exception)
+        {
+        }
     }
 
 }

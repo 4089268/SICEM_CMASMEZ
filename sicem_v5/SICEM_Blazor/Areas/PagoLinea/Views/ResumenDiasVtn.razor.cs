@@ -6,8 +6,6 @@ using System.IO;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
-using Syncfusion.Blazor.Grids;
-using Syncfusion.Blazor.Charts;
 using MatBlazor;
 using Sicem_Blazor.Data;
 using Sicem_Blazor.Data.Contracts;
@@ -18,9 +16,15 @@ using Sicem_Blazor.PagoLinea.Data;
 using Sicem_Blazor.PagoLinea.Services;
 
 
+using Radzen;
+using Radzen.Blazor;
+using DateRange = Sicem_Blazor.Data.DateRange;
 namespace Sicem_Blazor.PagoLinea.Views;
 public partial class ResumenDiasVtn
 {
+    [Inject]
+    public RadzenDataGridExportacionExcelService ExportacionExcel { get; set; }
+
     [Inject]
     public IMatToaster Toaster {get;set;} = default!;
     
@@ -36,12 +40,12 @@ public partial class ResumenDiasVtn
     public bool mostrarVentana = false;
 
     public string titulo = "Pagos realizados";
-    private SfGrid<PagoLineaResumenDia> DataGrid {get;set;}
+    private RadzenDataGrid<PagoLineaResumenDia> DataGrid {get;set;}
     public List<PagoLineaResumenDia> Datos {get;set;}
-    private bool busyDialog = false;
+    private bool _busyDialog = false;
 
-    private PagoLineaDetalleVtn pagoLineaDetalleVtn;
-    private bool detalleVtnVisible = false;
+    private PagoLineaDetalleVtn _pagoLineaDetalleVtn;
+    private bool _detalleVtnVisible = false;
 
     public void Show(IEnumerable<PagoLineaResumenDia> datos, string titulo = "")
     {
@@ -63,18 +67,20 @@ public partial class ResumenDiasVtn
 
     private async Task ExportData()
     {
-        await this.DataGrid.ExcelExport(new ExcelExportProperties {
+        await ExportacionExcel.ExportarAsync(this.DataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_ingresosxConceptos_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
 
     private async Task DetalleClick(PagoLineaResumenDia data)
     {
-        if (detalleVtnVisible) {
+        if (_detalleVtnVisible)
+        {
             return;
         }
 
-        this.busyDialog = true;
+        this._busyDialog = true;
         await Task.Delay(200);
         var dateRange = new DateRange(data.Fecha, data.Fecha, 0, 0);
         var tmpData = await PagoLineaService1.ObtenerDetallePagos2(data.Enlace, dateRange);
@@ -86,9 +92,9 @@ public partial class ResumenDiasVtn
         {
             if(tmpData.Any())
             {
-                detalleVtnVisible = true;
+                _detalleVtnVisible = true;
                 var titulo = $"{data.Enlace.Nombre.ToUpper()} - PAGOS DEL DIA {data.FechaString} ";
-                pagoLineaDetalleVtn.Show(data.Enlace, tmpData, titulo);
+                _pagoLineaDetalleVtn.Show(data.Enlace, tmpData, titulo);
             }
             else
             {
@@ -96,7 +102,7 @@ public partial class ResumenDiasVtn
             }
         }
         await Task.Delay(200);
-        this.busyDialog = false;
+        this._busyDialog = false;
     }
 
 }

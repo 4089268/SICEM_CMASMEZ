@@ -1,12 +1,12 @@
 @inject IMatToaster MatToaster
 
-<VentanaSecundaria Titulo="Campos a Exportar" Filas="@GridFilas" Columnas="@GridColumnas" CerrarVentana="@(e => CerrarVentana_Click(false))">
+<VentanaSecundaria Titulo="Campos a Exportar" Filas="@_gridFilas" Columnas="@_gridColumnas" CerrarVentana="@(e => CerrarVentana_Click(false))">
     <Content>
         <div class="p-2" style="width:100%; height:100%; grid-area:1/1/2/2">
-            <SfGrid @ref="@DataGrid1" DataSource="@CatCamposExportar" TValue="Dictionary<string, string>" Height="100%" Width="100%" EnableHover="true">
-                <GridEvents RowSelected="RowSelectHandler" OnRecordDoubleClick="RecordDoubleClickHandler" TValue="Dictionary<string, string>"></GridEvents>
-                <GridColumns>
-                    <GridColumn HeaderText="Campos Disponibles" TextAlign="TextAlign.Center" Width="120">
+            <RadzenDataGrid TItem="Dictionary<string, string>" @ref="@_dataGrid1" Data="@_catCamposExportar" SelectionMode="DataGridSelectionMode.Single" @bind-Value="@_seleccion1"
+                RowSelect="RowSelectHandler" RowDoubleClick="RecordDoubleClickHandler" Style="height:100%; width:100%;">
+                <Columns>
+                    <RadzenDataGridColumn Title="Campos Disponibles" TextAlign="TextAlign.Center" Width="120px">
                         <Template>
                             @{
                                 var data = (context as Dictionary<string, string>);
@@ -15,9 +15,9 @@
                                 </div>
                             }
                         </Template>
-                    </GridColumn>
-                </GridColumns>
-            </SfGrid>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
         </div>
 
         <div class="p-2 d-flex flex-column align-items-center justify-content-center" style="width:100%; height:100%; grid-area:1/2/2/3">
@@ -26,10 +26,10 @@
         </div>
 
         <div class="p-2 " style="width:100%; height:100%; grid-area:1/3/2/4">
-            <SfGrid @ref="@DataGrid2" DataSource="@CamposAExportar" TValue="Dictionary<string, string>" Height="100%" Width="100%" EnableHover="true">
-                <GridEvents RowSelected="RowSelectHandler2" OnRecordDoubleClick="RecordDoubleClickHandler2" TValue="Dictionary<string, string>"></GridEvents>
-                <GridColumns>
-                    <GridColumn HeaderText="Campo Exportar" TextAlign="TextAlign.Center" Width="120">
+            <RadzenDataGrid TItem="Dictionary<string, string>" @ref="@_dataGrid2" Data="@_camposAExportar" SelectionMode="DataGridSelectionMode.Single" @bind-Value="@_seleccion2"
+                RowSelect="RowSelectHandler2" RowDoubleClick="RecordDoubleClickHandler2" Style="height:100%; width:100%;">
+                <Columns>
+                    <RadzenDataGridColumn Title="Campo Exportar" TextAlign="TextAlign.Center" Width="120px">
                         <Template>
                             @{
                                 var data = (context as Dictionary<string, string>);
@@ -38,9 +38,9 @@
                                 </div>
                             }
                         </Template>
-                    </GridColumn>
-                </GridColumns>
-            </SfGrid>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
         </div>
 
         <div class="p-2 d-flex align-items-center justify-content-center" style="width:100%; height:100%; grid-area:2/1/3/4">
@@ -49,11 +49,13 @@
 
     </Content>
 </VentanaSecundaria>
-@code {
+@code
+{
 
     [Parameter] public EventCallback<List<string>> OnClosed {get;set;}
 
-    private List<Dictionary<string, string>> CatCamposExportar = new List<Dictionary<string, string>>(){
+    private List<Dictionary<string, string>> _catCamposExportar = new List<Dictionary<string, string>>()
+    {
         new Dictionary<string, string>() { { "Nombre", "RazonSocial" }, { "Desc", "Razon Social"} },
         new Dictionary<string, string>() { { "Nombre", "Direccion"}, { "Desc", "Direccion"} },
         new Dictionary<string, string>() { { "Nombre", "Colonia"}, { "Desc", "Colonia"} },
@@ -77,82 +79,99 @@
         new Dictionary<string, string>() { { "Nombre", "Diametro"}, { "Desc", "Diametro"} },
         new Dictionary<string, string>() { { "Nombre", "Total"}, { "Desc", "Saldo Actual"} }
     };
-    private List<Dictionary<string, string>> CamposAExportar  = new List<Dictionary<string, string>>(){
+    private List<Dictionary<string, string>> _camposAExportar  = new List<Dictionary<string, string>>()
+    {
         new Dictionary<string, string>() { { "Nombre", "Id_Cuenta"}, { "Desc", "Num Contrato"} }
     };
 
-    private Dictionary<string, string> CampoSeleccionado;
+    private Dictionary<string, string> _campoSeleccionado;
 
-    private List<double> GridFilas = new List<double>(){.8, 40 };
-    private List<double> GridColumnas = new List<double>(){200, 30 , 200};
-    private SfGrid<Dictionary<string, string>> DataGrid1;
-    private SfGrid<Dictionary<string, string>> DataGrid2;
+    private List<double> _gridFilas = new List<double>(){.8, 40 };
+    private List<double> _gridColumnas = new List<double>(){200, 30 , 200};
+    private RadzenDataGrid<Dictionary<string, string>> _dataGrid1;
+    private RadzenDataGrid<Dictionary<string, string>> _dataGrid2;
+    // Selección de cada grid (en Syncfusion se limpiaba con ClearRowSelectionAsync)
+    private IList<Dictionary<string, string>> _seleccion1 = new List<Dictionary<string, string>>();
+    private IList<Dictionary<string, string>> _seleccion2 = new List<Dictionary<string, string>>();
 
-    private async Task CerrarVentana_Click(bool param){
-        if(param){
-            if(CamposAExportar.Count() <= 0 ){
+    private async Task CerrarVentana_Click(bool param)
+    {
+        if(param)
+        {
+            if(_camposAExportar.Count() <= 0 )
+            {
                 MatToaster.Add("No selecciono ningun campo a exportar", MatToastType.Warning );
                 return;
             }
-            var _listaCampos = CamposAExportar.Select(item => item["Nombre"].ToString()).ToList<string>();
+            var _listaCampos = _camposAExportar.Select(item => item["Nombre"].ToString()).ToList<string>();
             await OnClosed.InvokeAsync(_listaCampos);
-        }else{
+        }
+        else
+        {
             await OnClosed.InvokeAsync(null);
         }
     }
 
-    public async Task RowSelectHandler(RowSelectEventArgs<Dictionary<string, string>> args)
+    public void RowSelectHandler(Dictionary<string, string> fila)
     {
-        this.CampoSeleccionado = args.Data;
-        await DataGrid2.ClearRowSelectionAsync();
+        this._campoSeleccionado = fila;
+        _seleccion2 = new List<Dictionary<string, string>>();
     }
-    public void RecordDoubleClickHandler(RecordDoubleClickEventArgs<Dictionary<string, string>> args)
+    public async Task RecordDoubleClickHandler(DataGridRowMouseEventArgs<Dictionary<string, string>> args)
     {
-        var campo = args.RowData;
-        if(!CamposAExportar.Contains(campo)){
-            CamposAExportar.Add(campo);
-            CatCamposExportar.Remove(campo);
+        var campo = args.Data;
+        if(!_camposAExportar.Contains(campo))
+        {
+            _camposAExportar.Add(campo);
+            _catCamposExportar.Remove(campo);
 
-            DataGrid1.Refresh();
-            DataGrid2.Refresh();
+            await _dataGrid1.Reload();
+            await _dataGrid2.Reload();
         }
     }
 
-    public async Task RowSelectHandler2(RowSelectEventArgs<Dictionary<string, string>> args)
+    public void RowSelectHandler2(Dictionary<string, string> fila)
     {
-        this.CampoSeleccionado = args.Data;
-        await DataGrid1.ClearRowSelectionAsync();
+        this._campoSeleccionado = fila;
+        _seleccion1 = new List<Dictionary<string, string>>();
     }
-    public void RecordDoubleClickHandler2(RecordDoubleClickEventArgs<Dictionary<string, string>> args)
+    public async Task RecordDoubleClickHandler2(DataGridRowMouseEventArgs<Dictionary<string, string>> args)
     {
-        var campo = args.RowData;
-        if(!CatCamposExportar.Contains(campo)){
-            CatCamposExportar.Add(campo);
-            CamposAExportar.Remove(campo);
+        var campo = args.Data;
+        if(!_catCamposExportar.Contains(campo))
+        {
+            _catCamposExportar.Add(campo);
+            _camposAExportar.Remove(campo);
 
-            DataGrid1.Refresh();
-            DataGrid2.Refresh();
+            await _dataGrid1.Reload();
+            await _dataGrid2.Reload();
         }
     }
 
-    public void ButtonLeft2Right_Click(){
-        if(CampoSeleccionado != null){
-            if(!CamposAExportar.Contains(CampoSeleccionado)){
-                CatCamposExportar.Remove(CampoSeleccionado);
-                CamposAExportar.Add(CampoSeleccionado);
-                DataGrid1.Refresh();
-                DataGrid2.Refresh();
+    public async Task ButtonLeft2Right_Click()
+    {
+        if(_campoSeleccionado != null)
+        {
+            if(!_camposAExportar.Contains(_campoSeleccionado))
+            {
+                _catCamposExportar.Remove(_campoSeleccionado);
+                _camposAExportar.Add(_campoSeleccionado);
+                await _dataGrid1.Reload();
+                await _dataGrid2.Reload();
             }
         }
 
     }
-    public void ButtonRight2Left_Click(){
-        if(CampoSeleccionado != null){
-            if(!CatCamposExportar.Contains(CampoSeleccionado)){
-                CamposAExportar.Remove(CampoSeleccionado);
-                CatCamposExportar.Add(CampoSeleccionado);
-                DataGrid1.Refresh();
-                DataGrid2.Refresh();
+    public async Task ButtonRight2Left_Click()
+    {
+        if(_campoSeleccionado != null)
+        {
+            if(!_catCamposExportar.Contains(_campoSeleccionado))
+            {
+                _camposAExportar.Remove(_campoSeleccionado);
+                _catCamposExportar.Add(_campoSeleccionado);
+                await _dataGrid1.Reload();
+                await _dataGrid2.Reload();
             }
         }
     }

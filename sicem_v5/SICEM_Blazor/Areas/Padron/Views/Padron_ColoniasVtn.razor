@@ -1,16 +1,11 @@
-@using Syncfusion.Blazor
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Buttons
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Calendars
-@using Syncfusion.Blazor.DropDowns
 @using Sicem_Blazor.Padron.Models
 @inject IJSRuntime JSRuntime
 @inject PadronService padronService
 @inject NavigationManager NavManager
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
-@if (Visible) {
+@if (Visible)
+{
 
     <VentanaSecundaria Titulo="@Titulo" CerrarVentana="@CerrarModal" Filas="@(new double[]{ 50, 670 })" Columnas="@(new double[]{.85})">
         <Content>
@@ -22,45 +17,50 @@
 
             <!-- ****** DataGrid ****** -->
             <div class="m-1 p-2 border rounded bg-white">
-                <SfGrid @ref="DataGrid" DataSource="@DatosGrid" AllowSorting="true" AllowResizing="true" AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true">
-                    <GridColumns>
-                        <GridColumn Field="@nameof(PadronColonia.Colonia)" HeaderText="Colonia" TextAlign="TextAlign.Left" Width="180" />
-                        <GridColumn Field="@nameof(PadronColonia.Activo)" HeaderText="Activos" TextAlign="TextAlign.Center" Width="110" Format="n0"/>
-                        <GridColumn Field="@nameof(PadronColonia.Espera)" HeaderText="Sala Espera" TextAlign="TextAlign.Center" Width="110" Format="n0" />
-                        <GridColumn Field="@nameof(PadronColonia.BajaTemporal)" HeaderText="Baja Temporal" TextAlign="TextAlign.Center" Width="110" Format="n0" />
-                        <GridColumn Field="@nameof(PadronColonia.BajaDefinitiva)" HeaderText="Baja Definitiva" TextAlign="TextAlign.Center" Width="110" Format="n0" />
-                        <GridColumn Field="@nameof(PadronColonia.Congelado)" HeaderText="Congelados" TextAlign="TextAlign.Center" Width="110" Format="n0" />
-                        <GridColumn Field="@nameof(PadronColonia.TotalUsuarios)" HeaderText="Total Usuarios" TextAlign="TextAlign.Center" Width="110" Format="n0" />
-                    </GridColumns>
-                </SfGrid>
+                <RadzenDataGrid TItem="PadronColonia" @ref="DataGrid" Data="@DatosGrid" AllowSorting="true" AllowColumnResize="true" Style="height:100%; width:100%;">
+                    <Columns>
+                        <RadzenDataGridColumn Property="@nameof(PadronColonia.Colonia)" Title="Colonia" TextAlign="TextAlign.Left" Width="180px" />
+                        <RadzenDataGridColumn Property="@nameof(PadronColonia.Activo)" Title="Activos" TextAlign="TextAlign.Center" Width="110px" FormatString="{0:n0}" />
+                        <RadzenDataGridColumn Property="@nameof(PadronColonia.Espera)" Title="Sala Espera" TextAlign="TextAlign.Center" Width="110px" FormatString="{0:n0}" />
+                        <RadzenDataGridColumn Property="@nameof(PadronColonia.BajaTemporal)" Title="Baja Temporal" TextAlign="TextAlign.Center" Width="110px" FormatString="{0:n0}" />
+                        <RadzenDataGridColumn Property="@nameof(PadronColonia.BajaDefinitiva)" Title="Baja Definitiva" TextAlign="TextAlign.Center" Width="110px" FormatString="{0:n0}" />
+                        <RadzenDataGridColumn Property="@nameof(PadronColonia.Congelado)" Title="Congelados" TextAlign="TextAlign.Center" Width="110px" FormatString="{0:n0}" />
+                        <RadzenDataGridColumn Property="@nameof(PadronColonia.TotalUsuarios)" Title="Total Usuarios" TextAlign="TextAlign.Center" Width="110px" FormatString="{0:n0}" />
+                    </Columns>
+                </RadzenDataGrid>
             </div>
         </Content>
     </VentanaSecundaria>
 
 }
 
-@code {
+@code
+{
 
     [Parameter] public bool Visible { get; set; }
     [Parameter] public EventCallback CerrarModal { get; set; }
     public string Titulo = "Padron por Colonias";
     public IEnlace OficinaActual {get;set;}
 
-    private SfGrid<PadronColonia> DataGrid {get;set;}
+    private RadzenDataGrid<PadronColonia> DataGrid {get;set;}
     private List<PadronColonia> DatosGrid {get;set;}
 
 
     //"******** Funciones ********"
-    private async Task Cerrar_Modal() {
+    private async Task Cerrar_Modal()
+    {
         this.DatosGrid = new List<PadronColonia>();
         await CerrarModal.InvokeAsync("");
     }
-    public void Inicializar(List<PadronColonia> datos, IEnlace enlace) {
+    public void Inicializar(List<PadronColonia> datos, IEnlace enlace)
+    {
         this.DatosGrid = datos.ToList();
         this.OficinaActual = enlace;
     }
-    private async Task GenerarExcel() {
-        await this.DataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this.DataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }

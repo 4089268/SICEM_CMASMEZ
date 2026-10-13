@@ -2,9 +2,11 @@
 @using Sicem_Blazor.Recaudacion.Data
 @inject IRecaudacionService RecaudacionService
 @inject IMatToaster MatToaster
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
-@if(Visible){
-    <VentanaSecundaria Titulo="@Titulo" Columnas="@ColumnasTemplate" Filas="@FilasTemplate" CerrarVentana="@CerrarModal">
+@if(Visible)
+{
+    <VentanaSecundaria Titulo="@Titulo" Columnas="@_columnasTemplate" Filas="@_filasTemplate" CerrarVentana="@CerrarModal">
         <Content>
 
             <div class="d-flex align-items-center border rounded p-2 mb-2 bg-white">
@@ -15,9 +17,9 @@
             </div>
 
             <div class="border rounded p-2 mb-2 bg-white">
-                <SfGrid @ref="DataGrid" DataSource="@DatosGrid" AllowExcelExport="true" AllowResizing="true" Width="100%" Height="100%">
-                    <GridColumns>
-                        <GridColumn HeaderText="" TextAlign="TextAlign.Left" Width="40">
+                <RadzenDataGrid TItem="RecaudacionIngresosxColonias" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" Style="width:100%; height:100%;">
+                    <Columns>
+                        <RadzenDataGridColumn Title="" TextAlign="TextAlign.Left" Width="40px">
                             <Template>
                                 @{
                                     var data = (context as RecaudacionIngresosxColonias);
@@ -28,25 +30,26 @@
                                     </div>
                                 }
                             </Template>
-                        </GridColumn>
-                        <GridColumn Field="@nameof(RecaudacionIngresosxColonias.Colonia)" HeaderText="Localidad" TextAlign="TextAlign.Left" Width="220" />
-                        <GridColumn Field="@nameof(RecaudacionIngresosxColonias.Descripcion)" HeaderText="Localidad" TextAlign="TextAlign.Left" Width="260" />
-                        <GridColumn Field="@nameof(RecaudacionIngresosxColonias.Colonia)" HeaderText="Localidad" TextAlign="TextAlign.Left" Width="260" Visible="false" />
-                        <GridColumn Field="@nameof(RecaudacionIngresosxColonias.Facturado)" HeaderText="Ingresos Facturados" TextAlign="TextAlign.Right" Width="150" Format="c2" />
-                        <GridColumn Field="@nameof(RecaudacionIngresosxColonias.Cobrado)" HeaderText="Ingresos Cobrados" TextAlign="TextAlign.Right" Width="140" Format="c2" />
-                        <GridColumn Field="@nameof(RecaudacionIngresosxColonias.Recibos)" HeaderText="Recibos" TextAlign="TextAlign.Center" Width="140" Format="n0" />
-                    </GridColumns>
-                </SfGrid>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn Property="@nameof(RecaudacionIngresosxColonias.Colonia)" Title="Localidad" TextAlign="TextAlign.Left" Width="220px" />
+                        <RadzenDataGridColumn Property="@nameof(RecaudacionIngresosxColonias.Descripcion)" Title="Localidad" TextAlign="TextAlign.Left" Width="260px" />
+                        <RadzenDataGridColumn Property="@nameof(RecaudacionIngresosxColonias.Colonia)" Title="Localidad" TextAlign="TextAlign.Left" Width="260px" Visible="false" />
+                        <RadzenDataGridColumn Property="@nameof(RecaudacionIngresosxColonias.Facturado)" Title="Ingresos Facturados" TextAlign="TextAlign.Right" Width="150px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(RecaudacionIngresosxColonias.Cobrado)" Title="Ingresos Cobrados" TextAlign="TextAlign.Right" Width="140px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(RecaudacionIngresosxColonias.Recibos)" Title="Recibos" TextAlign="TextAlign.Center" Width="140px" FormatString="{0:n0}" />
+                    </Columns>
+                </RadzenDataGrid>
             </div>
 
         </Content>
     </VentanaSecundaria>
 }
-<BusyIndicator Busy="@busyDialog" ContentText="Cargando datos..." />
-<Recaudacion_IngresosxDias_detalle_conceptos @ref="ConceptosLocalidadesVtn" MostrarVentana="@ConceptosLocalidades_visible" CerrarModal="@(e => ConceptosLocalidades_visible = false)" />
+<BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos..." />
+<Recaudacion_IngresosxDias_detalle_conceptos @ref="_conceptosLocalidadesVtn" MostrarVentana="@ConceptosLocalidades_visible" CerrarModal="@(e => ConceptosLocalidades_visible = false)" />
 
 
-@code {
+@code
+{
     [Parameter] public string Titulo {get;set;} = "Recaudacion Por Colonias";
     [Parameter] public EventCallback OnClose {get;set;}
     [Parameter] public bool Visible {get;set;}
@@ -61,34 +64,40 @@
     
 
 
-    private SfGrid<RecaudacionIngresosxColonias> DataGrid {get;set;}
+    private RadzenDataGrid<RecaudacionIngresosxColonias> DataGrid {get;set;}
     private List<RecaudacionIngresosxColonias> DatosGrid {get;set;}
     private List<ChartItem> DatosChart {get;set;}
-    private double[] ColumnasTemplate = new double[]{.85};
-    private double[] FilasTemplate = new double[]{50, .7};
+    private double[] _columnasTemplate = new double[]{.85};
+    private double[] _filasTemplate = new double[]{50, .7};
 
-    private bool busyDialog  = false, ConceptosLocalidades_visible = false;
-    private Recaudacion_IngresosxDias_detalle_conceptos ConceptosLocalidadesVtn;
+    private bool _busyDialog  = false, ConceptosLocalidades_visible = false;
+    private Recaudacion_IngresosxDias_detalle_conceptos _conceptosLocalidadesVtn;
 
-    public void Inicializar(IEnumerable<RecaudacionIngresosxColonias> datos, int idLocalidad, string localidad){
+    public void Inicializar(IEnumerable<RecaudacionIngresosxColonias> datos, int idLocalidad, string localidad)
+    {
         this.DatosGrid = datos.ToList();
         this.IdLocalidad = idLocalidad;
         this.Localidad = localidad;
     }
-    private async Task CerrarModal(){
+    private async Task CerrarModal()
+    {
         await OnClose.InvokeAsync(null);
     }
-    private async Task OnExportExcel_Click(){
+    private async Task OnExportExcel_Click()
+    {
         var _guid = Guid.NewGuid().ToString().Replace("-","").Substring(0,10);
         var _titulo = Titulo.Replace(" - ",".").Replace(" ","_").ToString();
-        var _p = new ExcelExportProperties(){
+        var _p = new ExcelExportProperties()
+        {
             FileName = $"{_titulo}-{_guid}.xlsx",
             IncludeHiddenColumn = true
         };
-        await DataGrid.ExportToExcelAsync(_p);
+        await ExportacionExcel.ExportarAsync(DataGrid, _p);
     }
-    private async Task MostrarIngresosPorConceptos(RecaudacionIngresosxColonias context){
-        if(ConceptosLocalidades_visible == true){
+    private async Task MostrarIngresosPorConceptos(RecaudacionIngresosxColonias context)
+    {
+        if(ConceptosLocalidades_visible == true)
+        {
             return;
         }
         var idColonia = context.Id_Colonia;
@@ -96,7 +105,7 @@
 
         var results = RecaudacionService.ObtenerIngresosConceptosPorLocalidadColonia(Enlace, dateRange, IdLocalidad, idColonia);
         ConceptosLocalidades_visible = true;
-        ConceptosLocalidadesVtn.Inicializar(results, $"{Localidad}-{context.Descripcion}");
+        _conceptosLocalidadesVtn.Inicializar(results, $"{Localidad}-{context.Descripcion}");
         await Task.Delay(100);
     }
 }

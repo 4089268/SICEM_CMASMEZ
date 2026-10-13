@@ -8,9 +8,8 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Aspose.Cells" Version="22.8.0" />
     <PackageReference Include="Aspose.PDF" Version="21.11.0" />
-    <PackageReference Include="EPPlus" Version="6.1.0" />
+    <PackageReference Include="ClosedXML" Version="0.105.1" />
     <PackageReference Include="ExcelDataReader" Version="3.7.0" />
     <PackageReference Include="MatBlazor" Version="2.8.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.1" />
@@ -19,6 +18,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Radzen.Blazor" Version="12.0.6" />
     <!-- <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.4.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -27,7 +28,7 @@
     <PackageReference Include="SixLabors.Fonts" Version="2.0.6" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.4" />
-    <PackageReference Include="Syncfusion.Blazor" Version="19.2.0.44" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.23.0" />
   </ItemGroup>
 

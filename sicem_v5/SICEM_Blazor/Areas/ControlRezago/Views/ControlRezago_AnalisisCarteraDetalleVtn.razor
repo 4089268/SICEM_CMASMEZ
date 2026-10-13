@@ -1,11 +1,11 @@
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Grids
 @using Sicem_Blazor.ControlRezago.Models
 @inject IJSRuntime JSRuntime
 @inject ControlRezagoService controlRezService 
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
 
-@if(Visible) {
+@if(Visible)
+{
     <div class="busy-control">
 
         <div id="draggable" class="SicemDialog-control" style="width:auto; height:auto;">
@@ -24,18 +24,14 @@
                     <div class="d-flex mx-2 align-items-center" style="width:18rem;">
                         <div class="font-weight-bold" style="width: 100%; text-transform: uppercase;">Meses Morosos:</div>
                         <div style="width:auto;">
-                            <SfNumericTextBox Value="@mesesMorozo" TValue="int?" Format="n0" ShowSpinButton="false" CssClass="e-small w-100">
-                                <NumericTextBoxEvents TValue="int?" ValueChange="OnChange_Meses"></NumericTextBoxEvents>
-                            </SfNumericTextBox>
+                            <RadzenNumeric TValue="int?" Value="@_mesesMorozo" Format="n0" ShowUpDown="false" Change="OnChange_Meses" class="w-100" />
                         </div>
                     </div>
 
                     <div class="d-flex mx-2 align-items-center" style="width:18rem;">
                         <div class="font-weight-bold" style="width: 100%; text-transform: uppercase;">Saldo Moroso:</div>
                         <div style="width:auto">
-                            <SfNumericTextBox Value="@saldoMorozo" TValue="double?" Format="c2" ShowSpinButton="false" CssClass="e-small w-100">
-                                <NumericTextBoxEvents TValue="double?" ValueChange="OnChange_Saldo"></NumericTextBoxEvents>
-                            </SfNumericTextBox>
+                            <RadzenNumeric TValue="double?" Value="@_saldoMorozo" Format="c2" ShowUpDown="false" Change="OnChange_Saldo" class="w-100" />
                         </div>                        
                     </div>
 
@@ -51,7 +47,8 @@
                         <div class="font-weight-bold" style="width:100%;"> LOCALIDAD: </div>
                         <select class="form-select form-select-lg ml-1" @onchange="ComboBox_Localidad_Changed" style="height:28px; width:180px;">
                             <option value="0" selected>TODOS</option>
-                            @foreach (var xKey in cat_localidades.Keys) {
+                            @foreach (var xKey in cat_localidades.Keys)
+                            {
                                 <option value="@xKey">@cat_localidades[xKey]</option>
                             }
                         </select>
@@ -62,7 +59,8 @@
                         <div class="font-weight-bold" style="width:100%"> TIPO USUARIO: </div>
                         <select class="form-select form-select-lg ml-1" @onchange="ComboBox_Tarifas_Changed" style="height:28px; width:160px;">
                             <option value="0" selected>TODOS</option>
-                            @foreach (var xKey in cat_tarifas.Keys) {
+                            @foreach (var xKey in cat_tarifas.Keys)
+                            {
                                 <option value="@xKey">@cat_tarifas[xKey]</option>
                             }
                         </select>
@@ -78,27 +76,27 @@
 
 
                 <div class="m-1 p-2 border rounded bg-white" style="grid-row: 3/4; grid-column: 1/2;">
-                    <SfGrid @ref="dataGrid" DataSource="@datosGrid_filtrados" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true">
-                        <GridColumns>
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Detalle.Localidad)" HeaderText="Localidad" TextAlign="TextAlign.Left" Width="120" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Detalle.Colonia)" HeaderText="Colonia" TextAlign="TextAlign.Left" Width="140" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Detalle.Tipo_Usuario)" HeaderText="Tipo Usuario" TextAlign="TextAlign.Left" Width="100" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Detalle.Sb)" HeaderText="Sb" TextAlign="TextAlign.Center" Width="50" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Detalle.Sector)" HeaderText="Sector" TextAlign="TextAlign.Center" Width="50" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Detalle.Imp_3_6_MESES)" HeaderText="Imp 3-6 Meses" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Detalle.Usu_3_6_MESES)" HeaderText="Usus 3-6 Meses" TextAlign="TextAlign.Center" Width="90" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Detalle.Imp_7_12_MESES)" HeaderText="Imp 7-12 Meses" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Detalle.Usu_7_12_MESES)" HeaderText="Usu 7-12 Meses" TextAlign="TextAlign.Center" Width="90" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Detalle.Imp_1_2_ANOS)" HeaderText="Imp 1-2 A�os" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Detalle.Usu_1_2_ANOS)" HeaderText="Usu 1-2 A�os" TextAlign="TextAlign.Center" Width="90" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Detalle.Imp_3_5_ANOS)" HeaderText="Imp 3-5 A�os" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Detalle.Usu_3_5_ANOS)" HeaderText="Usu 3-5 A�os" TextAlign="TextAlign.Center" Width="90" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Detalle.Imp_5_ANOS)" HeaderText="Imp >5 A�os" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Detalle.Usu_5_ANOS)" HeaderText="Usu >5 A�os" TextAlign="TextAlign.Center" Width="90" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Detalle.IMP_TOTAL)" HeaderText="Imp Total" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(ControlRezago_AnalisisCart_Detalle.USU_TOTAL)" HeaderText="Usu Total" TextAlign="TextAlign.Center" Width="90" />
-                        </GridColumns>
-                    </SfGrid>
+                    <RadzenDataGrid TItem="ControlRezago_AnalisisCart_Detalle" @ref="_dataGrid" Data="@datosGrid_filtrados" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                        <Columns>
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Detalle.Localidad)" Title="Localidad" TextAlign="TextAlign.Left" Width="120px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Detalle.Colonia)" Title="Colonia" TextAlign="TextAlign.Left" Width="140px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Detalle.Tipo_Usuario)" Title="Tipo Usuario" TextAlign="TextAlign.Left" Width="100px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Detalle.Sb)" Title="Sb" TextAlign="TextAlign.Center" Width="50px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Detalle.Sector)" Title="Sector" TextAlign="TextAlign.Center" Width="50px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Detalle.Imp_3_6_MESES)" Title="Imp 3-6 Meses" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Detalle.Usu_3_6_MESES)" Title="Usus 3-6 Meses" TextAlign="TextAlign.Center" Width="90px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Detalle.Imp_7_12_MESES)" Title="Imp 7-12 Meses" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Detalle.Usu_7_12_MESES)" Title="Usu 7-12 Meses" TextAlign="TextAlign.Center" Width="90px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Detalle.Imp_1_2_ANOS)" Title="Imp 1-2 A�os" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Detalle.Usu_1_2_ANOS)" Title="Usu 1-2 A�os" TextAlign="TextAlign.Center" Width="90px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Detalle.Imp_3_5_ANOS)" Title="Imp 3-5 A�os" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Detalle.Usu_3_5_ANOS)" Title="Usu 3-5 A�os" TextAlign="TextAlign.Center" Width="90px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Detalle.Imp_5_ANOS)" Title="Imp >5 A�os" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Detalle.Usu_5_ANOS)" Title="Usu >5 A�os" TextAlign="TextAlign.Center" Width="90px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Detalle.IMP_TOTAL)" Title="Imp Total" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_AnalisisCart_Detalle.USU_TOTAL)" Title="Usu Total" TextAlign="TextAlign.Center" Width="90px" />
+                        </Columns>
+                    </RadzenDataGrid>
                 </div>
 
             </div>
@@ -106,11 +104,12 @@
 
     </div>
 
-    <BusyIndicator Busy="@busyIndicator" ContentText="CargandoDatos" />
+    <BusyIndicator Busy="@_busyIndicator" ContentText="CargandoDatos" />
 
 }
 
-@code {
+@code
+{
 
     #region  "******** Parametros ********"
     [Parameter]
@@ -127,26 +126,30 @@
     [Parameter]
     public int Sector {get;set;}
 
-    List<int> GridFilas = new List<int>(){50,50,540};
-    List<int> GridColumnas = new List<int>(){1150};
+    List<int> _gridFilas = new List<int>(){50,50,540};
+    List<int> _gridColumnas = new List<int>(){1150};
     #endregion
     #region "******** Funciones Base ********"
-    private async Task Cerrar_Modal() {
+    private async Task Cerrar_Modal()
+    {
         this.datosGrid = new ControlRezago_AnalisisCart_Detalle[]{};
         await CerrarModal.InvokeAsync("");
     }
-    private string ObtnerDimensiones() {
+    private string ObtnerDimensiones()
+    {
         var xB = new System.Text.StringBuilder();
         xB.Append("height: 100%; width:100%; ");
         xB.Append("display:grid; ");
         xB.Append("grid-template-rows: ");
-        foreach (int FilaH in GridFilas) {
+        foreach (int FilaH in _gridFilas)
+        {
             xB.Append(string.Format("{0}px ", FilaH));
         }
         xB.Append("; ");
 
         xB.Append("grid-template-columns: ");
-        foreach (int ColW in GridColumnas) {
+        foreach (int ColW in _gridColumnas)
+        {
             xB.Append(string.Format("{0}px ", ColW));
         }
         xB.Append("; ");
@@ -158,20 +161,21 @@
 
     //"******** Variables ********"
 
-    SfGrid<ControlRezago_AnalisisCart_Detalle> dataGrid;
+    RadzenDataGrid<ControlRezago_AnalisisCart_Detalle> _dataGrid;
     public ControlRezago_AnalisisCart_Detalle[] datosGrid;
     public ControlRezago_AnalisisCart_Detalle[] datosGrid_filtrados;
     public Dictionary<int,string> cat_localidades = new Dictionary<int, string>();
     public Dictionary<int,string> cat_tarifas = new Dictionary<int, string>();
     public int Id_Oficina = 0;
-    private bool busyIndicator = false;
-    private int id_localidad_selected = 0, id_tarifa_selected = 0;
-    private int mesesMorozo = 12;
-    private double saldoMorozo= 700;
+    private bool _busyIndicator = false;
+    private int _id_localidad_selected = 0, id_tarifa_selected = 0;
+    private int _mesesMorozo = 12;
+    private double _saldoMorozo= 700;
 
     
     //"******** Funciones Generales ********"
-    public async Task Inicializar(ControlRezago_AnalisisCart_Detalle[] datos) {
+    public async Task Inicializar(ControlRezago_AnalisisCart_Detalle[] datos)
+    {
         await JSRuntime.InvokeVoidAsync("ConfigurateDragg", null);
 
         this.datosGrid = datos;
@@ -180,34 +184,44 @@
         cat_localidades = new Dictionary<int, string>();
         cat_tarifas = new Dictionary<int, string>();
 
-        foreach (var xItem in datosGrid){
-            if (!cat_localidades.ContainsKey(xItem.Id_Localidad)){
+        foreach (var xItem in datosGrid)
+        {
+            if (!cat_localidades.ContainsKey(xItem.Id_Localidad))
+            {
                 cat_localidades.Add(xItem.Id_Localidad, xItem.Localidad);
             }
 
-            if (!cat_tarifas.ContainsKey(xItem.Id_Tarifa)) {
+            if (!cat_tarifas.ContainsKey(xItem.Id_Tarifa))
+            {
                 cat_tarifas.Add(xItem.Id_Tarifa, xItem.Tipo_Usuario);
             }
         }
         this.datosGrid_filtrados = this.datosGrid;
-        busyIndicator = false;
+        _busyIndicator = false;
     }
 
-    private async Task Procesar() {
-        busyIndicator = true;
+    private async Task Procesar()
+    {
+        _busyIndicator = true;
 
-        var tmpData = controlRezService.ControlRezago_AnalisisDetalle(Id_Oficina, 0, 0, this.mesesMorozo, this.saldoMorozo);
+        var tmpData = controlRezService.ControlRezago_AnalisisDetalle(Id_Oficina, 0, 0, this._mesesMorozo, this._saldoMorozo);
         await Inicializar(tmpData);
     }
-    private void FiltrarDatos(){
+    private void FiltrarDatos()
+    {
 
         //*** Filtrar Localidades
         var tmpList = new List<ControlRezago_AnalisisCart_Detalle>();
-        foreach(var item in datosGrid) {
-            if(this.id_localidad_selected <= 0) {
+        foreach(var item in datosGrid)
+        {
+            if(this._id_localidad_selected <= 0)
+            {
                 tmpList.Add(item);
-            }else{
-                if(item.Id_Localidad == this.id_localidad_selected) {
+            }
+            else
+            {
+                if(item.Id_Localidad == this._id_localidad_selected)
+                {
                     tmpList.Add(item);
                 }
             }
@@ -215,12 +229,16 @@
 
         //*** Filtrar Tarifas
         var tmpList2 = new List<ControlRezago_AnalisisCart_Detalle>();
-        foreach(var item in tmpList){
-            if(this.id_tarifa_selected <= 0) {
+        foreach(var item in tmpList)
+        {
+            if(this.id_tarifa_selected <= 0)
+            {
                 tmpList2.Add(item);
             }
-            else {
-                if(item.Id_Tarifa == this.id_tarifa_selected) {
+            else
+            {
+                if(item.Id_Tarifa == this.id_tarifa_selected)
+                {
                     tmpList2.Add(item);
                 }
             }
@@ -230,31 +248,39 @@
 
     }
 
-    private void ComboBox_Localidad_Changed(ChangeEventArgs e) {
+    private void ComboBox_Localidad_Changed(ChangeEventArgs e)
+    {
         int tmpId = int.Parse(e.Value.ToString());
-        this.id_localidad_selected = tmpId;
+        this._id_localidad_selected = tmpId;
         FiltrarDatos();
     }
-    private void ComboBox_Tarifas_Changed(ChangeEventArgs e) {
+    private void ComboBox_Tarifas_Changed(ChangeEventArgs e)
+    {
         int tmpId = int.Parse(e.Value.ToString());
         this.id_tarifa_selected = tmpId;
         FiltrarDatos();
     }
 
-    public void OnChange_Meses(Syncfusion.Blazor.Inputs.ChangeEventArgs<int?> args) {
-        mesesMorozo = (int)args.Value;
+    public void OnChange_Meses(int? valor)
+    {
+        _mesesMorozo = valor ?? 0;
         StateHasChanged();
     }
-    public void OnChange_Saldo(Syncfusion.Blazor.Inputs.ChangeEventArgs<double?> args) {
-        saldoMorozo = (double)args.Value;
+    public void OnChange_Saldo(double? valor)
+    {
+        _saldoMorozo = valor ?? 0;
         StateHasChanged();
     }
 
-    private async Task GenerarExcel(){
-        await this.dataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this._dataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
+    // TODO-EXPORT-RADZEN: exportación a PDF pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task GenerarPdf(){
         string titulo = string.Format("Ingresos por Conceptos del {0} al {1}", this.Fecha1.ToString("dd/MM/yyyy"), this.Fecha2.ToString("dd/MM/yyyy"));
         List<PdfHeaderFooterContent> xconts = new List<PdfHeaderFooterContent>();
@@ -270,7 +296,7 @@
             }
         );
 
-        await this.dataGrid.PdfExport(new PdfExportProperties {
+        await this._dataGrid.PdfExport(new PdfExportProperties {
             PageOrientation = PageOrientation.Landscape,
             Header = new PdfHeader {
                 Contents = xconts
@@ -278,5 +304,6 @@
             FileName = string.Format("sicem_IngresosxDias{0}.pdf", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
+    */
 
 }

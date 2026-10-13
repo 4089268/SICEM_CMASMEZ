@@ -24,13 +24,13 @@
 	</div>
 
 	<div class="d-flex align-items-center p-2 border rounded bg-white" >
-		<SfGrid @ref="DataGrid" DataSource="@DatosGrid" TValue="Sesion" AllowResizing="true" AllowSorting="false" AllowExcelExport="true" Height="100%" Width="100%" EnableHover="true">
-            <GridColumns>
-                <GridColumn Field="@nameof(Sesion.IdSesion)" HeaderText="Id" TextAlign="TextAlign.Left" Width="240" />
-                <GridColumn Field="@nameof(Sesion.NombreUsuario)" HeaderText="Usuario" TextAlign="TextAlign.Left" Width="280" />
-                <GridColumn Field="@nameof(Sesion.FechaInicio)" HeaderText="Inicio" TextAlign="TextAlign.Center" Width="200" Format="dd MMM yyyy HH:mm" />
-                <GridColumn Field="@nameof(Sesion.IpAddress)" HeaderText="Ip Address" TextAlign="TextAlign.Center" Width="200" />
-                <GridColumn HeaderText="Acciones">
+		<RadzenDataGrid TItem="Sesion" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="false" Style="height:100%; width:100%;">
+            <Columns>
+                <RadzenDataGridColumn Property="@nameof(Sesion.IdSesion)" Title="Id" TextAlign="TextAlign.Left" Width="240px" />
+                <RadzenDataGridColumn Property="@nameof(Sesion.NombreUsuario)" Title="Usuario" TextAlign="TextAlign.Left" Width="280px" />
+                <RadzenDataGridColumn Property="@nameof(Sesion.FechaInicio)" Title="Inicio" TextAlign="TextAlign.Center" Width="200px" FormatString="{0:dd MMM yyyy HH:mm}" />
+                <RadzenDataGridColumn Property="@nameof(Sesion.IpAddress)" Title="Ip Address" TextAlign="TextAlign.Center" Width="200px" />
+                <RadzenDataGridColumn Title="Acciones">
                     <Template>
                         @{
                             var data = (context as Sesion);
@@ -39,9 +39,9 @@
                             </div>
                         }
                     </Template>
-                </GridColumn>
-            </GridColumns>
-        </SfGrid>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
 	</div>
 
 </div>
@@ -57,40 +57,46 @@
     }
 </style>
 
-<BusyIndicator Busy="@cargando" ContentText="Cargando datos..." />
+<BusyIndicator Busy="@_cargando" ContentText="Cargando datos..." />
 
-@code {
-    private SfGrid<Sesion> DataGrid { get; set; }
+@code
+{
+    private RadzenDataGrid<Sesion> DataGrid { get; set; }
     private List<Sesion> DatosGrid {get;set;}
     public string IDSesionSuscriber {get;set;} = Guid.NewGuid().ToString();
 
-    private bool cargando = true;
+    private bool _cargando = true;
 
-    protected override async Task OnParametersSetAsync(){
+    protected override async Task OnParametersSetAsync()
+    {
         base.OnParametersSet();
         sessionService.AddSuscriber(this);
         await CargarDatos();
     }
 
-    private async Task CargarDatos(){
-        this.cargando = true;
+    private async Task CargarDatos()
+    {
+        this._cargando = true;
         await Task.Delay(100);
         DatosGrid = sessionService.ObtenerListaSesiones().ToList();
         await Task.Delay(100);
-        this.cargando = false;
+        this._cargando = false;
     }
 
-    private async Task CerrarSesionClick(Sesion data){
+    private async Task CerrarSesionClick(Sesion data)
+    {
         sessionService.FinalizarSesion(data.IdSesion);
         await CargarDatos();
     }
 
 
     //**** Implementacion de interfaces
-    public void Dispose() {
+    public void Dispose()
+    {
         sessionService.RemoveSuscriber(this.IDSesionSuscriber);
     }
-    public void SessionAdded(){
+    public void SessionAdded()
+    {
         DatosGrid = sessionService.ObtenerListaSesiones().ToList();
         InvokeAsync( () => StateHasChanged());
     }

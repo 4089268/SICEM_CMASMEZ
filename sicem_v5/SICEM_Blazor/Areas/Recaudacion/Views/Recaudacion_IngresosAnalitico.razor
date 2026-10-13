@@ -1,12 +1,13 @@
 @using Sicem_Blazor.Recaudacion.Data
 @using Sicem_Blazor.Recaudacion.Models
-@using Syncfusion.Blazor.Grids
 @inject IJSRuntime JSRuntime
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
-@if (MostrarVentana) {
+@if (MostrarVentana)
+{
     <VentanaSecundaria Titulo="@Titulo" CerrarVentana="@Cerrar_Modal" Filas="@(new double[]{620})" Columnas="@(new double[]{.85})" >
         <Content>
-            <MatTabGroup @ref="tabGroup" Class="mx-1 mt-2 mb-1 p-1 border rounded bg-white" Style="grid-row: 1/2; grid-column:1/2;">
+            <MatTabGroup @ref="_tabGroup" Class="mx-1 mt-2 mb-1 p-1 border rounded bg-white" Style="grid-row: 1/2; grid-column:1/2;">
 
                 <MatTab>
                     <LabelContent><span class="h5">Analitico</span></LabelContent>
@@ -25,154 +26,155 @@
                                 </div>
                             </div>
 
-                            <div class="mx-auto mt-3" style="grid-row: 2/3; grid-column: 1/2;"><h5>@subtitulo1</h5></div>
+                            <div class="mx-auto mt-3" style="grid-row: 2/3; grid-column: 1/2;"><h5>@_subtitulo1</h5></div>
 
                             <!-- ****** DataGrids ****** -->
                             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 3/4; grid-column: 1/2;">
-                                @if (visibles[0, 0]) {
-                                    <SfGrid @ref="dataGrid_analitico_mensual" DataSource="@DatosAnalitico.Analitico_Mensual.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true" RowHeight="@rowHeight">
-                                        <GridColumns>
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Oficina)" HeaderText="Oficina" TextAlign="TextAlign.Center" Width="120" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Año)" HeaderText="Año" TextAlign="TextAlign.Center" Width="130" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Ene)" HeaderText="Enero" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Feb)" HeaderText="Febrero" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Mar)" HeaderText="Marzo" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Abr)" HeaderText="Abril" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.May)" HeaderText="Mayo" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Jun)" HeaderText="Junio" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Jul)" HeaderText="Julio" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Ago)" HeaderText="Agosto" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Sep)" HeaderText="Septiembre" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Oct)" HeaderText="Octubre" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Nov)" HeaderText="Noviembre" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Dic)" HeaderText="Diciembre" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Total)" HeaderText="Total" TextAlign="TextAlign.Right" Width="150" Format="c2" />
-                                        </GridColumns>
-                                    </SfGrid>
+                                @if (visibles[0, 0])
+                                {
+                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoMensual" @ref="_dataGrid_analitico_mensual" Data="@DatosAnalitico.Analitico_Mensual.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
+                                        <Columns>
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Oficina)" Title="Oficina" TextAlign="TextAlign.Center" Width="120px" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Año)" Title="Año" TextAlign="TextAlign.Center" Width="130px" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Ene)" Title="Enero" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Feb)" Title="Febrero" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Mar)" Title="Marzo" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Abr)" Title="Abril" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.May)" Title="Mayo" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Jun)" Title="Junio" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Jul)" Title="Julio" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Ago)" Title="Agosto" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Sep)" Title="Septiembre" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Oct)" Title="Octubre" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Nov)" Title="Noviembre" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Dic)" Title="Diciembre" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Total)" Title="Total" TextAlign="TextAlign.Right" Width="150px" FormatString="{0:c2}" />
+                                        </Columns>
+                                    </RadzenDataGrid>
                                 }
-                                @if (visibles[0, 1]) {
-                                    <SfGrid @ref="dataGrid_analitico_quincenal" DataSource="@DatosAnalitico.Analitico_Quincenal.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true" RowHeight="@rowHeight">
-                                        <GridColumns>
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Oficina)" HeaderText="Oficina" TextAlign="TextAlign.Center" Width="120" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Año)" HeaderText="Año" TextAlign="TextAlign.Center" Width="130" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Ene_1)" HeaderText="Enero 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Ene_2)" HeaderText="Enero 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Feb_1)" HeaderText="Febrero 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Feb_2)" HeaderText="Febrero 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Mar_1)" HeaderText="Marzo 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Mar_2)" HeaderText="Marzo 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Abr_1)" HeaderText="Abril 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Abr_2)" HeaderText="Abril 2" TextAlign="TextAlign.Right" Width="10" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.May_1)" HeaderText="Mayo 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.May_2)" HeaderText="Mayo 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Jun_1)" HeaderText="Junio 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Jun_2)" HeaderText="Junio 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Jul_1)" HeaderText="Julio 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Jul_2)" HeaderText="Julio 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Ago_1)" HeaderText="Agosto 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Ago_2)" HeaderText="Agosto 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Sep_1)" HeaderText="Septiembre 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Sep_2)" HeaderText="Septiembre 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Oct_1)" HeaderText="Octubre 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Oct_2)" HeaderText="Octubre 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Nov_1)" HeaderText="Noviembre 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Nov_2)" HeaderText="Noviembre 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Dic_1)" HeaderText="Diciembre 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Dic_2)" HeaderText="Diciembre 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Total)" HeaderText="Total" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                        </GridColumns>
-                                    </SfGrid>
+                                @if (visibles[0, 1])
+                                {
+                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoQuincenal" @ref="_dataGrid_analitico_quincenal" Data="@DatosAnalitico.Analitico_Quincenal.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
+                                        <Columns>
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Oficina)" Title="Oficina" TextAlign="TextAlign.Center" Width="120px" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Año)" Title="Año" TextAlign="TextAlign.Center" Width="130px" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Ene_1)" Title="Enero 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Ene_2)" Title="Enero 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Feb_1)" Title="Febrero 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Feb_2)" Title="Febrero 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Mar_1)" Title="Marzo 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Mar_2)" Title="Marzo 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Abr_1)" Title="Abril 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Abr_2)" Title="Abril 2" TextAlign="TextAlign.Right" Width="10px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.May_1)" Title="Mayo 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.May_2)" Title="Mayo 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Jun_1)" Title="Junio 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Jun_2)" Title="Junio 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Jul_1)" Title="Julio 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Jul_2)" Title="Julio 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Ago_1)" Title="Agosto 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Ago_2)" Title="Agosto 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Sep_1)" Title="Septiembre 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Sep_2)" Title="Septiembre 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Oct_1)" Title="Octubre 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Oct_2)" Title="Octubre 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Nov_1)" Title="Noviembre 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Nov_2)" Title="Noviembre 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Dic_1)" Title="Diciembre 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Dic_2)" Title="Diciembre 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Total)" Title="Total" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                        </Columns>
+                                    </RadzenDataGrid>
                                 }
-                                @if (visibles[0, 2]) {
-                                    <SfGrid @ref="dataGrid_analitico_semanal" DataSource="@DatosAnalitico.Analitico_Semanal.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true" RowHeight="@rowHeight">
-                                        <GridColumns>
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Oficina)" HeaderText="Oficina" TextAlign="TextAlign.Center" Width="120" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Año)" HeaderText="Año" TextAlign="TextAlign.Center" Width="130" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Ene_1)" HeaderText="Enero 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Ene_2)" HeaderText="Enero 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Ene_3)" HeaderText="Enero 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Ene_4)" HeaderText="Enero 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                @if (visibles[0, 2])
+                                {
+                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoSemanal" @ref="_dataGrid_analitico_semanal" Data="@DatosAnalitico.Analitico_Semanal.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
+                                        <Columns>
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Oficina)" Title="Oficina" TextAlign="TextAlign.Center" Width="120px" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Año)" Title="Año" TextAlign="TextAlign.Center" Width="130px" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Ene_1)" Title="Enero 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Ene_2)" Title="Enero 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Ene_3)" Title="Enero 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Ene_4)" Title="Enero 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Feb_1)" HeaderText="Febrero 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Feb_2)" HeaderText="Febrero 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Feb_3)" HeaderText="Febrero 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Feb_4)" HeaderText="Febrero 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Feb_1)" Title="Febrero 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Feb_2)" Title="Febrero 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Feb_3)" Title="Febrero 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Feb_4)" Title="Febrero 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Mar_1)" HeaderText="Marzo 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Mar_2)" HeaderText="Marzo 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Mar_3)" HeaderText="Marzo 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Mar_4)" HeaderText="Marzo 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Mar_1)" Title="Marzo 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Mar_2)" Title="Marzo 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Mar_3)" Title="Marzo 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Mar_4)" Title="Marzo 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Abr_1)" HeaderText="Abril 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Abr_2)" HeaderText="Abril 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Abr_3)" HeaderText="Abril 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Abr_4)" HeaderText="Abril 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Abr_1)" Title="Abril 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Abr_2)" Title="Abril 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Abr_3)" Title="Abril 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Abr_4)" Title="Abril 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.May_1)" HeaderText="Mayo 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.May_2)" HeaderText="Mayo 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.May_3)" HeaderText="Mayo 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.May_4)" HeaderText="Mayo 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.May_1)" Title="Mayo 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.May_2)" Title="Mayo 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.May_3)" Title="Mayo 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.May_4)" Title="Mayo 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Jun_1)" HeaderText="Junio 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Jun_2)" HeaderText="Junio 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Jun_3)" HeaderText="Junio 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Jun_4)" HeaderText="Junio 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Jun_1)" Title="Junio 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Jun_2)" Title="Junio 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Jun_3)" Title="Junio 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Jun_4)" Title="Junio 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Jul_1)" HeaderText="Julio 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Jul_2)" HeaderText="Julio 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Jul_3)" HeaderText="Julio 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Jul_4)" HeaderText="Julio 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Jul_1)" Title="Julio 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Jul_2)" Title="Julio 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Jul_3)" Title="Julio 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Jul_4)" Title="Julio 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Ago_1)" HeaderText="Agosto 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Ago_2)" HeaderText="Agosto 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Ago_3)" HeaderText="Agosto 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Ago_4)" HeaderText="Agosto 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Ago_1)" Title="Agosto 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Ago_2)" Title="Agosto 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Ago_3)" Title="Agosto 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Ago_4)" Title="Agosto 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Sep_1)" HeaderText="Septiembre 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Sep_2)" HeaderText="Septiembre 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Sep_3)" HeaderText="Septiembre 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Sep_4)" HeaderText="Septiembre 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Sep_1)" Title="Septiembre 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Sep_2)" Title="Septiembre 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Sep_3)" Title="Septiembre 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Sep_4)" Title="Septiembre 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Oct_1)" HeaderText="Octubre 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Oct_2)" HeaderText="Octubre 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Oct_3)" HeaderText="Octubre 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Oct_4)" HeaderText="Octubre 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Oct_1)" Title="Octubre 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Oct_2)" Title="Octubre 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Oct_3)" Title="Octubre 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Oct_4)" Title="Octubre 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Nov_1)" HeaderText="Noviembre 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Nov_2)" HeaderText="Noviembre 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Nov_3)" HeaderText="Noviembre 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Nov_4)" HeaderText="Noviembre 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Nov_1)" Title="Noviembre 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Nov_2)" Title="Noviembre 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Nov_3)" Title="Noviembre 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Nov_4)" Title="Noviembre 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Dic_1)" HeaderText="Diciembre 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Dic_2)" HeaderText="Diciembre 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Dic_3)" HeaderText="Diciembre 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Dic_4)" HeaderText="Diciembre 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Dic_1)" Title="Diciembre 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Dic_2)" Title="Diciembre 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Dic_3)" Title="Diciembre 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Dic_4)" Title="Diciembre 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Total)" HeaderText="Total" TextAlign="TextAlign.Right" Width="150" Format="c2" />
-                                        </GridColumns>
-                                    </SfGrid>
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Total)" Title="Total" TextAlign="TextAlign.Right" Width="150px" FormatString="{0:c2}" />
+                                        </Columns>
+                                    </RadzenDataGrid>
                                 }
                             </div>
 
                             <!-- ****** Graficas ****** -->
                             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 4/5; grid-column: 1/2;">
-                                <SfChart Title="" SubTitle="" Width="100%" Height="270">
-                                    <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-                                    <ChartPrimaryYAxis Title="Ingresos" Visible="false" LabelFormat="c2" />
-                                    <ChartTooltipSettings Enable="true"></ChartTooltipSettings>
-                                    <ChartLegendSettings Visible="true" Position="LegendPosition.Right"></ChartLegendSettings>
-                                    <ChartZoomSettings EnableMouseWheelZooming="true" EnablePinchZooming="true" EnableSelectionZooming="true"></ChartZoomSettings>
-                                    <ChartSeriesCollection>
-                                        @for(int i = 0; i <= DatosAnalitico.Analitico_Mensual.Length - 1; i++) {
-                                            var ano = DatosAnalitico.Analitico_Mensual.OrderByDescending(item => item.Año).ToArray()[i].Año;
-                                            <ChartSeries XName="Descripcion" DashArray="5,1" DataSource="@itemsGrafica_analitico" YName="@($"Valor{i+1}")" Name="@(ano.ToString())" Type="ChartSeriesType.Line">
-                                                <ChartMarker Visible="true">
-                                                    <ChartDataLabel Visible="true" />
-                                                </ChartMarker>
-                                            </ChartSeries>
-                                        }
-                                    </ChartSeriesCollection>
-                                </SfChart>
+                                <RadzenChart AllowZoom="true" Style="height:270px; width:100%;">
+                                    <RadzenCategoryAxis />
+                                    <RadzenValueAxis Visible="false" FormatString="{0:c2}">
+                                        <RadzenAxisTitle Text="Ingresos" />
+                                    </RadzenValueAxis>
+                                    <RadzenLegend Visible="true" Position="LegendPosition.Right" />
+                                    @for (int i = 0; i <= DatosAnalitico.Analitico_Mensual.Length - 1; i++)
+                                    {
+                                        var ano = DatosAnalitico.Analitico_Mensual.OrderByDescending(item => item.Año).ToArray()[i].Año;
+                                        <RadzenLineSeries Data="@itemsGrafica_analitico" CategoryProperty="@nameof(ChartItem.Descripcion)" ValueProperty="@($"Valor{i + 1}")" Title="@(ano.ToString())" LineType="LineType.Dashed">
+                                            <RadzenMarkers MarkerType="MarkerType.Circle" />
+                                            <RadzenSeriesDataLabels Visible="true" />
+                                        </RadzenLineSeries>
+                                    }
+                                </RadzenChart>
                             </div>
 
                         </div>
@@ -194,155 +196,153 @@
                                 </div>
                             </div>
 
-                            <div class="mx-auto mt-3" style="grid-row: 2/3; grid-column: 1/2;"><h5>@subtitulo2</h5></div>
+                            <div class="mx-auto mt-3" style="grid-row: 2/3; grid-column: 1/2;"><h5>@_subtitulo2</h5></div>
 
                             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 3/4; grid-column: 1/2;">
-                                @if (visibles[1, 0]) {
-                                    <SfGrid @ref="dataGrid_analiticoRez_mensual" DataSource="@DatosAnalitico.AnaliticoRez_Mensual.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true" RowHeight="@rowHeight">
-                                        <GridColumns>
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Oficina)" HeaderText="Oficina" TextAlign="TextAlign.Center" Width="120" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Año)" HeaderText="Año" TextAlign="TextAlign.Center" Width="130" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Ene)" HeaderText="Enero" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Feb)" HeaderText="Febrero" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Mar)" HeaderText="Marzo" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Abr)" HeaderText="Abril" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.May)" HeaderText="Mayo" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Jun)" HeaderText="Junio" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Jul)" HeaderText="Julio" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Ago)" HeaderText="Agosto" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Sep)" HeaderText="Septiembre" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Oct)" HeaderText="Octubre" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Nov)" HeaderText="Noviembre" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Dic)" HeaderText="Diciembre" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoMensual.Total)" HeaderText="Total" TextAlign="TextAlign.Right" Width="150" Format="c2" />
-                                        </GridColumns>
-                                    </SfGrid>
+                                @if (visibles[1, 0])
+                                {
+                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoMensual" @ref="_dataGrid_analiticoRez_mensual" Data="@DatosAnalitico.AnaliticoRez_Mensual.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
+                                        <Columns>
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Oficina)" Title="Oficina" TextAlign="TextAlign.Center" Width="120px" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Año)" Title="Año" TextAlign="TextAlign.Center" Width="130px" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Ene)" Title="Enero" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Feb)" Title="Febrero" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Mar)" Title="Marzo" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Abr)" Title="Abril" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.May)" Title="Mayo" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Jun)" Title="Junio" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Jul)" Title="Julio" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Ago)" Title="Agosto" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Sep)" Title="Septiembre" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Oct)" Title="Octubre" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Nov)" Title="Noviembre" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Dic)" Title="Diciembre" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Total)" Title="Total" TextAlign="TextAlign.Right" Width="150px" FormatString="{0:c2}" />
+                                        </Columns>
+                                    </RadzenDataGrid>
                                 }
-                                @if (visibles[1, 1]) {
-                                    <SfGrid @ref="dataGrid_analiticoRez_quincenal" DataSource="@DatosAnalitico.AnaliticoRez_Quincenal.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true" RowHeight="@rowHeight">
-                                        <GridColumns>
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Oficina)" HeaderText="Oficina" TextAlign="TextAlign.Center" Width="120" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Año)" HeaderText="Año" TextAlign="TextAlign.Center" Width="130" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Ene_1)" HeaderText="Enero 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Ene_2)" HeaderText="Enero 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Feb_1)" HeaderText="Febrero 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Feb_2)" HeaderText="Febrero 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Mar_1)" HeaderText="Marzo 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Mar_2)" HeaderText="Marzo 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Abr_1)" HeaderText="Abril 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Abr_2)" HeaderText="Abril 2" TextAlign="TextAlign.Right" Width="10" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.May_1)" HeaderText="Mayo 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.May_2)" HeaderText="Mayo 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Jun_1)" HeaderText="Junio 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Jun_2)" HeaderText="Junio 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Jul_1)" HeaderText="Julio 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Jul_2)" HeaderText="Julio 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Ago_1)" HeaderText="Agosto 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Ago_2)" HeaderText="Agosto 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Sep_1)" HeaderText="Septiembre 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Sep_2)" HeaderText="Septiembre 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Oct_1)" HeaderText="Octubre 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Oct_2)" HeaderText="Octubre 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Nov_1)" HeaderText="Noviembre 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Nov_2)" HeaderText="Noviembre 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Dic_1)" HeaderText="Diciembre 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Dic_2)" HeaderText="Diciembre 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoQuincenal.Total)" HeaderText="Total" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                        </GridColumns>
-                                    </SfGrid>
+                                @if (visibles[1, 1])
+                                {
+                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoQuincenal" @ref="_dataGrid_analiticoRez_quincenal" Data="@DatosAnalitico.AnaliticoRez_Quincenal.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
+                                        <Columns>
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Oficina)" Title="Oficina" TextAlign="TextAlign.Center" Width="120px" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Año)" Title="Año" TextAlign="TextAlign.Center" Width="130px" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Ene_1)" Title="Enero 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Ene_2)" Title="Enero 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Feb_1)" Title="Febrero 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Feb_2)" Title="Febrero 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Mar_1)" Title="Marzo 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Mar_2)" Title="Marzo 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Abr_1)" Title="Abril 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Abr_2)" Title="Abril 2" TextAlign="TextAlign.Right" Width="10px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.May_1)" Title="Mayo 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.May_2)" Title="Mayo 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Jun_1)" Title="Junio 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Jun_2)" Title="Junio 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Jul_1)" Title="Julio 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Jul_2)" Title="Julio 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Ago_1)" Title="Agosto 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Ago_2)" Title="Agosto 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Sep_1)" Title="Septiembre 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Sep_2)" Title="Septiembre 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Oct_1)" Title="Octubre 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Oct_2)" Title="Octubre 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Nov_1)" Title="Noviembre 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Nov_2)" Title="Noviembre 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Dic_1)" Title="Diciembre 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Dic_2)" Title="Diciembre 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Total)" Title="Total" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                        </Columns>
+                                    </RadzenDataGrid>
                                 }
-                                @if (visibles[1, 2]) {
-                                    <SfGrid @ref="dataGrid_analiticoRez_semanal" DataSource="@DatosAnalitico.AnaliticoRez_Semanal.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true" RowHeight="@rowHeight"> 
-                                        <GridColumns>
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Oficina)" HeaderText="Oficina" TextAlign="TextAlign.Center" Width="120" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Año)" HeaderText="Año" TextAlign="TextAlign.Center" Width="130" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Ene_1)" HeaderText="Enero 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Ene_2)" HeaderText="Enero 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Ene_3)" HeaderText="Enero 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Ene_4)" HeaderText="Enero 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                @if (visibles[1, 2])
+                                {
+                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoSemanal" @ref="_dataGrid_analiticoRez_semanal" Data="@DatosAnalitico.AnaliticoRez_Semanal.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;"> 
+                                        <Columns>
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Oficina)" Title="Oficina" TextAlign="TextAlign.Center" Width="120px" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Año)" Title="Año" TextAlign="TextAlign.Center" Width="130px" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Ene_1)" Title="Enero 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Ene_2)" Title="Enero 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Ene_3)" Title="Enero 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Ene_4)" Title="Enero 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Feb_1)" HeaderText="Febrero 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Feb_2)" HeaderText="Febrero 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Feb_3)" HeaderText="Febrero 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Feb_4)" HeaderText="Febrero 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Feb_1)" Title="Febrero 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Feb_2)" Title="Febrero 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Feb_3)" Title="Febrero 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Feb_4)" Title="Febrero 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Mar_1)" HeaderText="Marzo 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Mar_2)" HeaderText="Marzo 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Mar_3)" HeaderText="Marzo 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Mar_4)" HeaderText="Marzo 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Mar_1)" Title="Marzo 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Mar_2)" Title="Marzo 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Mar_3)" Title="Marzo 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Mar_4)" Title="Marzo 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Abr_1)" HeaderText="Abril 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Abr_2)" HeaderText="Abril 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Abr_3)" HeaderText="Abril 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Abr_4)" HeaderText="Abril 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Abr_1)" Title="Abril 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Abr_2)" Title="Abril 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Abr_3)" Title="Abril 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Abr_4)" Title="Abril 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.May_1)" HeaderText="Mayo 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.May_2)" HeaderText="Mayo 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.May_3)" HeaderText="Mayo 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.May_4)" HeaderText="Mayo 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.May_1)" Title="Mayo 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.May_2)" Title="Mayo 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.May_3)" Title="Mayo 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.May_4)" Title="Mayo 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Jun_1)" HeaderText="Junio 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Jun_2)" HeaderText="Junio 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Jun_3)" HeaderText="Junio 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Jun_4)" HeaderText="Junio 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Jun_1)" Title="Junio 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Jun_2)" Title="Junio 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Jun_3)" Title="Junio 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Jun_4)" Title="Junio 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Jul_1)" HeaderText="Julio 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Jul_2)" HeaderText="Julio 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Jul_3)" HeaderText="Julio 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Jul_4)" HeaderText="Julio 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Jul_1)" Title="Julio 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Jul_2)" Title="Julio 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Jul_3)" Title="Julio 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Jul_4)" Title="Julio 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Ago_1)" HeaderText="Agosto 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Ago_2)" HeaderText="Agosto 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Ago_3)" HeaderText="Agosto 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Ago_4)" HeaderText="Agosto 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Ago_1)" Title="Agosto 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Ago_2)" Title="Agosto 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Ago_3)" Title="Agosto 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Ago_4)" Title="Agosto 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Sep_1)" HeaderText="Septiembre 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Sep_2)" HeaderText="Septiembre 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Sep_3)" HeaderText="Septiembre 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Sep_4)" HeaderText="Septiembre 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Sep_1)" Title="Septiembre 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Sep_2)" Title="Septiembre 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Sep_3)" Title="Septiembre 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Sep_4)" Title="Septiembre 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Oct_1)" HeaderText="Octubre 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Oct_2)" HeaderText="Octubre 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Oct_3)" HeaderText="Octubre 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Oct_4)" HeaderText="Octubre 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Oct_1)" Title="Octubre 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Oct_2)" Title="Octubre 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Oct_3)" Title="Octubre 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Oct_4)" Title="Octubre 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Nov_1)" HeaderText="Noviembre 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Nov_2)" HeaderText="Noviembre 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Nov_3)" HeaderText="Noviembre 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Nov_4)" HeaderText="Noviembre 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Nov_1)" Title="Noviembre 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Nov_2)" Title="Noviembre 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Nov_3)" Title="Noviembre 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Nov_4)" Title="Noviembre 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Dic_1)" HeaderText="Diciembre 1" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Dic_2)" HeaderText="Diciembre 2" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Dic_3)" HeaderText="Diciembre 3" TextAlign="TextAlign.Right" Width="110" Format="c2" />
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Dic_4)" HeaderText="Diciembre 4" TextAlign="TextAlign.Right" Width="110" Format="c2" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Dic_1)" Title="Diciembre 1" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Dic_2)" Title="Diciembre 2" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Dic_3)" Title="Diciembre 3" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Dic_4)" Title="Diciembre 4" TextAlign="TextAlign.Right" Width="110px" FormatString="{0:c2}" />
 
-                                            <GridColumn Field="@nameof(Recaudacion_AnaliticoSemanal.Total)" HeaderText="Total" TextAlign="TextAlign.Right" Width="150" Format="c2" />
-                                        </GridColumns>
-                                    </SfGrid>
+                                            <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Total)" Title="Total" TextAlign="TextAlign.Right" Width="150px" FormatString="{0:c2}" />
+                                        </Columns>
+                                    </RadzenDataGrid>
                                 }
                             </div>
 
                             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 4/5; grid-column: 1/2;">
-                                <SfChart Title="" SubTitle="" Width="100%" Height="270">
-                                    <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category" > </ChartPrimaryXAxis>
-                                    <ChartPrimaryYAxis Title="Ingresos Rez" Visible="false" Format="c2" />
-                                    <ChartTooltipSettings Enable="true" Header="Ingresos" Shared="true" Format="${series.name} ${point.x} : $${point.y}"></ChartTooltipSettings>
-                                    <ChartLegendSettings Visible="true" Position="LegendPosition.Right"></ChartLegendSettings>
-                                    <ChartZoomSettings EnableMouseWheelZooming="true" EnablePinchZooming="true" EnableSelectionZooming="true"></ChartZoomSettings>
-                                    <ChartArea>
-                                        <ChartAreaBorder Width="0"></ChartAreaBorder>
-                                    </ChartArea>
-                                    <ChartSeriesCollection>
-                                        @for (int i = 0; i <= DatosAnalitico.AnaliticoRez_Mensual.Length - 1; i++) {
-                                            var ano2 = DatosAnalitico.AnaliticoRez_Mensual.OrderByDescending(item => item.Año).ToArray()[i].Año;
-                                            <ChartSeries XName="Descripcion" DashArray="5,1" DataSource="@itemsGrafica_analiticoRez" YName="@($"Valor{i+1}")" Name="@(ano2.ToString())" Type="ChartSeriesType.Line">
-                                                <ChartMarker Visible="true">
-                                                    <ChartDataLabel Visible="true"/>
-                                                </ChartMarker>
-                                            </ChartSeries>
-                                        }
-                                    </ChartSeriesCollection>
-                                </SfChart>
+                                <RadzenChart AllowZoom="true" Style="height:270px; width:100%;">
+                                    <RadzenCategoryAxis />
+                                    <RadzenValueAxis Visible="false" FormatString="{0:c2}">
+                                        <RadzenAxisTitle Text="Ingresos Rez" />
+                                    </RadzenValueAxis>
+                                    <RadzenLegend Visible="true" Position="LegendPosition.Right" />
+                                    @for (int i = 0; i <= DatosAnalitico.AnaliticoRez_Mensual.Length - 1; i++)
+                                    {
+                                        var ano2 = DatosAnalitico.AnaliticoRez_Mensual.OrderByDescending(item => item.Año).ToArray()[i].Año;
+                                        <RadzenLineSeries Data="@itemsGrafica_analiticoRez" CategoryProperty="@nameof(ChartItem.Descripcion)" ValueProperty="@($"Valor{i + 1}")" Title="@(ano2.ToString())" LineType="LineType.Dashed">
+                                            <RadzenMarkers MarkerType="MarkerType.Circle" />
+                                            <RadzenSeriesDataLabels Visible="true" />
+                                        </RadzenLineSeries>
+                                    }
+                                </RadzenChart>
                             </div>
 
                         </div>
@@ -354,7 +354,8 @@
     </VentanaSecundaria>
 }
 
-@code {
+@code
+{
 
     [Parameter] public bool MostrarVentana { get; set;}
     [Parameter] public EventCallback CerrarModal { get; set; }
@@ -369,31 +370,32 @@
 
     public Recaudacion_Analitico DatosAnalitico;
 
-    SfGrid<Recaudacion_AnaliticoMensual> dataGrid_analitico_mensual;
-    SfGrid<Recaudacion_AnaliticoQuincenal> dataGrid_analitico_quincenal;
-    SfGrid<Recaudacion_AnaliticoSemanal> dataGrid_analitico_semanal;
+    RadzenDataGrid<Recaudacion_AnaliticoMensual> _dataGrid_analitico_mensual;
+    RadzenDataGrid<Recaudacion_AnaliticoQuincenal> _dataGrid_analitico_quincenal;
+    RadzenDataGrid<Recaudacion_AnaliticoSemanal> _dataGrid_analitico_semanal;
 
-    SfGrid<Recaudacion_AnaliticoMensual> dataGrid_analiticoRez_mensual;
-    SfGrid<Recaudacion_AnaliticoQuincenal> dataGrid_analiticoRez_quincenal;
-    SfGrid<Recaudacion_AnaliticoSemanal> dataGrid_analiticoRez_semanal;
+    RadzenDataGrid<Recaudacion_AnaliticoMensual> _dataGrid_analiticoRez_mensual;
+    RadzenDataGrid<Recaudacion_AnaliticoQuincenal> _dataGrid_analiticoRez_quincenal;
+    RadzenDataGrid<Recaudacion_AnaliticoSemanal> _dataGrid_analiticoRez_semanal;
 
     public List<ChartItem> itemsGrafica_analitico = new List<ChartItem>();
     public List<ChartItem> itemsGrafica_analiticoRez = new List<ChartItem>();
 
-    MatTabGroup tabGroup;
-    private string subtitulo1 = "Analitico Mensual";
-    private string subtitulo2 = "Analitico Rezago Mensual";
+    MatTabGroup _tabGroup;
+    private string _subtitulo1 = "Analitico Mensual";
+    private string _subtitulo2 = "Analitico Rezago Mensual";
     private bool[,] visibles = new bool[,]{{true,false,false},{true,false,false}};
-    private int rowHeight = 22;
 
 
-    public async Task Inicializar(IEnlace e, Recaudacion_Analitico datos){
+    public async Task Inicializar(IEnlace e, Recaudacion_Analitico datos)
+    {
         this.EnlaceActual = e;
         this.DatosAnalitico = datos;
         ProcesarDatos();
         await Task.Delay(100);
     }
-    private async Task Cerrar_Modal() {
+    private async Task Cerrar_Modal()
+    {
         this.DatosAnalitico = new Recaudacion_Analitico();
         this.DatosAnalitico.Analitico_Mensual = new Recaudacion_AnaliticoMensual[]{};
         this.DatosAnalitico.AnaliticoRez_Mensual = new Recaudacion_AnaliticoMensual[]{};
@@ -405,40 +407,47 @@
         await CerrarModal.InvokeAsync("");
     }
 
-    private void ProcesarDatos(){
-        try {
+    private void ProcesarDatos()
+    {
+        try
+        {
             GenerarDatosGrafica(11);
         }
-        catch(Exception err) {
+        catch(Exception err)
+        {
             Console.WriteLine($">> Error al genera las graficas de analitico rezago:\n\t{err.Message}");
         }
-        try {
+        try
+        {
             GenerarDatosGrafica(21);
         }
-        catch (Exception err) {
+        catch (Exception err)
+        {
             Console.WriteLine($">> Error al genera las graficas de analitico rezago:\n\t{err.Message}");
         }
 
     }
-    private void GrupoBotonesClick(int param){
+    private void GrupoBotonesClick(int param)
+    {
 
-        switch(param){
+        switch(param)
+        {
             case 11:
-                this.subtitulo1 = "Analitico Mensual";
+                this._subtitulo1 = "Analitico Mensual";
                 this.visibles[0,0] = true;
                 this.visibles[0,1] = false;
                 this.visibles[0,2] = false;
                 GenerarDatosGrafica(11);
                 break;
             case 12:
-                this.subtitulo1 = "Analitico Quincenal";
+                this._subtitulo1 = "Analitico Quincenal";
                 this.visibles[0,0] = false;
                 this.visibles[0,1] = true;
                 this.visibles[0,2] = false;
                 GenerarDatosGrafica(12);
                 break;
             case 13:
-                this.subtitulo1 = "Analitico Semanal";
+                this._subtitulo1 = "Analitico Semanal";
                 this.visibles[0,0] = false;
                 this.visibles[0,1] = false;
                 this.visibles[0,2] = true;
@@ -446,21 +455,21 @@
                 break;
 
             case 21:
-                this.subtitulo2 = "Analitico Rezago Mensual";
+                this._subtitulo2 = "Analitico Rezago Mensual";
                 this.visibles[1, 0] = true;
                 this.visibles[1, 1] = false;
                 this.visibles[1, 2] = false;
                 GenerarDatosGrafica(21);
                 break;
             case 22:
-                this.subtitulo2 = "Analitico Rezago Quincenal";
+                this._subtitulo2 = "Analitico Rezago Quincenal";
                 this.visibles[1, 0] = false;
                 this.visibles[1, 1] = true;
                 this.visibles[1, 2] = false;
                 GenerarDatosGrafica(22);
                 break;
             case 23:
-                this.subtitulo2 = "Analitico Rezago Semanal";
+                this._subtitulo2 = "Analitico Rezago Semanal";
                 this.visibles[1, 0] = false;
                 this.visibles[1, 1] = false;
                 this.visibles[1, 2] = true;
@@ -469,19 +478,24 @@
         }
 
     }
-    private void GenerarDatosGrafica(int tipo){
+    private void GenerarDatosGrafica(int tipo)
+    {
 
         //this.itemsGrafica_analitico.Clear();
         //this.itemsGrafica_analiticoRez.Clear();
         var tmpListChart = new List<ChartItem>();
 
-        switch (tipo) {
+        switch (tipo)
+        {
             case 11:
             case 21:
                 Recaudacion_AnaliticoMensual[] tmpList;
-                if (tipo == 11) {
+                if (tipo == 11)
+                {
                     tmpList = DatosAnalitico.Analitico_Mensual.OrderByDescending(item => item.Año).ToArray();
-                } else {
+                }
+                else
+                {
                     tmpList = DatosAnalitico.AnaliticoRez_Mensual.OrderByDescending(item => item.Año).ToArray();
                 }
 
@@ -498,7 +512,8 @@
                 var _chart11 = new ChartItem() { Descripcion = "Nov" };
                 var _chart12 = new ChartItem() { Descripcion = "Dic" };
 
-                for(int i = 0; i <= tmpList.Length - 1; i++){
+                for(int i = 0; i <= tmpList.Length - 1; i++)
+                {
                     typeof(ChartItem).GetProperty($"Valor{i+1}").SetValue(_chart1, tmpList[i].Ene);
                     typeof(ChartItem).GetProperty($"Valor{i+1}").SetValue(_chart2, tmpList[i].Feb);
                     typeof(ChartItem).GetProperty($"Valor{i+1}").SetValue(_chart3, tmpList[i].Mar);
@@ -530,10 +545,12 @@
             case 12:
             case 22:
                 Recaudacion_AnaliticoQuincenal[] tmpList12;
-                if (tipo == 12) {
+                if (tipo == 12)
+                {
                     tmpList12 = DatosAnalitico.Analitico_Quincenal.OrderByDescending(item => item.Año).ToArray();
                 }
-                else {
+                else
+                {
                     tmpList12 = DatosAnalitico.AnaliticoRez_Quincenal.OrderByDescending(item => item.Año).ToArray();
                 }
 
@@ -563,7 +580,8 @@
                 var _chart12b = new ChartItem() { Descripcion = "Dic Q2" };
 
 
-                for (int i = 0; i <= tmpList12.Length - 1; i++) {
+                for (int i = 0; i <= tmpList12.Length - 1; i++)
+                {
                     typeof(ChartItem).GetProperty($"Valor{i + 1}").SetValue(_chart1a, tmpList12[i].Ene_1);
                     typeof(ChartItem).GetProperty($"Valor{i + 1}").SetValue(_chart1b, tmpList12[i].Ene_2);
                     typeof(ChartItem).GetProperty($"Valor{i + 1}").SetValue(_chart2a, tmpList12[i].Feb_1);
@@ -620,10 +638,12 @@
             case 23:
 
                 Recaudacion_AnaliticoSemanal[] tmpList13;
-                if (tipo == 13) {
+                if (tipo == 13)
+                {
                     tmpList13 = DatosAnalitico.Analitico_Semanal.OrderByDescending(item => item.Año).ToArray(); ;
                 }
-                else {
+                else
+                {
                     tmpList13 = DatosAnalitico.AnaliticoRez_Semanal.OrderByDescending(item => item.Año).ToArray(); ;
                 }
 
@@ -676,7 +696,8 @@
                 var _chart12ec = new ChartItem() { Descripcion = "Dic S3" };
                 var _chart12ed = new ChartItem() { Descripcion = "Dic S4" };
 
-                for (int i = 0; i <= tmpList13.Length - 1; i++) {
+                for (int i = 0; i <= tmpList13.Length - 1; i++)
+                {
                     typeof(ChartItem).GetProperty($"Valor{i + 1}").SetValue(_chart1ea, tmpList13[i].Ene_1);
                     typeof(ChartItem).GetProperty($"Valor{i + 1}").SetValue(_chart1eb, tmpList13[i].Ene_2);
                     typeof(ChartItem).GetProperty($"Valor{i + 1}").SetValue(_chart1ed, tmpList13[i].Ene_3);
@@ -780,51 +801,70 @@
 
         }
 
-        if(tipo == 11 || tipo == 12 || tipo == 13) {
+        if(tipo == 11 || tipo == 12 || tipo == 13)
+        {
             this.itemsGrafica_analitico = tmpListChart;
         }
-        else {
+        else
+        {
             this.itemsGrafica_analiticoRez = tmpListChart;
         }
     }
-    private async Task GenerarExcel(int tabIndex){
+    private async Task GenerarExcel(int tabIndex)
+    {
 
-        if(tabIndex == 0) {
-            if(visibles[0, 0]){
-                await this.dataGrid_analitico_mensual.ExcelExport(new ExcelExportProperties {
+        if(tabIndex == 0)
+        {
+            if(visibles[0, 0])
+            {
+                await ExportacionExcel.ExportarAsync(this._dataGrid_analitico_mensual, new ExcelExportProperties
+                {
                     FileName = string.Format("sicem_analiticoMensual_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
                 });
             }
-            if(visibles[0, 1]){
-                await this.dataGrid_analitico_quincenal.ExcelExport(new ExcelExportProperties {
+            if(visibles[0, 1])
+            {
+                await ExportacionExcel.ExportarAsync(this._dataGrid_analitico_quincenal, new ExcelExportProperties
+                {
                     FileName = string.Format("sicem_analiticoQuincenal_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
                 });
             }
-            if (visibles[0, 2]) {
-                await this.dataGrid_analitico_semanal.ExcelExport(new ExcelExportProperties {
+            if (visibles[0, 2])
+            {
+                await ExportacionExcel.ExportarAsync(this._dataGrid_analitico_semanal, new ExcelExportProperties
+                {
                     FileName = string.Format("sicem_analiticoSemanal_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
                 });
             }
         }
 
-        if(tabIndex == 1) {
-            if (visibles[1, 0]) {
-                await this.dataGrid_analiticoRez_mensual.ExcelExport(new ExcelExportProperties {
+        if(tabIndex == 1)
+        {
+            if (visibles[1, 0])
+            {
+                await ExportacionExcel.ExportarAsync(this._dataGrid_analiticoRez_mensual, new ExcelExportProperties
+                {
                     FileName = string.Format("sicem_analiticoRezMensual_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
                 });
             }
-            if (visibles[1, 1]) {
-                await this.dataGrid_analiticoRez_quincenal.ExcelExport(new ExcelExportProperties {
+            if (visibles[1, 1])
+            {
+                await ExportacionExcel.ExportarAsync(this._dataGrid_analiticoRez_quincenal, new ExcelExportProperties
+                {
                     FileName = string.Format("sicem_analiticoRezQuincenal_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
                 });
             }
-            if (visibles[1, 2]) {
-                await this.dataGrid_analiticoRez_semanal.ExcelExport(new ExcelExportProperties {
+            if (visibles[1, 2])
+            {
+                await ExportacionExcel.ExportarAsync(this._dataGrid_analiticoRez_semanal, new ExcelExportProperties
+                {
                     FileName = string.Format("sicem_analiticoRezSemanal_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
                 });
             }
         }
     }
+    // TODO-EXPORT-RADZEN: exportación a PDF pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task GenerarPdf(int tabIndex) {
 
         if (tabIndex == 0) {
@@ -832,7 +872,7 @@
                 string titulo = "Analitico Ingresos Mensual";
                 List<PdfHeaderFooterContent> xconts = new List<PdfHeaderFooterContent>();
                 xconts.Add( new PdfHeaderFooterContent() { Type = ContentType.Text, Value = titulo, Position = new PdfPosition() { X = 10, Y = 10 }, Style = new PdfContentStyle() { TextBrushColor = "#000000", FontSize = 13 } } );
-                await this.dataGrid_analitico_mensual.PdfExport(new PdfExportProperties { PageOrientation = PageOrientation.Landscape, Header = new PdfHeader { Contents = xconts },
+                await this._dataGrid_analitico_mensual.PdfExport(new PdfExportProperties { PageOrientation = PageOrientation.Landscape, Header = new PdfHeader { Contents = xconts },
                     FileName = string.Format("sicem_analiticoMensual_{0}.pdf", Guid.NewGuid().ToString().Replace("-", ""))
                 });
             }
@@ -840,7 +880,7 @@
                 string titulo = "Analitico Ingresos Quincenal";
                 List<PdfHeaderFooterContent> xconts = new List<PdfHeaderFooterContent>();
                 xconts.Add(new PdfHeaderFooterContent() { Type = ContentType.Text, Value = titulo, Position = new PdfPosition() { X = 10, Y = 10 }, Style = new PdfContentStyle() { TextBrushColor = "#000000", FontSize = 13 } });
-                await this.dataGrid_analitico_quincenal.PdfExport(new PdfExportProperties {
+                await this._dataGrid_analitico_quincenal.PdfExport(new PdfExportProperties {
                     PageOrientation = PageOrientation.Landscape,
                     Header = new PdfHeader { Contents = xconts },
                     FileName = string.Format("sicem_analiticoQuincenal_{0}.pdf", Guid.NewGuid().ToString().Replace("-", ""))
@@ -850,7 +890,7 @@
                 string titulo = "Analitico Ingresos Semanal";
                 List<PdfHeaderFooterContent> xconts = new List<PdfHeaderFooterContent>();
                 xconts.Add(new PdfHeaderFooterContent() { Type = ContentType.Text, Value = titulo, Position = new PdfPosition() { X = 10, Y = 10 }, Style = new PdfContentStyle() { TextBrushColor = "#000000", FontSize = 13 } });
-                await this.dataGrid_analitico_semanal.PdfExport(new PdfExportProperties {
+                await this._dataGrid_analitico_semanal.PdfExport(new PdfExportProperties {
                     PageOrientation = PageOrientation.Landscape,
                     Header = new PdfHeader { Contents = xconts },
                     FileName = string.Format("sicem_analiticoSemanal_{0}.pdf", Guid.NewGuid().ToString().Replace("-", ""))
@@ -864,7 +904,7 @@
                 string titulo = "Analitico Rezago Mensual";
                 List<PdfHeaderFooterContent> xconts = new List<PdfHeaderFooterContent>();
                 xconts.Add(new PdfHeaderFooterContent() { Type = ContentType.Text, Value = titulo, Position = new PdfPosition() { X = 10, Y = 10 }, Style = new PdfContentStyle() { TextBrushColor = "#000000", FontSize = 13 } });
-                await this.dataGrid_analiticoRez_mensual.PdfExport(new PdfExportProperties {
+                await this._dataGrid_analiticoRez_mensual.PdfExport(new PdfExportProperties {
                     PageOrientation = PageOrientation.Landscape,
                     Header = new PdfHeader { Contents = xconts },
                     FileName = string.Format("sicem_analiticoRezMensual_{0}.pdf", Guid.NewGuid().ToString().Replace("-", ""))
@@ -874,7 +914,7 @@
                 string titulo = "Analitico Rezago Quincenal";
                 List<PdfHeaderFooterContent> xconts = new List<PdfHeaderFooterContent>();
                 xconts.Add(new PdfHeaderFooterContent() { Type = ContentType.Text, Value = titulo, Position = new PdfPosition() { X = 10, Y = 10 }, Style = new PdfContentStyle() { TextBrushColor = "#000000", FontSize = 13 } });
-                await this.dataGrid_analiticoRez_quincenal.PdfExport(new PdfExportProperties {
+                await this._dataGrid_analiticoRez_quincenal.PdfExport(new PdfExportProperties {
                     PageOrientation = PageOrientation.Landscape,
                     Header = new PdfHeader { Contents = xconts },
                     FileName = string.Format("sicem_analiticoRezQuincenal_{0}.pdf", Guid.NewGuid().ToString().Replace("-", ""))
@@ -884,7 +924,7 @@
                 string titulo = "Analitico Rezago Semanal";
                 List<PdfHeaderFooterContent> xconts = new List<PdfHeaderFooterContent>();
                 xconts.Add(new PdfHeaderFooterContent() { Type = ContentType.Text, Value = titulo, Position = new PdfPosition() { X = 10, Y = 10 }, Style = new PdfContentStyle() { TextBrushColor = "#000000", FontSize = 13 } });
-                await this.dataGrid_analiticoRez_semanal.PdfExport(new PdfExportProperties {
+                await this._dataGrid_analiticoRez_semanal.PdfExport(new PdfExportProperties {
                     PageOrientation = PageOrientation.Landscape,
                     Header = new PdfHeader { Contents = xconts },
                     FileName = string.Format("sicem_analiticoRezSemanal_{0}.pdf", Guid.NewGuid().ToString().Replace("-", ""))
@@ -892,5 +932,6 @@
             }
         }
     }
+    */
 
 }

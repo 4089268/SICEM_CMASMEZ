@@ -1,12 +1,13 @@
-@using Syncfusion.Blazor.Grids
 @using Sicem_Blazor.Recaudacion.Data
 @using Sicem_Blazor.Recaudacion.Models
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavManager
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
-@if (MostrarVentana) {
+@if (MostrarVentana)
+{
 
-    <VentanaSecundaria Titulo="@Titulo" Filas="@filasTemplate" Columnas="@columnasTemplate" CerrarVentana="@(e => Cerrar_Modal())">
+    <VentanaSecundaria Titulo="@Titulo" Filas="@_filasTemplate" Columnas="@_columnasTemplate" CerrarVentana="@(e => Cerrar_Modal())">
         <Content>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 1/2; grid-column: 1/2;">
@@ -17,11 +18,9 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <SfGrid @ref="DataGrid" DataSource="@Datos" AllowSorting="true" AllowResizing="true" AllowFiltering="false" AllowExcelExport="true"
-                        AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true" AllowPaging="@(Datos.Count() > 1500)">
-                    <GridPageSettings PageSize="1000"></GridPageSettings>
-                    <GridColumns>
-                            <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="55">
+                <RadzenDataGrid TItem="Recaudacion_Rezago_Detalle" @ref="_dataGrid" Data="@Datos" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" AllowPaging="@(Datos.Count() > 1500)" PageSize="1000" Style="height:100%; width:auto;">
+                    <Columns>
+                            <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="55px">
                                 <Template>
                                     @{
                                         var data = (context as Recaudacion_Rezago_Detalle);
@@ -30,67 +29,75 @@
                                         </button>
                                     }
                                 </Template>
-                            </GridColumn>
-                            <GridColumn Field="@nameof(Recaudacion_Rezago_Detalle.Cuenta)" HeaderText="Cuenta" TextAlign="TextAlign.Center" Width="110" />
-                            <GridColumn Field="@nameof(Recaudacion_Rezago_Detalle.Usuario)" HeaderText="Usuario" TextAlign="TextAlign.Left" Width="220" />
-                            <GridColumn Field="@nameof(Recaudacion_Rezago_Detalle.Tarifa)" HeaderText="Tarifa" TextAlign="TextAlign.Left" Width="120" />
-                            <GridColumn Field="@nameof(Recaudacion_Rezago_Detalle.Meses_Adeudo)" HeaderText="Meses Adeudo" TextAlign="TextAlign.Center" Width="110" Format="n0" />
-                            <GridColumn Field="@nameof(Recaudacion_Rezago_Detalle.Agua)" HeaderText="Agua" TextAlign="TextAlign.Center" Width="120" Format="c2" />
-                            <GridColumn Field="@nameof(Recaudacion_Rezago_Detalle.Dren)" HeaderText="Drenaje" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                            <GridColumn Field="@nameof(Recaudacion_Rezago_Detalle.Trat)" HeaderText="Sanea" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                            <GridColumn Field="@nameof(Recaudacion_Rezago_Detalle.Otros)" HeaderText="Otros" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                            <GridColumn Field="@nameof(Recaudacion_Rezago_Detalle.Recar)" HeaderText="Recargos" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                            <GridColumn Field="@nameof(Recaudacion_Rezago_Detalle.Subtotal)" HeaderText="Subtotal" TextAlign="TextAlign.Right" Width="140" Format="c2" />
-                            <GridColumn Field="@nameof(Recaudacion_Rezago_Detalle.Iva)" HeaderText="Iva" TextAlign="TextAlign.Right" Width="140" Format="c2" />
-                            <GridColumn Field="@nameof(Recaudacion_Rezago_Detalle.Total)" HeaderText="Total" TextAlign="TextAlign.Right" Width="140" Format="c2" />
-                        </GridColumns>
-                </SfGrid>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago_Detalle.Cuenta)" Title="Cuenta" TextAlign="TextAlign.Center" Width="110px" />
+                            <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago_Detalle.Usuario)" Title="Usuario" TextAlign="TextAlign.Left" Width="220px" />
+                            <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago_Detalle.Tarifa)" Title="Tarifa" TextAlign="TextAlign.Left" Width="120px" />
+                            <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago_Detalle.Meses_Adeudo)" Title="Meses Adeudo" TextAlign="TextAlign.Center" Width="110px" FormatString="{0:n0}" />
+                            <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago_Detalle.Agua)" Title="Agua" TextAlign="TextAlign.Center" Width="120px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago_Detalle.Dren)" Title="Drenaje" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago_Detalle.Trat)" Title="Sanea" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago_Detalle.Otros)" Title="Otros" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago_Detalle.Recar)" Title="Recargos" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago_Detalle.Subtotal)" Title="Subtotal" TextAlign="TextAlign.Right" Width="140px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago_Detalle.Iva)" Title="Iva" TextAlign="TextAlign.Right" Width="140px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(Recaudacion_Rezago_Detalle.Total)" Title="Total" TextAlign="TextAlign.Right" Width="140px" FormatString="{0:c2}" />
+                        </Columns>
+                </RadzenDataGrid>
             </div>
 
         </Content>
     </VentanaSecundaria>
 
-    @if(DatosGeneralesVisible){
-        <DatosGenerales_Dialog Cuenta="@CuentaSeleccionada" IdOficina="@Enlace.Id" CerrarVentana="@(e => DatosGeneralesVisible = false)" />
+    @if(_datosGeneralesVisible)
+    {
+        <DatosGenerales_Dialog Cuenta="@_cuentaSeleccionada" IdOficina="@Enlace.Id" CerrarVentana="@(e => _datosGeneralesVisible = false)" />
     }
 
 }
 
-@code {
+@code
+{
 
     [Parameter] public bool MostrarVentana { get; set; }
     [Parameter] public EventCallback CerrarModal { get; set; }
     public IEnlace Enlace {get;set;}
     public string Titulo{get;set;} = "";
 
-    private double[] filasTemplate = new double[]{ 47, .8 };
-    private double[] columnasTemplate = new double[] { .85 };
-    private SfGrid<Recaudacion_Rezago_Detalle> DataGrid;
+    private double[] _filasTemplate = new double[]{ 47, .8 };
+    private double[] _columnasTemplate = new double[] { .85 };
+    private RadzenDataGrid<Recaudacion_Rezago_Detalle> _dataGrid;
     private List<Recaudacion_Rezago_Detalle> Datos{get;set;}
 
-    private bool DatosGeneralesVisible = false;
-    private string CuentaSeleccionada = "0";
+    private bool _datosGeneralesVisible = false;
+    private string _cuentaSeleccionada = "0";
 
-    public void Inicializar(IEnlace e, IEnumerable<Recaudacion_Rezago_Detalle> datos, int Mes){
+    public void Inicializar(IEnlace e, IEnumerable<Recaudacion_Rezago_Detalle> datos, int Mes)
+    {
         this.Titulo = $"DETALLE REZAGO CON {Mes} MESES DE ADEUDO";
         this.Enlace = e;
         this.Datos = datos.ToList();
     }
-    private async Task Cerrar_Modal() {
-        if(Datos != null){
+    private async Task Cerrar_Modal()
+    {
+        if(Datos != null)
+        {
             Datos.Clear();
         }
         this.Titulo = "DETALLE REZAGO";
         await CerrarModal.InvokeAsync("");
     }
-    private async Task GenerarExcel() {
-        await this.DataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this._dataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_ingresosDetalle_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    private void MostrarDatosGenerales_Click(Recaudacion_Rezago_Detalle e) {
-        this.CuentaSeleccionada = e.Cuenta;
-        this.DatosGeneralesVisible = true;
+    private void MostrarDatosGenerales_Click(Recaudacion_Rezago_Detalle e)
+    {
+        this._cuentaSeleccionada = e.Cuenta;
+        this._datosGeneralesVisible = true;
     }
 
 }

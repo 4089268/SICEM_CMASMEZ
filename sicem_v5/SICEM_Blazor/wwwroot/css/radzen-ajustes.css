@@ -1,0 +1,177 @@
+/* Ajustes de Radzen.Blazor (migración desde Syncfusion, ver docs/MIGRACION.md) */
+
+/* Fuente de la aplicación (Montzerrat = @font-face de Montserrat definido en site.css),
+   igual que la regla ".e-control, .e-css, text { font-family: 'Montzerrat' }" que se aplicaba a Syncfusion */
+:root
+{
+    --rz-text-font-family: 'Montzerrat', sans-serif;
+
+    /* Colores primario y secundario: los del tema de la aplicación (site.css),
+       los mismos que usa MatBlazor. Los tonos se derivan con color-mix(). */
+    --rz-primary: var(--mdc-theme-primary);
+    --rz-primary-light: color-mix(in srgb, var(--rz-primary) 80%, white);
+    --rz-primary-lighter: color-mix(in srgb, var(--rz-primary) 12%, transparent);
+    --rz-primary-dark: color-mix(in srgb, var(--rz-primary) 80%, black);
+    --rz-primary-darker: color-mix(in srgb, var(--rz-primary) 65%, black);
+    --rz-on-primary: #ffffff;
+    --rz-on-primary-light: #ffffff;
+    --rz-on-primary-lighter: var(--rz-primary-dark);
+    --rz-on-primary-dark: #ffffff;
+    --rz-on-primary-darker: #ffffff;
+
+    --rz-secondary: var(--mdc-theme-secondary);
+    --rz-secondary-light: color-mix(in srgb, var(--rz-secondary) 80%, white);
+    --rz-secondary-lighter: color-mix(in srgb, var(--rz-secondary) 12%, transparent);
+    --rz-secondary-dark: color-mix(in srgb, var(--rz-secondary) 80%, black);
+    --rz-secondary-darker: color-mix(in srgb, var(--rz-secondary) 65%, black);
+    --rz-on-secondary: #ffffff;
+    --rz-on-secondary-light: #ffffff;
+    --rz-on-secondary-lighter: var(--rz-secondary-dark);
+    --rz-on-secondary-dark: #ffffff;
+    --rz-on-secondary-darker: #ffffff;
+}
+
+.rz-chart text
+{
+    font-family: 'Montzerrat', sans-serif;
+}
+
+/* Paleta de las series de las gráficas (por defecto Radzen usa una paleta propia que inicia en morado).
+   Serie 1 = color primario, serie 2 = color secundario, 3-8 colores complementarios;
+   9-16 y 17-24 son las mismas en tonos más claros (pasteles y donas con muchas categorías). */
+:root
+{
+    --rz-series-1: var(--rz-primary);
+    --rz-series-2: var(--rz-secondary);
+    --rz-series-3: #f2a33a;
+    --rz-series-4: #7a5fb0;
+    --rz-series-5: #5cb85c;
+    --rz-series-6: #e05d5d;
+    --rz-series-7: #f0d24a;
+    --rz-series-8: #8c9aa6;
+    --rz-series-9: color-mix(in srgb, var(--rz-series-1) 70%, white);
+    --rz-series-10: color-mix(in srgb, var(--rz-series-2) 70%, white);
+    --rz-series-11: color-mix(in srgb, var(--rz-series-3) 70%, white);
+    --rz-series-12: color-mix(in srgb, var(--rz-series-4) 70%, white);
+    --rz-series-13: color-mix(in srgb, var(--rz-series-5) 70%, white);
+    --rz-series-14: color-mix(in srgb, var(--rz-series-6) 70%, white);
+    --rz-series-15: color-mix(in srgb, var(--rz-series-7) 70%, white);
+    --rz-series-16: color-mix(in srgb, var(--rz-series-8) 70%, white);
+    --rz-series-17: color-mix(in srgb, var(--rz-series-1) 45%, white);
+    --rz-series-18: color-mix(in srgb, var(--rz-series-2) 45%, white);
+    --rz-series-19: color-mix(in srgb, var(--rz-series-3) 45%, white);
+    --rz-series-20: color-mix(in srgb, var(--rz-series-4) 45%, white);
+    --rz-series-21: color-mix(in srgb, var(--rz-series-5) 45%, white);
+    --rz-series-22: color-mix(in srgb, var(--rz-series-6) 45%, white);
+    --rz-series-23: color-mix(in srgb, var(--rz-series-7) 45%, white);
+    --rz-series-24: color-mix(in srgb, var(--rz-series-8) 45%, white);
+}
+
+/* Grids con agrupación inicial pero sin el área para arrastrar columnas
+   (equivalente a GridGroupSettings ShowDropArea="false" de Syncfusion) */
+.grid-sin-panel-grupos .rz-group-header
+{
+    display: none;
+}
+
+/* Apariencia de los grids: equivalentes Radzen de los "ESTILOS DE SYNCFUSION" de site.css
+   (.e-rowcell, .e-headercelldiv, .e-grid, table.e-table thead th, .e-altrow) */
+.rz-data-grid
+{
+    --rz-grid-cell-font-size: 1.1rem;
+    --rz-grid-cell-padding: 4px 6px;
+    --rz-grid-header-font-size: 1rem;
+    --rz-grid-stripe-background-color: #fafafa;
+    border: 1px solid #cdcdcd;
+}
+
+.rz-data-grid .rz-cell-data
+{
+    transition: font-size .1s;
+}
+
+.rz-data-grid .rz-state-highlight .rz-cell-data
+{
+    font-size: 1.15rem;
+}
+
+.rz-data-grid .rz-grid-table thead th
+{
+    background: rgb(222,222,222);
+    background: linear-gradient(180deg, rgba(232,232,232,1) 0%, rgba(244,244,244,1) 13%, rgba(244,244,244,1) 80%, rgba(227,227,227,1) 92%, rgba(205,205,205,1) 100%);
+    color: black;
+}
+
+/* Grids compactos (.ns-small) */
+.ns-small .rz-data-grid
+{
+    --rz-grid-cell-font-size: .95rem;
+}
+
+.ns-small .rz-data-grid .rz-state-highlight .rz-cell-data
+{
+    font-size: 1rem;
+}
+
+/* Cajas de texto (en site.css: .e-control.e-textbox { font-size: 1.3rem }) */
+.rz-textbox,
+.rz-textarea,
+.rz-numeric input
+{
+    font-size: 1.3rem;
+}
+
+/* Búsqueda Avanzada (FiltroDatosComponent): filtros compactos.
+   Sobrescribe los estilos .filtro de site.css (se carga después). */
+.filtro
+{
+    padding: 1rem 1rem;
+    margin: .5rem .5rem;
+    border-radius: 4px;
+}
+
+.filtro .title
+{
+    font-size: 1.1rem;
+}
+
+.filtro .items
+{
+    grid-row-gap: 0;
+}
+
+.filtro .items .item
+{
+    margin: .2rem .5rem;
+}
+
+.filtro .items .item label
+{
+    height: auto;
+    font-size: .9rem;
+}
+
+.filtro .items .item input[type="text"],
+.filtro .items .item select
+{
+    height: 2.1rem;
+    padding: .2rem .5rem;
+}
+
+.filtro .rz-dropdown
+{
+    min-height: 2.1rem;
+}
+
+/* Pestañas: pestaña activa con el color secundario del tema
+   (equivalente de las reglas .e-tab.e-fill que había en consultaGeneral.css) */
+.rz-tabview
+{
+    --rz-tabs-tab-selected-background-color: var(--rz-secondary);
+    --rz-tabs-tab-selected-color: #fff;
+}
+
+.rz-tabview-nav
+{
+    border-bottom: 2px solid var(--rz-secondary);
+}

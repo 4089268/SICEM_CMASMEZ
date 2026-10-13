@@ -1,4 +1,4 @@
-﻿function setStorage(key, valor){
+function setStorage(key, valor){
     window.localStorage.setItem(key, valor);
 }
 function getStorage(key){
@@ -80,8 +80,16 @@ function DownloadFileFromBytes(options){
     
     // At last, release unused resources.
     URL.revokeObjectURL(url);
-      
 }
+// Descarga un archivo generado en el servidor (DotNetStreamReference), p. ej. la exportación de grids a Excel
+async function descargarArchivoDesdeStream(nombreArchivo, streamReference, contentType) {
+    const arrayBuffer = await streamReference.arrayBuffer();
+    const blob = new Blob([arrayBuffer], { type: contentType ?? 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    downloadFromUrl({ url: url, fileName: nombreArchivo });
+    URL.revokeObjectURL(url);
+}
+
 function DownloAdFileFromBase64(options){
     // options:{content: string,  fileName: string,  contentType: string }
     console.dir(options);

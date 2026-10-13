@@ -1,11 +1,11 @@
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Grids
 @using Sicem_Blazor.ControlRezago.Models
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavManager
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
 
-@if (Visible) {
+@if (Visible)
+{
     <div class="busy-control">
 
         <div id="draggable" class="SicemDialog-control" style="width:auto; height:auto;">
@@ -24,7 +24,8 @@
                     <div class="font-weight-bold" style="width:13rem;"> SITUACION: </div>
                     <select class="form-select form-select-lg" @onchange="FiltrarDatos_TipoMovto" style="height:28px; margin-left:10px; width:210px">
                         <option value="0" selected>TODOS</option>
-                        @foreach (var xKey in cat_situacion.Keys) {
+                        @foreach (var xKey in cat_situacion.Keys)
+                        {
                             <option value="@xKey">@cat_situacion[xKey]</option>
                         }
                     </select>
@@ -39,9 +40,9 @@
 
 
                 <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                    <SfGrid @ref="dataGrid" DataSource="@datosGrid_filtrados" AllowResizing="true" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true">
-                        <GridColumns>
-                            <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="55">
+                    <RadzenDataGrid TItem="ControlRezago_GestionCart_Detalle" @ref="_dataGrid" Data="@datosGrid_filtrados" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                        <Columns>
+                            <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="55px">
                                 <Template>
                                     @{
                                         var data = (context as ControlRezago_GestionCart_Detalle);
@@ -50,20 +51,20 @@
                                         </button>
                                     }
                                 </Template>
-                            </GridColumn>
-                            <GridColumn Field="@nameof(ControlRezago_GestionCart_Detalle.Cuenta)" HeaderText="Cuenta" TextAlign="TextAlign.Center" Width="90" />
-                            <GridColumn Field="@nameof(ControlRezago_GestionCart_Detalle.Usuario)" HeaderText="Usuario" TextAlign="TextAlign.Left" Width="210" />
-                            <GridColumn Field="@nameof(ControlRezago_GestionCart_Detalle.Fecha_Req)" HeaderText="Fecha Req" TextAlign="TextAlign.Center" Width="100" />
-                            <GridColumn Field="@nameof(ControlRezago_GestionCart_Detalle.Fecha_Pago)" HeaderText="Fecha Pago" TextAlign="TextAlign.Center" Width="100" />
-                            <GridColumn Field="@nameof(ControlRezago_GestionCart_Detalle.MA)" HeaderText="Meses Adeudo" TextAlign="TextAlign.Center" Width="60" />
-                            <GridColumn Field="@nameof(ControlRezago_GestionCart_Detalle.Importe_Requerido)" HeaderText="Importe Req" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(ControlRezago_GestionCart_Detalle.Importe_Pago)" HeaderText="Importe Pago" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(ControlRezago_GestionCart_Detalle.Saldo_Actual)" HeaderText="Saldo Actual" TextAlign="TextAlign.Right" Width="100" Format="c2" />
-                            <GridColumn Field="@nameof(ControlRezago_GestionCart_Detalle.Situacion)" HeaderText="Situacion" TextAlign="TextAlign.Center" Width="100" />
-                            <GridColumn Field="@nameof(ControlRezago_GestionCart_Detalle.Tipo_Usuario)" HeaderText="Tipo Usuario" TextAlign="TextAlign.Center" Width="140" />
-                            <GridColumn Field="@nameof(ControlRezago_GestionCart_Detalle.Tipo)" HeaderText="Tipo Pago" TextAlign="TextAlign.Center" Width="120" />
-                        </GridColumns>
-                    </SfGrid>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_GestionCart_Detalle.Cuenta)" Title="Cuenta" TextAlign="TextAlign.Center" Width="90px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_GestionCart_Detalle.Usuario)" Title="Usuario" TextAlign="TextAlign.Left" Width="210px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_GestionCart_Detalle.Fecha_Req)" Title="Fecha Req" TextAlign="TextAlign.Center" Width="100px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_GestionCart_Detalle.Fecha_Pago)" Title="Fecha Pago" TextAlign="TextAlign.Center" Width="100px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_GestionCart_Detalle.MA)" Title="Meses Adeudo" TextAlign="TextAlign.Center" Width="60px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_GestionCart_Detalle.Importe_Requerido)" Title="Importe Req" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_GestionCart_Detalle.Importe_Pago)" Title="Importe Pago" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_GestionCart_Detalle.Saldo_Actual)" Title="Saldo Actual" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_GestionCart_Detalle.Situacion)" Title="Situacion" TextAlign="TextAlign.Center" Width="100px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_GestionCart_Detalle.Tipo_Usuario)" Title="Tipo Usuario" TextAlign="TextAlign.Center" Width="140px" />
+                            <RadzenDataGridColumn Property="@nameof(ControlRezago_GestionCart_Detalle.Tipo)" Title="Tipo Pago" TextAlign="TextAlign.Center" Width="120px" />
+                        </Columns>
+                    </RadzenDataGrid>
                 </div>
 
             </div>
@@ -72,7 +73,8 @@
     </div>
 }
 
-@code {
+@code
+{
 
     #region  "******** Parametros ********"
     [Parameter]
@@ -89,26 +91,30 @@
     [Parameter]
     public int Sector { get; set; }
 
-    List<int> GridFilas = new List<int>() { 50, 600 };
-    List<int> GridColumnas = new List<int>() { 1020 };
+    List<int> _gridFilas = new List<int>() { 50, 600 };
+    List<int> _gridColumnas = new List<int>() { 1020 };
     #endregion
     #region "******** Funciones Base ********"
-    private async Task Cerrar_Modal() {
+    private async Task Cerrar_Modal()
+    {
         this.datosGrid = new ControlRezago_GestionCart_Detalle[] { };
         await CerrarModal.InvokeAsync("");
     }
-    private string ObtnerDimensiones() {
+    private string ObtnerDimensiones()
+    {
         var xB = new System.Text.StringBuilder();
         xB.Append("height: 100%; width:100%; ");
         xB.Append("display:grid; ");
         xB.Append("grid-template-rows: ");
-        foreach (int FilaH in GridFilas) {
+        foreach (int FilaH in _gridFilas)
+        {
             xB.Append(string.Format("{0}px ", FilaH));
         }
         xB.Append("; ");
 
         xB.Append("grid-template-columns: ");
-        foreach (int ColW in GridColumnas) {
+        foreach (int ColW in _gridColumnas)
+        {
             xB.Append(string.Format("{0}px ", ColW));
         }
         xB.Append("; ");
@@ -120,7 +126,7 @@
 
     //"******** Variables ********"
 
-    SfGrid<ControlRezago_GestionCart_Detalle> dataGrid;
+    RadzenDataGrid<ControlRezago_GestionCart_Detalle> _dataGrid;
     public ControlRezago_GestionCart_Detalle[] datosGrid;
     public ControlRezago_GestionCart_Detalle[] datosGrid_filtrados;
     public Dictionary<int, string> cat_situacion = new Dictionary<int, string>();
@@ -128,45 +134,57 @@
 
 
     //"******** Funciones Generales ********"
-    public async Task Inicializar(ControlRezago_GestionCart_Detalle[] datos) {
+    public async Task Inicializar(ControlRezago_GestionCart_Detalle[] datos)
+    {
         await JSRuntime.InvokeVoidAsync("ConfigurateDragg", null);
 
         this.datosGrid = datos;
 
-        foreach (ControlRezago_GestionCart_Detalle xItem in datosGrid) {
-            if (!cat_situacion.ContainsKey(xItem.Id_Situacion)) {
+        foreach (ControlRezago_GestionCart_Detalle xItem in datosGrid)
+        {
+            if (!cat_situacion.ContainsKey(xItem.Id_Situacion))
+            {
                 cat_situacion.Add(xItem.Id_Situacion, xItem.Situacion);
             }
         }
         this.datosGrid_filtrados = this.datosGrid;
 
     }
-    private void FiltrarDatos_TipoMovto(ChangeEventArgs e) {
+    private void FiltrarDatos_TipoMovto(ChangeEventArgs e)
+    {
         int xld = int.Parse(e.Value.ToString());
 
-        if (xld == 0) {
+        if (xld == 0)
+        {
             this.datosGrid_filtrados = this.datosGrid;
             return;
         }
 
         var xTmpList = new List<ControlRezago_GestionCart_Detalle>();
-        foreach (ControlRezago_GestionCart_Detalle xItem in this.datosGrid) {
-            if (xItem.Id_Situacion == xld) {
+        foreach (ControlRezago_GestionCart_Detalle xItem in this.datosGrid)
+        {
+            if (xItem.Id_Situacion == xld)
+            {
                 xTmpList.Add(xItem);
             }
         }
 
         this.datosGrid_filtrados = xTmpList.ToArray();
     }
-    private void MostrarEnConsultaGeneral(ControlRezago_GestionCart_Detalle e) {
+    private void MostrarEnConsultaGeneral(ControlRezago_GestionCart_Detalle e)
+    {
         NavManager.NavigateTo($"/ConsultaGeneral/{e.Cuenta}");
     }
 
-    private async Task GenerarExcel() {
-        await this.dataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this._dataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
+    // TODO-EXPORT-RADZEN: exportación a PDF pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task GenerarPdf() {
         string titulo = string.Format("Ingresos por Conceptos del {0} al {1}", this.Fecha1.ToString("dd/MM/yyyy"), this.Fecha2.ToString("dd/MM/yyyy"));
         List<PdfHeaderFooterContent> xconts = new List<PdfHeaderFooterContent>();
@@ -182,7 +200,7 @@
             }
         );
 
-        await this.dataGrid.PdfExport(new PdfExportProperties {
+        await this._dataGrid.PdfExport(new PdfExportProperties {
             PageOrientation = PageOrientation.Landscape,
             Header = new PdfHeader {
                 Contents = xconts
@@ -190,5 +208,6 @@
             FileName = string.Format("sicem_IngresosxDias{0}.pdf", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
+    */
 
 }

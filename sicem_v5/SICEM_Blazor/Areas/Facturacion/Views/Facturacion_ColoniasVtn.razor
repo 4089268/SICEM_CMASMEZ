@@ -1,9 +1,11 @@
 @using Sicem_Blazor.Facturacion.Models
 @inject FacturacionService facturacionService
 @inject IMatToaster MatToaster
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
-@if(Visible){
-    <VentanaSecundaria Titulo="@Titulo" Columnas="@ColumnasTemplate" Filas="@FilasTemplate" CerrarVentana="@CerrarModal">
+@if(Visible)
+{
+    <VentanaSecundaria Titulo="@Titulo" Columnas="@_columnasTemplate" Filas="@_filasTemplate" CerrarVentana="@CerrarModal">
         <Content>
 
             <div class="d-flex align-items-center border rounded p-2 mb-2 bg-white">
@@ -14,30 +16,31 @@
             </div>
 
             <div class="border rounded p-2 mb-2 bg-white">
-                <SfGrid @ref="DataGrid" DataSource="@DatosGrid" AllowExcelExport="true" AllowResizing="true" Width="100%" Height="100%">
-                    <GridColumns>
-                        <GridColumn Field="@nameof(FacturacionColonia.Colonia)" HeaderText="Localidad" TextAlign="TextAlign.Left" Width="220" />
-                        <GridColumn Field="@nameof(FacturacionColonia.Agua)" HeaderText="Agua" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                        <GridColumn Field="@nameof(FacturacionColonia.Drenaje)" HeaderText="Drenaje" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                        <GridColumn Field="@nameof(FacturacionColonia.Saneamiento)" HeaderText="Saneamiento" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                        <GridColumn Field="@nameof(FacturacionColonia.Actu)" HeaderText="Actu" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                        <GridColumn Field="@nameof(FacturacionColonia.Otros)" HeaderText="Otros" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                        <GridColumn Field="@nameof(FacturacionColonia.Subtotal)" HeaderText="Subtotal" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                        <GridColumn Field="@nameof(FacturacionColonia.Iva)" HeaderText="IVA" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                        <GridColumn Field="@nameof(FacturacionColonia.Total)" HeaderText="Total" TextAlign="TextAlign.Right" Width="120" Format="c2" />
-                        <GridColumn Field="@nameof(FacturacionColonia.Usuarios)" HeaderText="Usuarios" TextAlign="TextAlign.Center" Width="190" Format="n0" />
-                        <GridColumn Field="@nameof(FacturacionColonia.M3Consumidos)" HeaderText="M3 Consumidos" TextAlign="TextAlign.Center" Width="190" Format="n0" />
-                        <GridColumn Field="@nameof(FacturacionColonia.M3Facturados)" HeaderText="M3 Facturados" TextAlign="TextAlign.Center" Width="190" Format="n0" />
-                    </GridColumns>
-                </SfGrid>
+                <RadzenDataGrid TItem="FacturacionColonia" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" Style="width:100%; height:100%;">
+                    <Columns>
+                        <RadzenDataGridColumn Property="@nameof(FacturacionColonia.Colonia)" Title="Localidad" TextAlign="TextAlign.Left" Width="220px" />
+                        <RadzenDataGridColumn Property="@nameof(FacturacionColonia.Agua)" Title="Agua" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(FacturacionColonia.Drenaje)" Title="Drenaje" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(FacturacionColonia.Saneamiento)" Title="Saneamiento" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(FacturacionColonia.Actu)" Title="Actu" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(FacturacionColonia.Otros)" Title="Otros" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(FacturacionColonia.Subtotal)" Title="Subtotal" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(FacturacionColonia.Iva)" Title="IVA" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(FacturacionColonia.Total)" Title="Total" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(FacturacionColonia.Usuarios)" Title="Usuarios" TextAlign="TextAlign.Center" Width="190px" FormatString="{0:n0}" />
+                        <RadzenDataGridColumn Property="@nameof(FacturacionColonia.M3Consumidos)" Title="M3 Consumidos" TextAlign="TextAlign.Center" Width="190px" FormatString="{0:n0}" />
+                        <RadzenDataGridColumn Property="@nameof(FacturacionColonia.M3Facturados)" Title="M3 Facturados" TextAlign="TextAlign.Center" Width="190px" FormatString="{0:n0}" />
+                    </Columns>
+                </RadzenDataGrid>
             </div>
 
         </Content>
     </VentanaSecundaria>
 }
-<BusyIndicator Busy="@busyDialog" ContentText="Cargando datos..." />
+<BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos..." />
 
-@code {
+@code
+{
     [Parameter] public string Titulo {get;set;} = "Facturacion Por Colonias";
     [Parameter] public EventCallback OnClose {get;set;}
     [Parameter] public bool Visible {get;set;}
@@ -46,27 +49,31 @@
     [Parameter] public int Subsistema {get;set;}
     [Parameter] public int Sector {get;set;}
 
-    private SfGrid<FacturacionColonia> DataGrid {get;set;}
+    private RadzenDataGrid<FacturacionColonia> DataGrid {get;set;}
     private List<FacturacionColonia> DatosGrid {get;set;}
     private List<ChartItem> DatosChart {get;set;}
-    private double[] ColumnasTemplate = new double[]{.85};
-    private double[] FilasTemplate = new double[]{50, .7};
+    private double[] _columnasTemplate = new double[]{.85};
+    private double[] _filasTemplate = new double[]{50, .7};
 
-    private bool busyDialog  = false;
+    private bool _busyDialog  = false;
 
-    public void Inicializar(IEnumerable<FacturacionColonia> datos){
+    public void Inicializar(IEnumerable<FacturacionColonia> datos)
+    {
         this.DatosGrid = datos.ToList();
     }
-    private async Task CerrarModal(){
+    private async Task CerrarModal()
+    {
         await OnClose.InvokeAsync(null);
     }
-    private async Task OnExportExcel_Click(){
+    private async Task OnExportExcel_Click()
+    {
         var _guid = Guid.NewGuid().ToString().Replace("-","").Substring(0,10);
         var _titulo = Titulo.Replace(" - ",".").Replace(" ","_").ToString();
-        var _p = new ExcelExportProperties(){
+        var _p = new ExcelExportProperties()
+        {
             FileName = $"{_titulo}-{_guid}.xlsx",
             IncludeHiddenColumn = true
         };
-        await DataGrid.ExportToExcelAsync(_p);
+        await ExportacionExcel.ExportarAsync(DataGrid, _p);
     }
 }

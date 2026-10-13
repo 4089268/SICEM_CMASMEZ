@@ -1,14 +1,11 @@
-@using Syncfusion.Blazor
-@using Syncfusion.Blazor.Popups
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Buttons
-@using Syncfusion.Blazor.Grids
 @using Sicem_Blazor.Descuentos.Data
 @using Sicem_Blazor.Descuentos.Models
 @inject IJSRuntime JSRuntime
 @inject IDescuentosService descuentosService 
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
-@if (Visible){
+@if (Visible)
+{
     <VentanaSecundaria Titulo="@Titulo" CerrarVentana="@CerrarModal" Filas="@(new double[] {50, 360, 240 })" Columnas="@(new double[] { 1020 })">
         <Content>
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 1/2; grid-column: 1/2;">
@@ -19,9 +16,9 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <SfGrid @ref="dataGrid" DataSource="@datosGrid" AllowSorting="true" AllowFiltering="false" AllowExcelExport="true" AllowPdfExport="true" Height="100%" Width="auto" EnableHover="true">
-                    <GridColumns>
-                        <GridColumn HeaderText="" TextAlign="TextAlign.Center" Width="55">
+                <RadzenDataGrid TItem="DescuentosUsuarioAutorizo" @ref="_dataGrid" Data="@datosGrid" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                    <Columns>
+                        <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="55px">
                             <Template>
                                 @{
                                     var data = (context as DescuentosUsuarioAutorizo);
@@ -31,47 +28,45 @@
 
                                 }
                             </Template>
-                        </GridColumn>
-                        <GridColumn Field="@nameof(DescuentosUsuarioAutorizo.Autorizo)" HeaderText="Autorizo" TextAlign="TextAlign.Left" Width="260" />
-                        <GridColumn Field="@nameof(DescuentosUsuarioAutorizo.Subtotal)" HeaderText="Subtotal" TextAlign="TextAlign.Right" Width="140" Format="c2" />
-                        <GridColumn Field="@nameof(DescuentosUsuarioAutorizo.Iva)" HeaderText="Iva" TextAlign="TextAlign.Right" Width="140" Format="c2" />
-                        <GridColumn Field="@nameof(DescuentosUsuarioAutorizo.Total)" HeaderText="Total" TextAlign="TextAlign.Right" Width="140" Format="c2" />
-                        <GridColumn Field="@nameof(DescuentosUsuarioAutorizo.Usuarios)" HeaderText="Usuarios" TextAlign="TextAlign.Center" Width="140" Format="n0" />
-                    </GridColumns>
-                </SfGrid>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn Property="@nameof(DescuentosUsuarioAutorizo.Autorizo)" Title="Autorizo" TextAlign="TextAlign.Left" Width="260px" />
+                        <RadzenDataGridColumn Property="@nameof(DescuentosUsuarioAutorizo.Subtotal)" Title="Subtotal" TextAlign="TextAlign.Right" Width="140px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(DescuentosUsuarioAutorizo.Iva)" Title="Iva" TextAlign="TextAlign.Right" Width="140px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(DescuentosUsuarioAutorizo.Total)" Title="Total" TextAlign="TextAlign.Right" Width="140px" FormatString="{0:c2}" />
+                        <RadzenDataGridColumn Property="@nameof(DescuentosUsuarioAutorizo.Usuarios)" Title="Usuarios" TextAlign="TextAlign.Center" Width="140px" FormatString="{0:n0}" />
+                    </Columns>
+                </RadzenDataGrid>
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 3/4; grid-column: 1/2;">
-                <SfChart Title="" SubTitle="Descuentos por Autorizacion" @ref="grafiaIngresos" Width="100%" Height="224">
-                    <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category" Interval="1" Visible="true" LabelFormat="c">
-                    </ChartPrimaryXAxis>
-                    <ChartPrimaryYAxis Title="" Visible="false" LabelFormat="c2" />
-                    <ChartTooltipSettings Enable="true" Header="" Shared="true" Format="${series.name} ${point.x} : ${point.y}"></ChartTooltipSettings>
-                    <ChartLegendSettings Visible="false" Position="LegendPosition.Right"></ChartLegendSettings>
-                    <ChartZoomSettings EnableMouseWheelZooming="false" EnablePinchZooming="false" EnableSelectionZooming="true"></ChartZoomSettings>
-                    <ChartArea>
-                        <ChartAreaBorder Width="0"></ChartAreaBorder>
-                    </ChartArea>
-                    <ChartSeriesCollection>
-                        <ChartSeries XName="Descripcion" DataSource="@itemsGrafica" YName="Valor1" Name="Descontado" Type="ChartSeriesType.Column">
-                            <ChartMarker>
-                                <ChartDataLabel Visible="true" />
-                            </ChartMarker>
-                        </ChartSeries>
-                    </ChartSeriesCollection>
-                </SfChart>
+                <div class="text-center font-weight-bold">Descuentos por Autorizacion</div>
+                <RadzenChart AllowZoom="true" @ref="_grafiaIngresos" Style="width:100%; height:224px;">
+                    <RadzenCategoryAxis Visible="true" />
+                    <RadzenValueAxis Visible="false" FormatString="{0:c2}" />
+                    <RadzenChartTooltipOptions Shared="true" />
+                    <RadzenLegend Visible="false" Position="LegendPosition.Right" />
+                    <RadzenColumnSeries CategoryProperty="Descripcion" Data="@itemsGrafica" ValueProperty="Valor1" Title="Descontado">
+                        <TooltipTemplate Context="item">
+                            Descontado @item.Descripcion : @item.Valor1
+                        </TooltipTemplate>
+                        <ChildContent>
+                            <RadzenSeriesDataLabels Visible="true" />
+                        </ChildContent>
+                    </RadzenColumnSeries>
+                </RadzenChart>
             </div>
 
         </Content>
     </VentanaSecundaria>
     
 
-    <BusyIndicator Busy="@busyDialog" ContentText="Cargando datos...." />
-    <Descuentos_AutorizoDetalleVtn @ref="vtn_autorizoDet" Visible="@vtn_autorizoDet_visible" CerrarModal="@(()=> vtn_autorizoDet_visible = false)" Fecha1="@Fecha1" Fecha2="@Fecha2" />
+    <BusyIndicator Busy="@_busyDialog" ContentText="Cargando datos...." />
+    <Descuentos_AutorizoDetalleVtn @ref="_vtn_autorizoDet" Visible="@vtn_autorizoDet_visible" CerrarModal="@(()=> vtn_autorizoDet_visible = false)" Fecha1="@Fecha1" Fecha2="@Fecha2" />
 
 }
 
-@code {
+@code
+{
 
     [Parameter] public bool Visible { get; set; }
     [Parameter] public EventCallback CerrarModal { get; set; }
@@ -80,43 +75,53 @@
     [Parameter] public int Subsistema { get; set; }
     [Parameter] public int Sector { get; set; }
     public string Titulo = "DESCUENTOS POR AUTORIZACION";
-    private IEnlace enlaceSeleccionado;
+    private IEnlace _enlaceSeleccionado;
 
-    SfGrid<DescuentosUsuarioAutorizo> dataGrid;
-    SfChart grafiaIngresos;
+    RadzenDataGrid<DescuentosUsuarioAutorizo> _dataGrid;
+    RadzenChart _grafiaIngresos;
     public List<DescuentosUsuarioAutorizo> datosGrid;
     public List<ChartItem> itemsGrafica = new List<ChartItem>();
-    private bool busyDialog = false, vtn_autorizoDet_visible = false;
-    Descuentos_AutorizoDetalleVtn vtn_autorizoDet;
+    private bool _busyDialog = false, vtn_autorizoDet_visible = false;
+    Descuentos_AutorizoDetalleVtn _vtn_autorizoDet;
 
 
     //"******** Funciones ********"
-    private async Task Cerrar_Modal() {
+    private async Task Cerrar_Modal()
+    {
         this.datosGrid = new List<DescuentosUsuarioAutorizo>();
         await CerrarModal.InvokeAsync("");
     }
-    public async Task Inicializar(IEnumerable<DescuentosUsuarioAutorizo> datos, IEnlace enlace) {
-        enlaceSeleccionado = enlace;
+    public async Task Inicializar(IEnumerable<DescuentosUsuarioAutorizo> datos, IEnlace enlace)
+    {
+        _enlaceSeleccionado = enlace;
         this.datosGrid = datos.ToList();
-        if (datosGrid.Count() > 0) {
+        if (datosGrid.Count() > 0)
+        {
             ProcesarDatosGrafica();
         }
         await Task.Delay(100);
     }
-    private void ProcesarDatosGrafica() {
+    private void ProcesarDatosGrafica()
+    {
         itemsGrafica = new List<ChartItem>();
-        foreach (DescuentosUsuarioAutorizo recaItem in this.datosGrid) {
-            itemsGrafica.Add(new ChartItem() {
+        foreach (DescuentosUsuarioAutorizo recaItem in this.datosGrid)
+        {
+            itemsGrafica.Add(new ChartItem()
+            {
                 Descripcion = recaItem.Autorizo,
                 Valor1 = recaItem.Total
             });
         }
     }
-    private async Task GenerarExcel() {
-        await this.dataGrid.ExcelExport(new ExcelExportProperties {
+    private async Task GenerarExcel()
+    {
+        await ExportacionExcel.ExportarAsync(this._dataGrid, new ExcelExportProperties
+        {
             FileName = string.Format("sicem_{0}.xlsx", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
+    // TODO-EXPORT-RADZEN: exportación a PDF pendiente (ver docs/MIGRACION.md). Código original de Syncfusion:
+    /*
     private async Task GenerarPdf() {
         string titulo = string.Format("Ingresos por Conceptos del {0} al {1}", this.Fecha1.ToString("dd/MM/yyyy"), this.Fecha2.ToString("dd/MM/yyyy"));
         List<PdfHeaderFooterContent> xconts = new List<PdfHeaderFooterContent>();
@@ -132,7 +137,7 @@
             }
         );
 
-        await this.dataGrid.PdfExport(new PdfExportProperties {
+        await this._dataGrid.PdfExport(new PdfExportProperties {
             PageOrientation = PageOrientation.Landscape,
             Header = new PdfHeader {
                 Contents = xconts
@@ -140,28 +145,35 @@
             FileName = string.Format("sicem_IngresosxDias{0}.pdf", Guid.NewGuid().ToString().Replace("-", ""))
         });
     }
-    private async Task MostrarVentanaDetalle(DescuentosUsuarioAutorizo e) {
-        if (vtn_autorizoDet_visible){ return; }
-
-        busyDialog = true;
-        await Task.Delay(100);
-        var dateRange = new Sicem_Blazor.Data.DateRange(Fecha1, Fecha2);
-        var tmpData = descuentosService.ObtenerDetalleDescuentosPorUsuarioAutorizo(enlaceSeleccionado, dateRange, e.CVE);
-        if (tmpData == null) {
-            busyDialog = false;
+    */
+    private async Task MostrarVentanaDetalle(DescuentosUsuarioAutorizo e)
+    {
+        if (vtn_autorizoDet_visible)
+        {
             return;
         }
-        if (tmpData.Count() <= 0) {
-            busyDialog = false;
+
+        _busyDialog = true;
+        await Task.Delay(100);
+        var dateRange = new Sicem_Blazor.Data.DateRange(Fecha1, Fecha2);
+        var tmpData = descuentosService.ObtenerDetalleDescuentosPorUsuarioAutorizo(_enlaceSeleccionado, dateRange, e.CVE);
+        if (tmpData == null)
+        {
+            _busyDialog = false;
+            return;
+        }
+        if (tmpData.Count() <= 0)
+        {
+            _busyDialog = false;
             return;
         }
 
         vtn_autorizoDet_visible = true;
-        vtn_autorizoDet.Titulo = $"DESCUENTOS REALIZADOS POR {e.Autorizo.ToUpper()}";
-        vtn_autorizoDet.Inicializar(enlaceSeleccionado, tmpData);
+        _vtn_autorizoDet.Titulo = $"DESCUENTOS REALIZADOS POR {e.Autorizo.ToUpper()}";
+        _vtn_autorizoDet.Inicializar(_enlaceSeleccionado, tmpData);
 
         await Task.Delay(100);
-        busyDialog = false;
+        _busyDialog = false;
     }
 
 }
