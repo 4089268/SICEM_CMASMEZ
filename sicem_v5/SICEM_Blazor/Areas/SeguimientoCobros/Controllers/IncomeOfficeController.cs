@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Sicem_Blazor.Data;
 using Sicem_Blazor.SeguimientoCobros.Data;
 using Sicem_Blazor.SeguimientoCobros.Models;
+using Sicem_Blazor.Services;
 
 namespace Sicem_Blazor.SeguimientoCobros.Controllers {
 

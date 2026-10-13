@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Sicem_Blazor.Data;
 using Sicem_Blazor.Facturacion.Models;
 using Microsoft.Extensions.Logging;
-using SICEM_Blazor.Data;
 using System.Diagnostics;
 
 namespace Sicem_Blazor.Services {

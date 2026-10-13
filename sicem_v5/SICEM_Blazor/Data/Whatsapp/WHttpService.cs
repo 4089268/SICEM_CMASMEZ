@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sicem_Blazor.Data;
+using Sicem_Blazor.Data.Whatsapp;
 
-namespace Sicem_Blazor.Data.Whatsapp;
+namespace Sicem_Blazor.Services;
 
 public class WHttpService : HttpClient
 {

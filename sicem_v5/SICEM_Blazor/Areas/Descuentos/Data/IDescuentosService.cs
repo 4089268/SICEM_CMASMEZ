@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using Sicem_Blazor.Data;
 using Sicem_Blazor.Descuentos.Models;
+using Sicem_Blazor.Descuentos.Data;
 
-namespace Sicem_Blazor.Descuentos.Data {
+namespace Sicem_Blazor.Services {
     public interface IDescuentosService {
 
         public DescuentosResumen ObtenerDescuentosResumen(IEnlace enlace, DateRange dateRange);

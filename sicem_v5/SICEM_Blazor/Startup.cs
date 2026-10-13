@@ -21,7 +21,6 @@ using Sicem_Blazor.Data;
 using Sicem_Blazor.Data.Filtros;
 using Sicem_Blazor.Data.Whatsapp;
 using Sicem_Blazor.Recaudacion.Data;
-using Sicem_Blazor.Eficiencia.Data;
 using Sicem_Blazor.Descuentos.Data;
 using Sicem_Blazor.SeguimientoCobros.Data;
 using Sicem_Blazor.PagoLinea.Services;
@@ -75,7 +74,7 @@ namespace Sicem_Blazor
             services.AddScoped<NotificacionesTemplateService>();
             services.AddPagoLineaServices();
             services.AddSingleton<IncomeOfficeService>( provider => new IncomeOfficeService( Configuration.GetConnectionString("ARQUOS") ));
-            services.AddSingleton<Sicem_Blazor.Lecturas.Data.LecturasService>();
+            services.AddSingleton<LecturasService>();
             services.AddHttpClient("notificacionApi", client =>
             {
                 client.BaseAddress = new Uri("http://nerus.sytes.net:3001/lead");

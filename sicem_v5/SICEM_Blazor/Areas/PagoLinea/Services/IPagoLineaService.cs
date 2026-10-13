@@ -4,9 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Sicem_Blazor.Data;
 using Sicem_Blazor.PagoLinea.Models;
+using Sicem_Blazor.PagoLinea.Services;
 
 
-namespace Sicem_Blazor.PagoLinea.Services;
+namespace Sicem_Blazor.Services;
 
 public interface IPagoLineaService
 {

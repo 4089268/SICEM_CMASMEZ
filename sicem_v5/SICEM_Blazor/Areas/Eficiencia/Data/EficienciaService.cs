@@ -7,7 +7,6 @@ using Microsoft.Data.SqlClient;
 using Sicem_Blazor.Data;
 using Sicem_Blazor.Data.Contracts;
 using Sicem_Blazor.Eficiencia.Models;
-using Sicem_Blazor.Eficiencia.Data;
 using Sicem_Blazor.Models;
 
 namespace Sicem_Blazor.Services {

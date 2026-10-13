@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Sicem_Blazor.Models;
 using Sicem_Blazor.Data;
 using Sicem_Blazor.Padron.Models;
-using SICEM_Blazor.Data;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Cors;
 

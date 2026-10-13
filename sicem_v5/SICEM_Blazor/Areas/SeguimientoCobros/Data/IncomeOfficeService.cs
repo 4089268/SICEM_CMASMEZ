@@ -5,8 +5,9 @@ using Microsoft.Data.SqlClient;
 using System.Linq;
 using Sicem_Blazor.Data;
 using Sicem_Blazor.SeguimientoCobros.Models;
+using Sicem_Blazor.SeguimientoCobros.Data;
 
-namespace Sicem_Blazor.SeguimientoCobros.Data {
+namespace Sicem_Blazor.Services {
 
     public class IncomeOfficeService {
 
