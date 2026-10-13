@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.Data.SqlClient;
 using Sicem_Blazor.Data;
 
 namespace Sicem_Blazor.Models
@@ -31,15 +32,19 @@ namespace Sicem_Blazor.Models
         [NotMapped]
         public virtual ICollection<ModsOficina> ModsOficinas { get; set; }
 
-        public string StringConection {
-            get {
-                var _connectionBuilder = new System.Data.SqlClient.SqlConnectionStringBuilder() {
-                    DataSource = Alterno == true?this.ServidorA:this.Servidor,
+        public string StringConection
+        {
+            get
+            {
+                var _connectionBuilder = new SqlConnectionStringBuilder()
+                {
+                    DataSource = Alterno == true ? this.ServidorA : this.Servidor,
                     InitialCatalog = this.BaseDatos,
                     UserID = this.Usuario,
                     Password = this.Contraseña,
                     ApplicationName = "Sicem",
-                    ConnectTimeout = ( 60 * 20)
+                    ConnectTimeout = (60 * 20),
+                    Encrypt = SqlConnectionEncryptOption.Optional
                 };
                 return _connectionBuilder.ConnectionString;
             }

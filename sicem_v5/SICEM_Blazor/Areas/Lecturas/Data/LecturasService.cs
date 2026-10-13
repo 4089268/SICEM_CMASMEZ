@@ -1,7 +1,7 @@
 using System;
 using System.Data;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using Sicem_Blazor.Data;
 using Sicem_Blazor.Lecturas.Models;
 using Microsoft.Extensions.Logging;

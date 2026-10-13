@@ -9,7 +9,7 @@ using Aspose.Pdf.Devices;
 using Aspose.Pdf;
 using Microsoft.AspNetCore.Mvc;
 using Sicem_Blazor.Services;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using Sicem_Blazor.Models;
 using System.Data;
 using Microsoft.Extensions.Configuration;

@@ -3,7 +3,7 @@ using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using Sicem_Blazor.Data;
 using Sicem_Blazor.Data.Contracts;
 using Sicem_Blazor.Eficiencia.Models;

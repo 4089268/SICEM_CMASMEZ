@@ -1,5 +1,5 @@
 using System;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace Sicem_Blazor.OrdenesTrabajos.Models;
 public class Ordenes_PagoRealizadoItem {
