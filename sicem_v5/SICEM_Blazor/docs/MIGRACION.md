@@ -440,7 +440,7 @@ Syncfusion quedó **eliminado por completo** del proyecto.
 
 ### Colores de Radzen (2026-10-06)
 
-`wwwroot/css/radzen-ajustes.css`: los colores primario y secundario de Radzen (por defecto índigo `#4340D2` y rosa `#e31c65` en el tema *material*) ahora toman los del tema de la aplicación definidos en `site.css` — `--rz-primary: var(--mdc-theme-primary)` (`#49b2c7`) y `--rz-secondary: var(--mdc-theme-secondary)` (`#2c8ea2`), los mismos de MatBlazor. Los tonos `-light`, `-lighter`, `-dark` y `-darker` se calculan con `color-mix()`, por lo que cambiar el color en `site.css` actualiza también Radzen. La pestaña activa usa `--rz-secondary`. Los colores de las series de las gráficas no cambian (son la paleta propia de Radzen).
+`wwwroot/css/radzen-ajustes.css`: los colores primario y secundario de Radzen (por defecto índigo `#4340D2` y rosa `#e31c65` en el tema *material*) ahora toman los del tema de la aplicación definidos en `site.css` — `--rz-primary: var(--mdc-theme-primary)` (`#49b2c7`) y `--rz-secondary: var(--mdc-theme-secondary)` (`#2c8ea2`), los mismos de MatBlazor. Los tonos `-light`, `-lighter`, `-dark` y `-darker` se calculan con `color-mix()`, por lo que cambiar el color en `site.css` actualiza también Radzen. La pestaña activa usa `--rz-secondary`. Los colores de las series de las gráficas usan su propia paleta (ver abajo).
 
 ### Exportación a Excel e importación (2026-10-06)
 
@@ -448,10 +448,10 @@ Syncfusion quedó **eliminado por completo** del proyecto.
 
 | Archivo | Cambio |
 |---|---|
-| **Nuevo:** `Services/ExportacionExcelService.cs` | `ExportarAsync(grid, ExcelExportProperties)`: exporta un `RadzenDataGrid` tal como se ve — columnas visibles (con `Property`) con su título, todas las filas filtradas y ordenadas (`grid.View`, sin paginar). Conserva tipos (número, fecha, booleano; texto con ceros a la izquierda) y traduce `FormatString` a formato de Excel (`{0:c2}` → `$#,##0.00`, `{0:n0}` → `#,##0`, fechas, `000000000`). Encabezado en negritas con fondo gris, primera fila fija, ancho ajustado. Descarga por `DotNetStreamReference`. Registrado como `AddScoped` en `Startup.cs`. |
-| `ExcelExportProperties` (en el mismo archivo) | Clase propia con los nombres que usaba Syncfusion (`FileName`, `IncludeHiddenColumn`) + `SheetName`, para conservar el código existente. |
+| **Nuevo:** `Services/RadzenDataGridExportacionExcelService.cs` (renombrado por el usuario el 2026-10-07; antes `ExportacionExcelService`) | `ExportarAsync(grid, ExcelExportProperties)`: exporta un `RadzenDataGrid` tal como se ve — columnas visibles (con `Property`) con su título, todas las filas filtradas y ordenadas (`grid.View`, sin paginar). Conserva tipos (número, fecha, booleano; texto con ceros a la izquierda) y traduce `FormatString` a formato de Excel (`{0:c2}` → `$#,##0.00`, `{0:n0}` → `#,##0`, fechas, `000000000`). Encabezado en negritas con fondo gris, primera fila fija, ancho ajustado. Descarga por `DotNetStreamReference`. Registrado como `AddScoped` en `Startup.cs`. |
+| `Models/ExcelExportProperties.cs` | Clase propia con los nombres que usaba Syncfusion (`FileName`, `IncludeHiddenColumn`) + `SheetName`, para conservar el código existente. |
 | `wwwroot/js/utilities.js` | Nueva función `descargarArchivoDesdeStream(nombreArchivo, streamReference, contentType)`. |
-| 80 componentes (85 llamadas) | Se restauró la exportación comentada con `TODO-EXPORT-RADZEN`: el método original se conserva (nombres de archivo, `IncludeHiddenColumn`, validaciones, indicadores de carga) y solo cambia `grid.ExcelExport(p)` / `grid.ExportToExcelAsync(p)` → `ExportacionExcel.ExportarAsync(grid, p)`. Se descomentaron sus botones y se inyectó el servicio (`@inject ExportacionExcelService ExportacionExcel`, o `[Inject]` en los `.razor.cs`). Allman. |
+| 80 componentes (85 llamadas) | Se restauró la exportación comentada con `TODO-EXPORT-RADZEN`: el método original se conserva (nombres de archivo, `IncludeHiddenColumn`, validaciones, indicadores de carga) y solo cambia `grid.ExcelExport(p)` / `grid.ExportToExcelAsync(p)` → `ExportacionExcel.ExportarAsync(grid, p)`. Se descomentaron sus botones y se inyectó el servicio (`@inject RadzenDataGridExportacionExcelService ExportacionExcel`, o `[Inject]` en los `.razor.cs`). Allman. |
 | `Data/ProcesarExcel.cs` | Aspose.Cells → ExcelDataReader (misma API: `ToDataTable`, `ToDataTableFirstCol`). `ToDataTable` (sin uso) omitía la última fila y columna; ya no. |
 | `Data/ExportarExcel.cs` | EPPlus → ClosedXML con la misma API y flujo (archivo en `TempFolder` + descarga por `Direccion_Api/download/{guid}`). Allman y campos `_camelCase`. |
 | `Sicem_Blazor.csproj` | + `ClosedXML` 0.105.1; − `Aspose.Cells`, − `EPPlus`. + `System.Drawing.Common` 6.0.0 explícito: es la versión que ya se resolvía; sin fijarla, Aspose.PDF bajaba a la 5.0.2, con vulnerabilidad crítica (NU1904). |
@@ -461,6 +461,10 @@ Syncfusion quedó **eliminado por completo** del proyecto.
 **Verificación:** compilación sin errores ni advertencias; prueba de consola: exportación con tipos y formatos correctos, lectura con `ProcesarExcel` de un archivo generado, y `ExportarExcel` omitiendo `id_oficina`; la app arranca y las rutas responden 200.
 
 - [ ] Prueba manual: exportar desde varias páginas (con filtros/orden aplicados, con columnas ocultas en las que usan `IncludeHiddenColumn`), cargar cuentas desde Excel en Búsqueda Avanzada, "Exportar Resultados", e incorporar pagos (Pago en Línea).
+
+### Paleta de las gráficas (2026-10-12)
+
+Las series de las gráficas no usan `--rz-primary`/`--rz-secondary` sino la paleta `--rz-series-1` … `--rz-series-24` del tema (inicia en morado `#3700b3`). En `wwwroot/css/radzen-ajustes.css` se redefinió: serie 1 = `var(--rz-primary)`, serie 2 = `var(--rz-secondary)`, series 3-8 = colores complementarios (naranja `#f2a33a`, morado `#7a5fb0`, verde `#5cb85c`, rojo `#e05d5d`, amarillo `#f0d24a`, gris `#8c9aa6`), series 9-16 y 17-24 = las mismas aclaradas con `color-mix()` (para pasteles/donas con muchas categorías). Se quitaron los colores fijos para que todas las gráficas usen esta paleta: `Fills="@_palettes"` (y el campo `_palettes`) de las 2 donas de Seguimiento de Pagos, `Fill="#440412"` de la barra "Importe Cobrado" (`PagoLinea/Views/PagoLineaPage.razor`) y `Stroke="#440412"` de la línea "Pagos realizados" (`PagoLinea/Views/DetalleOficinaVtn.razor`). Ya no queda ningún `Fill`/`Stroke`/`Fills` fijo en las gráficas.
 
 ### Pendientes de la Fase 2
 
