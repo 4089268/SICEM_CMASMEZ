@@ -87,9 +87,9 @@
     </div>
 
     <!--- ****** Graficas ****** -->
-    <div class="d-flex" style="grid-area:5/1/6/2;">
+    <div class="border rounded bg-white d-flex flex-column align-items-center p-1" style="grid-area:5/1/6/2;">
         <div class="text-center font-weight-bold">ORDENES DE TRABAJO</div>
-        <RadzenChart @ref="GraficaUsuarios" Style="height:100%; width:100%;">
+        <RadzenChart @ref="GraficaUsuarios" Style="flex: 1; min-height: 0; width: 100%;">
             <RadzenCategoryAxis />
             <RadzenValueAxis Visible="false" FormatString="{0:n0}" />
             <RadzenChartTooltipOptions Shared="true" />
