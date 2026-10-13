@@ -18,7 +18,7 @@ namespace Sicem_Blazor.OrdenesTrabajos.Views;
 public partial class OrdenesPage : ComponentBase
 {
     [Inject]
-    public ExportacionExcelService ExportacionExcel { get; set; }
+    public RadzenDataGridExportacionExcelService ExportacionExcel { get; set; }
 
     [Inject]
     private NavigationManager navigationManager { get; set; }

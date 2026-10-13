@@ -28,7 +28,7 @@ namespace Sicem_Blazor.PagoLinea.Views
     public partial class ProcessFilesPage : ComponentBase, IDisposable
     {
         [Inject]
-        public ExportacionExcelService ExportacionExcel { get; set; }
+        public RadzenDataGridExportacionExcelService ExportacionExcel { get; set; }
 
         [Inject]
         public NavigationManager NavManager { get; set; } = default!;

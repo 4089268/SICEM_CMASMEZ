@@ -1,7 +1,7 @@
 @using Sicem_Blazor.Lecturas.Models
 @using Sicem_Blazor.Lecturas.Data
 @inject IMatToaster Toaster
-@inject ExportacionExcelService ExportacionExcel
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
 <VentanaSecundaria Titulo="@Title" Filas="@(new double[]{40, 750})" Columnas="@(new double[]{.85})" CerrarVentana="CerrarModal">
     <Content>

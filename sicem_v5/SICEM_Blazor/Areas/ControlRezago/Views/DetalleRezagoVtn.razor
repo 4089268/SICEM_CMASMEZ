@@ -1,6 +1,6 @@
 @using Sicem_Blazor.ControlRezago.Models
 @inject IJSRuntime JSRuntime
-@inject ExportacionExcelService ExportacionExcel
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 
     <VentanaSecundaria Titulo="@Titulo" Columnas="@_gridColumnas" Filas="@_gridFilas" CerrarVentana="@( e => Cerrar_Modal() )">
         <Content>

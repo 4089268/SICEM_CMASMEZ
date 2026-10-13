@@ -103,7 +103,7 @@ namespace Sicem_Blazor.Data
         private void GenerarCelda(int row, int col, IXLWorksheet sheet, FieldInfo field, T valor)
         {
             var _cell = sheet.Cell(row, col);
-            _cell.Value = ExportacionExcelService.ValorCelda(field.GetValue(valor));
+            _cell.Value = RadzenDataGridExportacionExcelService.ValorCelda(field.GetValue(valor));
             _cell.Style.Font.FontSize = 12;
         }
 

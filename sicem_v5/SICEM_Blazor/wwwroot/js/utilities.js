@@ -80,7 +80,6 @@ function DownloadFileFromBytes(options){
     
     // At last, release unused resources.
     URL.revokeObjectURL(url);
-      
 }
 // Descarga un archivo generado en el servidor (DotNetStreamReference), p. ej. la exportación de grids a Excel
 async function descargarArchivoDesdeStream(nombreArchivo, streamReference, contentType) {

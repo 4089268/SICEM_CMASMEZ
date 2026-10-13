@@ -1,6 +1,6 @@
 @using Sicem_Blazor.Micromedicion.Models
 @inject IJSRuntime JSRuntime
-@inject ExportacionExcelService ExportacionExcel
+@inject RadzenDataGridExportacionExcelService ExportacionExcel
 @if(Visible)
 {
     <VentanaSecundaria Titulo="@Titulo" CerrarVentana="@CerrarModalClick" Filas="@(new double[] { 50, 610 })" Columnas="@(new double[]{1100})">

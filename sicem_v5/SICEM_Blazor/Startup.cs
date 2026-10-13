@@ -60,7 +60,7 @@ namespace Sicem_Blazor
             services.Configure<ApiAuthSettings>(Configuration.GetSection("ApiAuth"));
             services.AddSingleton<SessionService>();
             services.AddScoped<SicemService>();
-            services.AddScoped<ExportacionExcelService>();
+            services.AddScoped<RadzenDataGridExportacionExcelService>();
             services.AddScoped<ConsultaGralService>();
             services.AddScoped<IRecaudacionService, RecaudacionService>();
             services.AddScoped<ControlRezagoService>();

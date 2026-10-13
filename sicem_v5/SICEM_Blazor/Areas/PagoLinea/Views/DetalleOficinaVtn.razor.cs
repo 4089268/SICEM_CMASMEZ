@@ -22,7 +22,7 @@ namespace Sicem_Blazor.PagoLinea.Views;
 public partial class DetalleOficinaVtn
 {
     [Inject]
-    public ExportacionExcelService ExportacionExcel { get; set; }
+    public RadzenDataGridExportacionExcelService ExportacionExcel { get; set; }
 
     [Inject]
     public IMatToaster Toaster {get;set;} = default!;

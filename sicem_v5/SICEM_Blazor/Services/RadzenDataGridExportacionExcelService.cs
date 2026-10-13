@@ -9,41 +9,28 @@ using System.Threading.Tasks;
 using ClosedXML.Excel;
 using Microsoft.JSInterop;
 using Radzen.Blazor;
+using Sicem_Blazor.Models;
 
 namespace Sicem_Blazor.Services;
-
-/// <summary>
-/// Opciones de la exportación a Excel de un grid
-/// (mismos nombres que usaba ExcelExportProperties de Syncfusion, para conservar el código existente).
-/// </summary>
-public class ExcelExportProperties
-{
-    /// <summary>Nombre del archivo a descargar. Si se omite se genera uno.</summary>
-    public string FileName { get; set; }
-
-    /// <summary>Incluir también las columnas ocultas (Visible="false").</summary>
-    public bool IncludeHiddenColumn { get; set; } = false;
-
-    /// <summary>Nombre de la hoja.</summary>
-    public string SheetName { get; set; } = "Datos";
-}
 
 /// <summary>
 /// Exporta a Excel (ClosedXML) los datos de un RadzenDataGrid tal como se ven:
 /// columnas visibles con su título y formato, y filas filtradas y ordenadas (todas las páginas).
 /// Reemplaza a SfGrid.ExcelExport / ExportToExcelAsync de Syncfusion.
 /// </summary>
-public class ExportacionExcelService
+public class RadzenDataGridExportacionExcelService
 {
     private const string _contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     private readonly IJSRuntime _jsRuntime;
 
-    public ExportacionExcelService(IJSRuntime jsRuntime)
+    public RadzenDataGridExportacionExcelService(IJSRuntime jsRuntime)
     {
         _jsRuntime = jsRuntime;
     }
 
-    /// <summary>Genera el Excel del grid y lo descarga en el navegador.</summary>
+    /// <summary>
+    /// Genera el Excel del grid y lo descarga en el navegador.
+    /// </summary>
     public async Task ExportarAsync<T>(RadzenDataGrid<T> grid, ExcelExportProperties propiedades = null)
     {
         if (grid == null)
@@ -67,7 +54,9 @@ public class ExportacionExcelService
         await DescargarAsync(contenido, nombreArchivo);
     }
 
-    /// <summary>Descarga un arreglo de bytes como archivo en el navegador.</summary>
+    /// <summary>
+    /// Descarga un arreglo de bytes como archivo en el navegador.
+    /// </summary>
     public async Task DescargarAsync(byte[] contenido, string nombreArchivo)
     {
         using var stream = new MemoryStream(contenido);
@@ -75,7 +64,9 @@ public class ExportacionExcelService
         await _jsRuntime.InvokeVoidAsync("descargarArchivoDesdeStream", nombreArchivo, streamReference, _contentType);
     }
 
-    /// <summary>Genera el libro de Excel: encabezados en negritas y una fila por registro con su tipo de dato.</summary>
+    /// <summary>
+    /// Genera el libro de Excel: encabezados en negritas y una fila por registro con su tipo de dato.
+    /// </summary>
     public byte[] GenerarExcel<T>(IList<ColumnaExportacion> columnas, IList<T> datos, string nombreHoja = "Datos")
     {
         using var libro = new XLWorkbook();
@@ -138,7 +129,9 @@ public class ExportacionExcelService
         }
     }
 
-    /// <summary>Acceso a la propiedad (admite rutas "A.B") por reflexión.</summary>
+    /// <summary>
+    /// Acceso a la propiedad (admite rutas "A.B") por reflexión.
+    /// </summary>
     private static Func<object, object> CrearAcceso(Type tipo, string ruta)
     {
         var propiedades = new List<PropertyInfo>();
@@ -169,7 +162,9 @@ public class ExportacionExcelService
         };
     }
 
-    /// <summary>Traduce el FormatString de Radzen ("{0:c2}", "{0:n0}", "{0:dd/MM/yyyy}", …) a formato numérico de Excel.</summary>
+    /// <summary>
+    /// Traduce el FormatString de Radzen ("{0:c2}", "{0:n0}", "{0:dd/MM/yyyy}", …) a formato numérico de Excel.
+    /// </summary>
     private static string FormatoExcel(string formatString)
     {
         if (string.IsNullOrWhiteSpace(formatString))
@@ -212,5 +207,8 @@ public class ExportacionExcelService
     }
 }
 
-/// <summary>Columna a exportar: título, propiedad y formato.</summary>
+
+/// <summary>
+/// Columna a exportar: título, propiedad y formato.
+/// </summary>
 public record ColumnaExportacion(string Titulo, string Propiedad, string FormatString);

@@ -20,7 +20,7 @@ namespace Sicem_Blazor.PagoLinea.Views
     public partial class PagoLineaPage
     {
         [Inject]
-        public ExportacionExcelService ExportacionExcel { get; set; }
+        public RadzenDataGridExportacionExcelService ExportacionExcel { get; set; }
 
 
         [Inject]
