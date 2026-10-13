@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic;
 
-namespace SICEM_Blazor.Data
+namespace Sicem_Blazor.Data
 {
     public class DatabaseExecutor
     {

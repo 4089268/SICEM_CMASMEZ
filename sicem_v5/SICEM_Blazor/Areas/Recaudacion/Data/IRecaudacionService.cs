@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using Sicem_Blazor.Data;
 using Sicem_Blazor.Recaudacion.Models;
+using Sicem_Blazor.Recaudacion.Data;
 
-namespace Sicem_Blazor.Recaudacion.Data {
+namespace Sicem_Blazor.Services {
     public interface IRecaudacionService {
 
         public Recaudacion_Resumen ObtenerResumen(IEnlace enlace, DateRange dateRange);

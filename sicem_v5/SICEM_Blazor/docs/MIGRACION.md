@@ -466,6 +466,10 @@ Syncfusion quedó **eliminado por completo** del proyecto.
 
 Las series de las gráficas no usan `--rz-primary`/`--rz-secondary` sino la paleta `--rz-series-1` … `--rz-series-24` del tema (inicia en morado `#3700b3`). En `wwwroot/css/radzen-ajustes.css` se redefinió: serie 1 = `var(--rz-primary)`, serie 2 = `var(--rz-secondary)`, series 3-8 = colores complementarios (naranja `#f2a33a`, morado `#7a5fb0`, verde `#5cb85c`, rojo `#e05d5d`, amarillo `#f0d24a`, gris `#8c9aa6`), series 9-16 y 17-24 = las mismas aclaradas con `color-mix()` (para pasteles/donas con muchas categorías). Se quitaron los colores fijos para que todas las gráficas usen esta paleta: `Fills="@_palettes"` (y el campo `_palettes`) de las 2 donas de Seguimiento de Pagos, `Fill="#440412"` de la barra "Importe Cobrado" (`PagoLinea/Views/PagoLineaPage.razor`) y `Stroke="#440412"` de la línea "Pagos realizados" (`PagoLinea/Views/DetalleOficinaVtn.razor`). Ya no queda ningún `Fill`/`Stroke`/`Fills` fijo en las gráficas.
 
+### Fondo de las gráficas principales (2026-10-12)
+
+`RadzenChart` es transparente (el `SfChart` de Syncfusion pintaba su propio fondo blanco). En las páginas principales de **Órdenes de Trabajo**, **Micromedición** y **Padrón** la gráfica estaba directamente en un `div.d-flex` sin fondo, por lo que se veía sobre el gris de la página y el título quedaba al lado de la gráfica. Se cambió el contenedor a `border rounded bg-white d-flex flex-column` (igual que Recaudación, Descuentos, etc.) y la gráfica a `flex: 1; min-height: 0` para ocupar el espacio bajo el título.
+
 ### Pendientes de la Fase 2
 
 - [x] Exportación a Excel con ClosedXML (ver *Exportación a Excel e importación*).
@@ -479,7 +483,10 @@ Las series de las gráficas no usan `--rz-primary`/`--rz-secondary` sino la pale
 
 ## Fase 3 (último paso) – Unificación de namespaces
 
-_Pendiente. Se hace al final para no mezclar renombres con los cambios de la Fase 2._
+**Fecha:** 2026-10-12
+**Rama:** `feature/namespaces` (creada a partir de `feature/radzen`)
+
+✅ **Completada.**
 
 ### Decisión
 
@@ -513,9 +520,9 @@ Services e interfaces fuera de `Sicem_Blazor.Services`:
 
 ### Pasos
 
-- [ ] Cambiar `SICEM_Blazor` → `Sicem_Blazor` en los 3 archivos de arriba.
-- [ ] Mover los namespaces de los services/interfaces listados a `Sicem_Blazor.Services`.
-- [ ] Actualizar los `using` / `@using` / `@inject` afectados (páginas `.razor`, `_Imports.razor`, `Startup.cs`).
-- [ ] Revisar si algún modelo de área quedó en los namespaces eliminados (p. ej. `Sicem_Blazor.Recaudacion.Data`) y ajustar sus referencias.
-- [ ] Corregir la regla de namespace en `CLAUDE.md` a `Sicem_Blazor.Services`.
-- [ ] `dotnet build` sin errores y prueba de humo de cada área.
+- [x] Cambiar `SICEM_Blazor` → `Sicem_Blazor` en los 3 archivos de arriba (en `FacturacionService` y `PadronService` quedaba `using Sicem_Blazor.Data` duplicado; se quitó).
+- [x] Mover los namespaces de los services/interfaces listados a `Sicem_Blazor.Services`. Los archivos movidos que usan otros tipos de su área recibieron `using Sicem_Blazor.<Area>.Data;` (o `.PagoLinea.Services`, `.Data.Whatsapp`).
+- [x] Actualizar los `using` afectados: `Sicem_Blazor.Eficiencia.Data` quedó vacío y se quitó su `using` de 8 archivos (`Startup.cs`, `EficienciaService.cs` y 6 vistas); se agregó `using Sicem_Blazor.Services;` en `IncomeOfficeController`, `PagoLineaServiceCollectionExtension`, `AplyPaymentJob` y `WhatsappServiceCollectionExtension`; en `Startup.cs`, `Sicem_Blazor.Lecturas.Data.LecturasService` → `LecturasService`. No hizo falta tocar `@inject` (ya usaban el nombre corto con `@using Sicem_Blazor.Services` de `_Imports.razor`).
+- [x] Tipos que no son services se quedan en su área: `StoreProceduresRecaudacion`, `RecaudacionAnaliticoFactory`, `StoreProceduresDescuentos`, `StoreProceduresIncomeOffice`, `IPagoLineaRepo`, jobs de PagoLinea, `WhatsappSettings`. La clase `StoredProcedures` estaba dentro de `LecturasService.cs`: se movió a su propio archivo `Areas/Lecturas/Data/StoredProceduresLecturas.cs` (namespace `Sicem_Blazor.Lecturas.Data`) para que no terminara en `Sicem_Blazor.Services`.
+- [x] Corregir la regla de namespace en `CLAUDE.md` a `Sicem_Blazor.Services` (archivo local).
+- [x] `dotnet build` sin errores ni advertencias; la app arranca (el contenedor de dependencias resuelve los services movidos) y las 16 rutas de los módulos responden 200. Resultado: 0 apariciones de `SICEM_Blazor`, todos los services e interfaces en `Sicem_Blazor.Services`, los 266 archivos `.cs` con raíz `Sicem_Blazor`.

@@ -12,8 +12,9 @@ using Sicem_Blazor.Models;
 using Sicem_Blazor.PagoLinea.Data;
 using Sicem_Blazor.PagoLinea.Models;
 using Sicem_Blazor.Services;
+using Sicem_Blazor.PagoLinea.Services;
 
-namespace Sicem_Blazor.PagoLinea.Services;
+namespace Sicem_Blazor.Services;
 
 public class PagoLineaService : IPagoLineaService, IPagoLineaRepo
 {

@@ -6,7 +6,7 @@ using Sicem_Blazor.Eficiencia.Models;
 using Sicem_Blazor.Models;
 using Sicem_Blazor.Services;
 
-namespace Sicem_Blazor.Eficiencia.Data {
+namespace Sicem_Blazor.Services {
     public interface IEficienciaService{
         
         public EficienciaResumen ObtenerResumenEnlace(IEnlace enlace, int anio, int mes, int sb, int sec);

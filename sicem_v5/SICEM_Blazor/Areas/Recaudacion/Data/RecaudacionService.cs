@@ -11,8 +11,9 @@ using Sicem_Blazor.Services;
 using Sicem_Blazor.Recaudacion.Models;
 using Sicem_Blazor.Models;
 using Sicem_Blazor.Data.Contracts;
+using Sicem_Blazor.Recaudacion.Data;
 
-namespace Sicem_Blazor.Recaudacion.Data
+namespace Sicem_Blazor.Services
 {
     public class RecaudacionService : IRecaudacionService
     {
