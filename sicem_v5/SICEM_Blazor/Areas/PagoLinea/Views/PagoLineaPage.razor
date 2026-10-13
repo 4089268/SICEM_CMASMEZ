@@ -82,7 +82,7 @@
             <RadzenCategoryAxis />
             <RadzenValueAxis Visible="true" FormatString="{0:c2}" />
             <RadzenChartTooltipOptions Shared="true" />
-            <RadzenBarSeries Data="@DatosGraficaImporte" Title="Importe Cobrado" CategoryProperty="Descripcion" ValueProperty="Valor1" Fill="#440412">
+            <RadzenBarSeries Data="@DatosGraficaImporte" Title="Importe Cobrado" CategoryProperty="Descripcion" ValueProperty="Valor1">
                 <TooltipTemplate Context="item">
                     <b>@item.Descripcion</b> : @item.Valor1
                 </TooltipTemplate>

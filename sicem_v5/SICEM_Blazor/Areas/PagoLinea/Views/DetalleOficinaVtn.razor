@@ -33,7 +33,7 @@
                     <RadzenCategoryAxis />
                     <RadzenValueAxis Visible="true" FormatString="{0:n0}" />
                     <RadzenChartTooltipOptions Shared="true" />
-                    <RadzenLineSeries Data="@IncomeDays" Title="Pagos realizados" CategoryProperty="DayFormat" ValueProperty="TotalMovements" Stroke="#440412">
+                    <RadzenLineSeries Data="@IncomeDays" Title="Pagos realizados" CategoryProperty="DayFormat" ValueProperty="TotalMovements">
                         <TooltipTemplate Context="item">
                             <b>@item.DayFormat</b> : @item.TotalMovements pagos
                         </TooltipTemplate>

@@ -36,6 +36,37 @@
     font-family: 'Montzerrat', sans-serif;
 }
 
+/* Paleta de las series de las gráficas (por defecto Radzen usa una paleta propia que inicia en morado).
+   Serie 1 = color primario, serie 2 = color secundario, 3-8 colores complementarios;
+   9-16 y 17-24 son las mismas en tonos más claros (pasteles y donas con muchas categorías). */
+:root
+{
+    --rz-series-1: var(--rz-primary);
+    --rz-series-2: var(--rz-secondary);
+    --rz-series-3: #f2a33a;
+    --rz-series-4: #7a5fb0;
+    --rz-series-5: #5cb85c;
+    --rz-series-6: #e05d5d;
+    --rz-series-7: #f0d24a;
+    --rz-series-8: #8c9aa6;
+    --rz-series-9: color-mix(in srgb, var(--rz-series-1) 70%, white);
+    --rz-series-10: color-mix(in srgb, var(--rz-series-2) 70%, white);
+    --rz-series-11: color-mix(in srgb, var(--rz-series-3) 70%, white);
+    --rz-series-12: color-mix(in srgb, var(--rz-series-4) 70%, white);
+    --rz-series-13: color-mix(in srgb, var(--rz-series-5) 70%, white);
+    --rz-series-14: color-mix(in srgb, var(--rz-series-6) 70%, white);
+    --rz-series-15: color-mix(in srgb, var(--rz-series-7) 70%, white);
+    --rz-series-16: color-mix(in srgb, var(--rz-series-8) 70%, white);
+    --rz-series-17: color-mix(in srgb, var(--rz-series-1) 45%, white);
+    --rz-series-18: color-mix(in srgb, var(--rz-series-2) 45%, white);
+    --rz-series-19: color-mix(in srgb, var(--rz-series-3) 45%, white);
+    --rz-series-20: color-mix(in srgb, var(--rz-series-4) 45%, white);
+    --rz-series-21: color-mix(in srgb, var(--rz-series-5) 45%, white);
+    --rz-series-22: color-mix(in srgb, var(--rz-series-6) 45%, white);
+    --rz-series-23: color-mix(in srgb, var(--rz-series-7) 45%, white);
+    --rz-series-24: color-mix(in srgb, var(--rz-series-8) 45%, white);
+}
+
 /* Grids con agrupación inicial pero sin el área para arrastrar columnas
    (equivalente a GridGroupSettings ShowDropArea="false" de Syncfusion) */
 .grid-sin-panel-grupos .rz-group-header

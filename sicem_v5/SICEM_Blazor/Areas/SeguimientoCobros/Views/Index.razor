@@ -16,7 +16,7 @@
             <div class="text-center font-weight-bold">Ingresos por Sucursal</div>
             <RadzenChart @ref="_chartIngresos" Style="flex:1; width:100%;">
                 <RadzenLegend Visible="true" Position="LegendPosition.Top" />
-                <RadzenDonutSeries Data="@IncomeDataGraph" CategoryProperty="@nameof(OfficePushpinMap.Office)" ValueProperty="@nameof(OfficePushpinMap.Income)" Title="Ingresos" Fills="@_palettes">
+                <RadzenDonutSeries Data="@IncomeDataGraph" CategoryProperty="@nameof(OfficePushpinMap.Office)" ValueProperty="@nameof(OfficePushpinMap.Income)" Title="Ingresos">
                     <RadzenSeriesDataLabels Visible="true" />
                 </RadzenDonutSeries>
             </RadzenChart>
@@ -25,7 +25,7 @@
             <div class="text-center font-weight-bold">Recibos por Sucursal</div>
             <RadzenChart @ref="_chartRecibos" Style="flex:1; width:100%;">
                 <RadzenLegend Visible="false" />
-                <RadzenDonutSeries Data="@IncomeDataGraph" CategoryProperty="@nameof(OfficePushpinMap.Office)" ValueProperty="@nameof(OfficePushpinMap.Bills)" Title="Recibos" Fills="@_palettes">
+                <RadzenDonutSeries Data="@IncomeDataGraph" CategoryProperty="@nameof(OfficePushpinMap.Office)" ValueProperty="@nameof(OfficePushpinMap.Bills)" Title="Recibos">
                     <RadzenSeriesDataLabels Visible="true" />
                 </RadzenDonutSeries>
             </RadzenChart>
@@ -55,7 +55,6 @@
     private RadzenDataGrid<OfficePushpinMap> _dataGrid;
     private RadzenChart _chartIngresos;
     private RadzenChart _chartRecibos;
-    private string[] _palettes = { "#2e86c1", "#28b463", "#d68910", "#884ea0" };
 
     protected override void OnInitialized()
     {
