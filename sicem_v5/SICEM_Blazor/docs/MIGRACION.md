@@ -466,6 +466,10 @@ Syncfusion quedó **eliminado por completo** del proyecto.
 
 Las series de las gráficas no usan `--rz-primary`/`--rz-secondary` sino la paleta `--rz-series-1` … `--rz-series-24` del tema (inicia en morado `#3700b3`). En `wwwroot/css/radzen-ajustes.css` se redefinió: serie 1 = `var(--rz-primary)`, serie 2 = `var(--rz-secondary)`, series 3-8 = colores complementarios (naranja `#f2a33a`, morado `#7a5fb0`, verde `#5cb85c`, rojo `#e05d5d`, amarillo `#f0d24a`, gris `#8c9aa6`), series 9-16 y 17-24 = las mismas aclaradas con `color-mix()` (para pasteles/donas con muchas categorías). Se quitaron los colores fijos para que todas las gráficas usen esta paleta: `Fills="@_palettes"` (y el campo `_palettes`) de las 2 donas de Seguimiento de Pagos, `Fill="#440412"` de la barra "Importe Cobrado" (`PagoLinea/Views/PagoLineaPage.razor`) y `Stroke="#440412"` de la línea "Pagos realizados" (`PagoLinea/Views/DetalleOficinaVtn.razor`). Ya no queda ningún `Fill`/`Stroke`/`Fills` fijo en las gráficas.
 
+### Fondo de las gráficas principales (2026-10-12)
+
+`RadzenChart` es transparente (el `SfChart` de Syncfusion pintaba su propio fondo blanco). En las páginas principales de **Órdenes de Trabajo**, **Micromedición** y **Padrón** la gráfica estaba directamente en un `div.d-flex` sin fondo, por lo que se veía sobre el gris de la página y el título quedaba al lado de la gráfica. Se cambió el contenedor a `border rounded bg-white d-flex flex-column` (igual que Recaudación, Descuentos, etc.) y la gráfica a `flex: 1; min-height: 0` para ocupar el espacio bajo el título.
+
 ### Pendientes de la Fase 2
 
 - [x] Exportación a Excel con ClosedXML (ver *Exportación a Excel e importación*).
