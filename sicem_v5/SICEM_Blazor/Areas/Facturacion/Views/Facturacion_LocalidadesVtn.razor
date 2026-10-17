@@ -16,7 +16,7 @@
             </div>
 
             <div class="border rounded p-2 mb-2 bg-white">
-                <RadzenDataGrid TItem="FacturacionLocalidad" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" Style="width:100%; height:100%;">
+                <RadzenDataGrid TItem="FacturacionLocalidad" SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" Style="width:100%; height:100%;">
                     <Columns>
                         <RadzenDataGridColumn Title="" TextAlign="TextAlign.Left" Width="40px">
                             <Template>

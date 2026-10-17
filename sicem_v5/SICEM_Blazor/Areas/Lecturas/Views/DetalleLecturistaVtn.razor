@@ -9,7 +9,7 @@
             <MatButton Class="mx-2" style="min-width: 130px;" Raised="true" @onclick="ExportarExcel_Click">Exportar Excel</MatButton>
         </div>
 
-        <RadzenDataGrid TItem="DetalleLecturista" @ref="DataGrid" Data="@Datos" AllowColumnResize="true" AllowSorting="false" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:100%;">
+        <RadzenDataGrid TItem="DetalleLecturista" SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" Data="@Datos" AllowColumnResize="true" AllowSorting="false" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:100%;">
             <Columns>
                 <RadzenDataGridColumn Property="@nameof(DetalleLecturista.Id_Localidad)" Title="Id Localidad" TextAlign="TextAlign.Center" Width="100px" Visible="false" />
                 <RadzenDataGridColumn Property="@nameof(DetalleLecturista.Localidad)" Title="Concepto" TextAlign="TextAlign.Left" Width="140px" />

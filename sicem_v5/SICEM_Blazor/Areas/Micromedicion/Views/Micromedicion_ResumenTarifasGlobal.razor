@@ -10,7 +10,7 @@
     </div>
 
     <div class="m-1 p-2 border rounded bg-white" style="width:100%; height: calc(100% - 4rem);">
-        <RadzenDataGrid TItem="Resumen_Tarifa" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
+        <RadzenDataGrid TItem="Resumen_Tarifa" SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
             <Columns>
                 <RadzenDataGridColumn Property="@nameof(Resumen_Tarifa.Descripcion)" Title="Tarifa" TextAlign="TextAlign.Left" Width="280px" />
                 <RadzenDataGridColumn Property="@nameof(Resumen_Tarifa.UsuMedidorFun)" Title="Medidores Funcionando" TextAlign="TextAlign.Center" Width="150px" FormatString="{0:n0}" />

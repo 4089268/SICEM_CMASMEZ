@@ -58,7 +58,7 @@
                     <div class="m-1 d-flex flex-column h-100" style="width:34%;">
 
                         <div class="w-100" style="height: calc(100% - 110px);">
-                            <RadzenDataGrid TItem="Recaudacion_PagosMayores_Items" Data="@PagosMayores_Detalle_Filtrado" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
+                            <RadzenDataGrid TItem="Recaudacion_PagosMayores_Items" SelectionMode="DataGridSelectionMode.Single" Data="@PagosMayores_Detalle_Filtrado" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
                                 <Columns>
                                     <RadzenDataGridColumn Property="@nameof(Recaudacion_PagosMayores_Items.Concepto)" Title="Concepto" TextAlign="TextAlign.Left" Width="100px" />
                                     <RadzenDataGridColumn Property="@nameof(Recaudacion_PagosMayores_Items.Subtotal)" Title="Subtotal" TextAlign="TextAlign.Right" Width="80px" FormatString="{0:c2}" />

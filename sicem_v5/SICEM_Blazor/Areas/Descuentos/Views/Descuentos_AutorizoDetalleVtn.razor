@@ -56,7 +56,7 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 3/4; grid-column: 1/2;">
-                <RadzenDataGrid TItem="DescuentosConcepto" Data="@datosGrid_Conceptos" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                <RadzenDataGrid TItem="DescuentosConcepto" SelectionMode="DataGridSelectionMode.Single" Data="@datosGrid_Conceptos" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
                     <Columns>
                         <RadzenDataGridColumn Property="@nameof(DescuentosConcepto.Id_Concepto)" Title="Id Concepto" TextAlign="TextAlign.Center" Width="110px" Visible="false" />
                         <RadzenDataGridColumn Property="@nameof(DescuentosConcepto.Descripcion)" Title="Concepto" TextAlign="TextAlign.Left" Width="140px" />
@@ -68,7 +68,7 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 3/4; grid-column: 2/3;">
-                <RadzenDataGrid TItem="DescuentosClave" Data="@datosGrid_Claves" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                <RadzenDataGrid TItem="DescuentosClave" SelectionMode="DataGridSelectionMode.Single" Data="@datosGrid_Claves" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
                     <Columns>
                         <RadzenDataGridColumn Property="@nameof(DescuentosClave.Cve_Descuento)" Title="Cve Descuento" TextAlign="TextAlign.Center" Width="140px" />
                         <RadzenDataGridColumn Property="@nameof(DescuentosClave.Conc_Sin_Iva)" Title="Subtotal" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:c2}" />

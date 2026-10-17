@@ -54,7 +54,7 @@
     </div>
 
     <div class="border rounded bg-white p-1" style="grid-area: 4/1/5/2;">
-        <RadzenDataGrid TItem="PagoLineaResumen" @ref="DataGrid" Data="@DataOffices" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:100%;">
+        <RadzenDataGrid TItem="PagoLineaResumen" SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" Data="@DataOffices" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:100%;">
             <Columns>
                 <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="40px">
                     <Template>

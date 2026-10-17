@@ -17,7 +17,10 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <RadzenDataGrid TItem="Recaudacion_IngresosDias" @ref="_dataGrid" Data="@DatosIngresos" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                <RadzenDataGrid TItem="Recaudacion_IngresosDias" @ref="_dataGrid" Data="@DatosIngresos" AllowColumnResize="true" AllowSorting="true" 
+                AllowFiltering="false" Style="height:100%; width:auto;"
+                SelectionMode="DataGridSelectionMode.Single"
+                >
                     <Columns>
                         <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="60px">
                             <Template>

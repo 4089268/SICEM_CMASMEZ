@@ -19,7 +19,7 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <RadzenDataGrid TItem="Facturacion_Conceptos" @ref="DataGrid" Data="@_datosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:100%;">
+                <RadzenDataGrid TItem="Facturacion_Conceptos" SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" Data="@_datosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:100%;">
                     <Columns>
                         <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.Id_Concepto)" Title="Id Concepto" TextAlign="TextAlign.Center" Width="60px" Visible="false" />
                         <RadzenDataGridColumn Property="@nameof(Facturacion_Conceptos.Concepto)" Title="Concepto" TextAlign="TextAlign.Left" Width="180px" />

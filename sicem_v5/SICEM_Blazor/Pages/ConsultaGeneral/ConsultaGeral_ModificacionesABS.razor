@@ -79,7 +79,7 @@
             </div>
 
             <div class="p-1" style="grid-row: 2/3; grid-column: 2/3; align-items: center;">
-                <RadzenDataGrid @ref="@MyDataGrid2" TItem="ConsultaGral_ModificacionesABCResponse_Item" Data="@CamposModificados" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%;">
+                <RadzenDataGrid SelectionMode="DataGridSelectionMode.Single" @ref="@MyDataGrid2" TItem="ConsultaGral_ModificacionesABCResponse_Item" Data="@CamposModificados" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%;">
                     <Columns>
                         <RadzenDataGridColumn Property="@nameof(ConsultaGral_ModificacionesABCResponse_Item.Campo)" Title="Campo" TextAlign="TextAlign.Left" Width="140px" />
                         <RadzenDataGridColumn Property="@nameof(ConsultaGral_ModificacionesABCResponse_Item.Valor_Ant)" Title="Valor Anterior" TextAlign="TextAlign.Left" Width="140px" />

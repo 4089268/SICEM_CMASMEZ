@@ -23,7 +23,7 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <RadzenDataGrid TItem="PagoLineaDetalle" @ref="DataGrid" Data="@Datos" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                <RadzenDataGrid TItem="PagoLineaDetalle" SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" Data="@Datos" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
                     <Columns>
                         <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="40px">
                             <Template>

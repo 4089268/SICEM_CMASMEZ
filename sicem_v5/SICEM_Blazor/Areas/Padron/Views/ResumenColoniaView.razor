@@ -6,7 +6,7 @@
 </div>
 
 <div class="div_grid" style="height: calc(100% - 35px);">
-    <RadzenDataGrid TItem="ResumenColonia" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" Style="height:100%; width:100%;">
+    <RadzenDataGrid TItem="ResumenColonia" SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" Style="height:100%; width:100%;">
         <Columns> 
             <RadzenDataGridColumn Title="" TextAlign="TextAlign.Left" Width="40px">
                 <Template>

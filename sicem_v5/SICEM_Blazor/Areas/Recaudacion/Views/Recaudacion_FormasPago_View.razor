@@ -15,7 +15,7 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-area: 2/1/3/2;">
-                <RadzenDataGrid TItem="Ingresos_FormasPago" @ref="DataGrid" Data="@ListaDatos" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:100%;">
+                <RadzenDataGrid TItem="Ingresos_FormasPago" SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" Data="@ListaDatos" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:100%;">
                     <Columns>
                         <RadzenDataGridColumn Property="@nameof(Ingresos_FormasPago.Id)" Title="Id" TextAlign="TextAlign.Left" Width="20px" Visible="false" />
                         <RadzenDataGridColumn Property="@nameof(Ingresos_FormasPago.Forma_Pago)" Title="Forma de Pago" TextAlign="TextAlign.Left" Width="210px" />

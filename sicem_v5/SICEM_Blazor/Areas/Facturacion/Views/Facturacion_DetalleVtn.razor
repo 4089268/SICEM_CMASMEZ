@@ -12,7 +12,7 @@
             </div>
 
             <div class="p-2 border bg-white runded">
-                <RadzenDataGrid TItem="Factura" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowPaging="true" PageSize="1000" Style="width:100%; height:100%;">
+                <RadzenDataGrid TItem="Factura" SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowPaging="true" PageSize="1000" Style="width:100%; height:100%;">
                     <Columns>
                         @* <RadzenDataGridColumn Property="@nameof(Factura.IdFactura)" Title="Id Factura" TextAlign="TextAlign.Left" Width="170px" /> *@
                         <RadzenDataGridColumn Property="@nameof(Factura.IdCuenta)" Title="Cuenta" TextAlign="TextAlign.Center" Width="100px" />

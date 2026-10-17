@@ -77,7 +77,7 @@
                 </div>
 
                 <div style="height: calc(100% - 10rem);">
-                    <RadzenDataGrid TItem="Padron_ModifABC_Campo" @ref="_dataGrid2" Data="@datosGrid_campos" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" Style="height:100%; width:100%;">
+                    <RadzenDataGrid TItem="Padron_ModifABC_Campo" SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid2" Data="@datosGrid_campos" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" Style="height:100%; width:100%;">
                         <Columns>
                             <RadzenDataGridColumn Property="@nameof(Padron_ModifABC_Campo.Campo)" Title="Campo" Width="110px"> </RadzenDataGridColumn>
                             <RadzenDataGridColumn Property="@nameof(Padron_ModifABC_Campo.valor_ant)" Title="Valor Anterior" Width="90px"></RadzenDataGridColumn>

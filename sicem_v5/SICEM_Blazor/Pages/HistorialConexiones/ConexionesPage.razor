@@ -57,7 +57,7 @@
         </div>
 
         <div class="p-1" style="width: 100%; height: calc(100% - 4.5rem);">
-            <RadzenDataGrid TItem="SesionInfo" @ref="DataGrid" Data="@(Sicem_Blazor.Helpers.BusquedaGrid.Filtrar(DatosGrid, _textoBusquedaGrid))" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:100%;">
+            <RadzenDataGrid TItem="SesionInfo" SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" Data="@(Sicem_Blazor.Helpers.BusquedaGrid.Filtrar(DatosGrid, _textoBusquedaGrid))" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:100%;">
                 <Columns>
                     <RadzenDataGridColumn Width="15px">
                         <Template>

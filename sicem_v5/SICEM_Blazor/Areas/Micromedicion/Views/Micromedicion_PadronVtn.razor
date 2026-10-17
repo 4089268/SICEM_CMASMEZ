@@ -15,7 +15,7 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <RadzenDataGrid TItem="Micromedicion_Padron" @ref="_dataGrid" Data="@datosGrid" AllowPaging="@_allowPaging" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" PageSize="500" Style="height:100%; width:auto;">
+                <RadzenDataGrid TItem="Micromedicion_Padron" SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid" Data="@datosGrid" AllowPaging="@_allowPaging" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" PageSize="500" Style="height:100%; width:auto;">
                     <Columns>
                         <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Estatus)" Title="Estatus" TextAlign="TextAlign.Left" Width="100px" />
                         <RadzenDataGridColumn Property="@nameof(Micromedicion_Padron.Contrato)" Title="Contrato" TextAlign="TextAlign.Center" Width="90px" />

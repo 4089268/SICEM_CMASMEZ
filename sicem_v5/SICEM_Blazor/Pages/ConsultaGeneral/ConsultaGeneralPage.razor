@@ -59,7 +59,7 @@
     <div class="border rounded bg-white p-2 panelConceptos">
         <div class="mb-2 label-header">CONCEPTOS FACTURADOS</div>
         <div class="p-1">
-            <RadzenDataGrid @ref="@_dataGrid" TItem="ConsultaGralResponse_saldoItem" Data="@SaldoActualArray" AllowSorting="true" AllowFiltering="false" AllowAlternatingRows="true" Style="height:100%; width:100%;">
+            <RadzenDataGrid SelectionMode="DataGridSelectionMode.Single" @ref="@_dataGrid" TItem="ConsultaGralResponse_saldoItem" Data="@SaldoActualArray" AllowSorting="true" AllowFiltering="false" AllowAlternatingRows="true" Style="height:100%; width:100%;">
                 <Columns>
                     <RadzenDataGridColumn Property="@nameof(ConsultaGralResponse_saldoItem.Concepto)" Title="CONCEPTO" TextAlign="TextAlign.Left" Width="110px" />
                     <RadzenDataGridColumn Property="@nameof(ConsultaGralResponse_saldoItem.Subtotal)" Title="IMPORTE" TextAlign="TextAlign.Right" Width="50px" FormatString="{0:c2}" />

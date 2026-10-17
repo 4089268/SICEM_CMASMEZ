@@ -95,7 +95,7 @@
 
     @* ****** DataGrid ****** *@
     <div class="border rounded bg-white p-1" style="grid-area: 4/2/5/3;">
-        <RadzenDataGrid TItem="ResumeOffice" @ref="DataGrid" Data="@DataOffices" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:100%;">
+        <RadzenDataGrid TItem="ResumeOffice" SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" Data="@DataOffices" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:100%;">
             <Columns>
                 <RadzenDataGridColumn Property="@nameof(ResumeOffice.OfficeName)" Title="Oficina" TextAlign="TextAlign.Left" Width="100px" />
                 <RadzenDataGridColumn Property="@nameof(ResumeOffice.TotalIncome)" Title="Importe cobrado" TextAlign="TextAlign.Right" Width="125px" FormatString="{0:c2}" />

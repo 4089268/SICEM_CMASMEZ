@@ -56,7 +56,7 @@
             <div class="d-flex flex-column p-2 m-1 bg-white border rounded" style="grid-area:1/2/2/3">
                 <h5 id="cf-tit-opc" class="m-1">Catalogo Opciones</h5>
                 <div style="height: calc(100% - 20px);">
-                    <RadzenDataGrid TItem="CatOpcione" Data="@CatalogoOpciones" AllowColumnResize="true" AllowSorting="true" Density="Density.Compact" Style="height:100%; width:100%;">
+                    <RadzenDataGrid TItem="CatOpcione" SelectionMode="DataGridSelectionMode.Single" Data="@CatalogoOpciones" AllowColumnResize="true" AllowSorting="true" Density="Density.Compact" Style="height:100%; width:100%;">
                         <Columns>
                             <RadzenDataGridColumn Property="@nameof(CatOpcione.Descripcion)" Title="Opcion" TextAlign="TextAlign.Left" Width="140px"></RadzenDataGridColumn>
                             <RadzenDataGridColumn Property="@nameof(CatOpcione.IdOpcion)" Title="Activo" TextAlign="TextAlign.Center" Width="70px">
@@ -75,7 +75,7 @@
             <div class="d-flex flex-column p-2 m-1 bg-white border rounded" style="grid-area:1/3/2/4">
                 <h5 id="cf-tit-ofi" class="m-1">Catalogo Oficinas</h5>
                 <div style="height: calc(100% - 20px);">
-                    <RadzenDataGrid TItem="Ruta" Data="@CatalogoOficinas" AllowColumnResize="true" AllowSorting="true" Density="Density.Compact" Style="height:100%; width:100%;">
+                    <RadzenDataGrid TItem="Ruta" SelectionMode="DataGridSelectionMode.Single" Data="@CatalogoOficinas" AllowColumnResize="true" AllowSorting="true" Density="Density.Compact" Style="height:100%; width:100%;">
                         <Columns>
                             <RadzenDataGridColumn Property="@nameof(Ruta.Oficina)" Title="Oficina" TextAlign="TextAlign.Left" Width="140px"></RadzenDataGridColumn>
                             <RadzenDataGridColumn Property="@nameof(Ruta.Id)" Title="Activo" TextAlign="TextAlign.Center" Width="70px">

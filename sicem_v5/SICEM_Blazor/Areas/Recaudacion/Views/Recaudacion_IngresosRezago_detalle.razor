@@ -18,7 +18,7 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <RadzenDataGrid TItem="Recaudacion_Rezago_Detalle" @ref="_dataGrid" Data="@Datos" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" AllowPaging="@(Datos.Count() > 1500)" PageSize="1000" Style="height:100%; width:auto;">
+                <RadzenDataGrid TItem="Recaudacion_Rezago_Detalle" SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid" Data="@Datos" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" AllowPaging="@(Datos.Count() > 1500)" PageSize="1000" Style="height:100%; width:auto;">
                     <Columns>
                             <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="55px">
                                 <Template>

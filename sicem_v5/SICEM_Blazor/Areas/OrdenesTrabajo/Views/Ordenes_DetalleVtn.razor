@@ -75,7 +75,7 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 3/4; grid-column: 1/2;">
-                <RadzenDataGrid TItem="Ordenes_Detalle" @ref="_dataGrid" Data="@datosGrid" AllowPaging="@_allowPagesGrid" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" PageSize="500" Style="height:100%; width:auto;">
+                <RadzenDataGrid TItem="Ordenes_Detalle" SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid" Data="@datosGrid" AllowPaging="@_allowPagesGrid" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" PageSize="500" Style="height:100%; width:auto;">
                     <Columns>
                         <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="55px">
                             <Template>

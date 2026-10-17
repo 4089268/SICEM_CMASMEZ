@@ -24,7 +24,7 @@
 	</div>
 
 	<div class="d-flex align-items-center p-2 border rounded bg-white" >
-		<RadzenDataGrid TItem="Sesion" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="false" Style="height:100%; width:100%;">
+		<RadzenDataGrid TItem="Sesion" SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="false" Style="height:100%; width:100%;">
             <Columns>
                 <RadzenDataGridColumn Property="@nameof(Sesion.IdSesion)" Title="Id" TextAlign="TextAlign.Left" Width="240px" />
                 <RadzenDataGridColumn Property="@nameof(Sesion.NombreUsuario)" Title="Usuario" TextAlign="TextAlign.Left" Width="280px" />

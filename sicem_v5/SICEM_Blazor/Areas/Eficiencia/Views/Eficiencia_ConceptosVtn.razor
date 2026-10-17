@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                    <RadzenDataGrid TItem="Eficiencia_Conceptos" @ref="_dataGrid" Data="@datosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                    <RadzenDataGrid TItem="Eficiencia_Conceptos" SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid" Data="@datosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
                         <Columns>
                             <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Tipo_Usuario)" Title="Tipo_Usuario" TextAlign="TextAlign.Left" Width="120px" />
                             <RadzenDataGridColumn Property="@nameof(Eficiencia_Conceptos.Facturacion)" Title="Facturado" TextAlign="TextAlign.Right" Width="100px" FormatString="{0:c2}" />

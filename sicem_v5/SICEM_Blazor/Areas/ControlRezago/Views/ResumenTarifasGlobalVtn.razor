@@ -13,7 +13,7 @@
                 </div>
 
                 <div class="m-1 p-2 border rounded bg-white" style="width:100%; height: calc(100% - 4rem);">
-                    <RadzenDataGrid TItem="HistSaldoTarifa" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
+                    <RadzenDataGrid TItem="HistSaldoTarifa" SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
                         <Columns>
                             <RadzenDataGridColumn Property="@nameof(HistSaldoTarifa.Tarifa)" Title="Tarifa" TextAlign="TextAlign.Left" Width="200px" />
                             <RadzenDataGridColumn Property="@nameof(HistSaldoTarifa.Usu_0)" Title="Usu M.A. 0" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />

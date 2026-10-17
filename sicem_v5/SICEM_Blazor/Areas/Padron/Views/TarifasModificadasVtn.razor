@@ -30,7 +30,7 @@
             <!-- ****** DataGrid ****** -->
             <Panel>
             <Content>
-                <RadzenDataGrid TItem="Padron_ModifTarifa" @ref="_dataGrid" Data="@datosGrid" AllowPaging="@_allowPagesGrid" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" PageSize="1000" Style="height:100%; width:auto;">
+                <RadzenDataGrid TItem="Padron_ModifTarifa" SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid" Data="@datosGrid" AllowPaging="@_allowPagesGrid" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" PageSize="1000" Style="height:100%; width:auto;">
                     <Columns>
                         <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="55px">
                             <Template>

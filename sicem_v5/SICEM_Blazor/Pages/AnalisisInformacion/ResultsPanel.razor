@@ -22,7 +22,7 @@
 </div>
 
 <div class="m-2 w-100 ns-small"  style="height: calc(100% - 106px)">
-    <RadzenDataGrid @ref="DataGrid" TItem="CatPadron" Data="@DatosGrid" AllowGrouping="true" Groups="@_grupos" AllowColumnResize="true" AllowSorting="true"
+    <RadzenDataGrid SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" TItem="CatPadron" Data="@DatosGrid" AllowGrouping="true" Groups="@_grupos" AllowColumnResize="true" AllowSorting="true"
         AllowPaging="true" PageSize="200" Density="Density.Compact" class="grid-sin-panel-grupos" Style="height:100%; width:100%;">
         <GroupHeaderTemplate Context="grupo">
             <div>OFICINA @grupo.Data.Key - @grupo.Data.Count.ToString("n0") cuentas</div>

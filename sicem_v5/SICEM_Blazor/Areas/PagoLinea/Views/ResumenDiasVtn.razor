@@ -13,7 +13,7 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-area: 2/1/3/2;">
-                <RadzenDataGrid TItem="PagoLineaResumenDia" @ref="DataGrid" Data="@Datos" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                <RadzenDataGrid TItem="PagoLineaResumenDia" SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" Data="@Datos" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
                     <Columns>
                         <RadzenDataGridColumn Property="@nameof(PagoLineaResumenDia.FechaString)" Title="Fecha" TextAlign="TextAlign.Left" Width="120px" />
                         <RadzenDataGridColumn Property="@nameof(PagoLineaResumenDia.TotalPagos)" Title="Pagos cobrados" TextAlign="TextAlign.Right" Width="120px" FormatString="{0:n0}" />

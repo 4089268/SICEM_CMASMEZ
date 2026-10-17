@@ -31,7 +31,7 @@
             </RadzenChart>
         </div>
         <div style="height:25%">
-            <RadzenDataGrid @ref="_dataGrid" TItem="OfficePushpinMap" Data="@IncomeData" Style="height:100%; width:100%;">
+            <RadzenDataGrid SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid" TItem="OfficePushpinMap" Data="@IncomeData" Style="height:100%; width:100%;">
                 <Columns>
                     <RadzenDataGridColumn Property="@nameof(OfficePushpinMap.Office)" Title="Sucursal" TextAlign="TextAlign.Left" />
                     <RadzenDataGridColumn Property="@nameof(OfficePushpinMap.Bills)" Title="Recibos" TextAlign="TextAlign.Right" FormatString="{0:n0}" />

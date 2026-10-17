@@ -24,7 +24,10 @@
 
     @* ****** DataGrid ****** *@
     <div class="border rounded bg-white p-2 d-flex" style="grid-area:4/1/5/2;">
-        <RadzenDataGrid TItem="Recaudacion_Resumen" @ref="dataGrid" Data="@DatosRecaudacion" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:100%;">
+        <RadzenDataGrid TItem="Recaudacion_Resumen" @ref="dataGrid" Data="@DatosRecaudacion" AllowColumnResize="true"
+        AllowSorting="true" AllowFiltering="false" Style="height:100%; width:100%;"
+        SelectionMode="DataGridSelectionMode.Single"
+        >
             <Columns>
                 <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="40px">
                     <Template>

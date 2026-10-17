@@ -13,7 +13,7 @@
         </div>
 
         <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-            <RadzenDataGrid TItem="EficienciaResumen" @ref="_dataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+            <RadzenDataGrid TItem="EficienciaResumen" SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
                 <Columns>
                     <RadzenDataGridColumn Property="@nameof(EficienciaResumen.Oficina)" Title="Oficina" TextAlign="TextAlign.Left" Width="170px" Visible="false" />
                     <RadzenDataGridColumn Property="@nameof(EficienciaResumen.Mes)" Title="Mes" TextAlign="TextAlign.Left" Width="100px" />

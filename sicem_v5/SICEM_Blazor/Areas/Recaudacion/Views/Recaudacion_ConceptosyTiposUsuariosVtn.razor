@@ -20,7 +20,7 @@
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
                 <div class="w-100 h-100">
-                    <RadzenDataGrid TItem="ConceptoTipoUsuario" @ref="DataGrid" Data="@DatosGrid" AllowGrouping="true" Groups="@_grupos" class="grid-sin-panel-grupos" AllowSorting="false" AllowColumnResize="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
+                    <RadzenDataGrid TItem="ConceptoTipoUsuario" SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" Data="@DatosGrid" AllowGrouping="true" Groups="@_grupos" class="grid-sin-panel-grupos" AllowSorting="false" AllowColumnResize="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
                         <GroupHeaderTemplate Context="grupo">
                             @if (grupo.Data.Key?.ToString().Contains("--*--") == true)
                             {

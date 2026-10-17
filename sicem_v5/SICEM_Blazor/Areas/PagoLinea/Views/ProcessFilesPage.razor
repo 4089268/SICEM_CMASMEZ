@@ -37,7 +37,7 @@
                     </label>
                 </div>
                 <div class="h-100 w-100 border-top mt-1">
-                    <RadzenDataGrid TItem="UploadFilePayloadJob" @ref="DataGridFiles" Data="@RecordsFiles" AllowColumnResize="true" AllowSorting="true" Style="height:100%; width:100%;">
+                    <RadzenDataGrid TItem="UploadFilePayloadJob" SelectionMode="DataGridSelectionMode.Single" @ref="DataGridFiles" Data="@RecordsFiles" AllowColumnResize="true" AllowSorting="true" Style="height:100%; width:100%;">
                         <Columns>
                             <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="40px">
                                 <Template>
@@ -102,7 +102,7 @@
                     }
                 </div>
                 <div class="datatable">
-                    <RadzenDataGrid TItem="TransactionRecord" @ref="DataGridRecords" Data="@_recordsView" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" AllowPaging="true" PageSize="100" Style="height:100%; width:100%;">
+                    <RadzenDataGrid TItem="TransactionRecord" SelectionMode="DataGridSelectionMode.Single" @ref="DataGridRecords" Data="@_recordsView" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" AllowPaging="true" PageSize="100" Style="height:100%; width:100%;">
                         <Columns>
                             <RadzenDataGridColumn Title="Estatus Aplicado" TextAlign="TextAlign.Center" Width="150px">
                                 <Template>

@@ -26,7 +26,7 @@
                 </div>
 
                 <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                    <RadzenDataGrid TItem="Eficiencia_Colonia" @ref="_dataGrid" Data="@datosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                    <RadzenDataGrid TItem="Eficiencia_Colonia" SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid" Data="@datosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
                         <Columns>
                             <RadzenDataGridColumn Title="" TextAlign="TextAlign.Center" Width="55px">
                                 <Template>

@@ -26,7 +26,7 @@
 
                 @**** DataGrid*@
                 <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                    <RadzenDataGrid TItem="ControlRezago_Eficacia_Resumen" @ref="_dataGrid" Data="@datosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                    <RadzenDataGrid TItem="ControlRezago_Eficacia_Resumen" SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid" Data="@datosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
                         <Columns>
                             <RadzenDataGridColumn Property="@nameof(ControlRezago_Eficacia_Resumen.Trabajo)" Title="Trabajo" TextAlign="TextAlign.Left" Width="180px" />
                             <RadzenDataGridColumn Property="@nameof(ControlRezago_Eficacia_Resumen.PENDIENTES)" Title="Pendientes" TextAlign="TextAlign.Center" Width="100px" />

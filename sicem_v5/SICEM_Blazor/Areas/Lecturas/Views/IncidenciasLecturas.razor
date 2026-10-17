@@ -18,7 +18,7 @@
 
     @* ****** DataGrid ****** *@
     <div class="border rounded bg-white p-2 d-flex" style="grid-area:3/1/5/2;">
-        <RadzenDataGrid TItem="Incidencia" @ref="dataGrid" Data="@DatosLecturas" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:100%;">
+        <RadzenDataGrid TItem="Incidencia" SelectionMode="DataGridSelectionMode.Single" @ref="dataGrid" Data="@DatosLecturas" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:100%;">
             <Columns>
                 <RadzenDataGridColumn Property="@nameof(Incidencia.Cuenta)" Title="Cuenta" TextAlign="TextAlign.Center" Width="115px" FormatString="{0:n0}" />
                 <RadzenDataGridColumn Property="@nameof(Incidencia.Localizacion)" Title="Localizacion" TextAlign="TextAlign.Left" Width="170px" />

@@ -50,7 +50,7 @@
                 </div>
 
                 <div class="m-1 p-2 border rounded bg-white" style="grid-row: 3/4; grid-column: 1/2;">
-                    <RadzenDataGrid TItem="ControlRezago_Eficacia_Detalle" @ref="_dataGrid" Data="@datosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                    <RadzenDataGrid TItem="ControlRezago_Eficacia_Detalle" SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid" Data="@datosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
                         <Columns>
                             <RadzenDataGridColumn Property="@nameof(ControlRezago_Eficacia_Detalle.Trabajador)" Title="Trabajador" TextAlign="TextAlign.Left" Width="180px" />
                             <RadzenDataGridColumn Property="@nameof(ControlRezago_Eficacia_Detalle.Ord_Tot)" Title="Total Ordenes" TextAlign="TextAlign.Center" Width="80px" />

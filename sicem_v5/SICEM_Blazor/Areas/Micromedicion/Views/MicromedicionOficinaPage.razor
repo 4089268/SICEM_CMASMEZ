@@ -23,7 +23,7 @@
             </div>
 
             <div class="m-1 p-1" style="grid-row: 2/3; grid-column: 1/2; height:220px;">
-                <RadzenDataGrid TItem="Micromedicion_Item" @ref="_dataGrid" Data="@_datosGrid" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                <RadzenDataGrid TItem="Micromedicion_Item" SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid" Data="@_datosGrid" AllowSorting="true" AllowColumnResize="true" AllowFiltering="false" Style="height:100%; width:auto;">
                     <Columns>
                         <RadzenDataGridColumn Property="@nameof(Micromedicion_Item.Descripcion_Mes)" Title="Mes" TextAlign="TextAlign.Left" Width="60px" />
                         <RadzenDataGridColumn Property="@nameof(Micromedicion_Item.Reales)" Title="Reales" TextAlign="TextAlign.Right" Width="75px" FormatString="{0:n0}" />

@@ -9,7 +9,7 @@
     </div>
 
     <div class="m-1 p-2 border rounded bg-white" style="width:100%; height: calc(100% - 4rem);">
-        <RadzenDataGrid TItem="Resumen_Tarifa" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" class="grid-sin-panel-grupos" AllowGrouping="true" Groups="@_grupos" Style="height:100%; width:auto;">
+        <RadzenDataGrid TItem="Resumen_Tarifa" SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" Data="@DatosGrid" AllowColumnResize="true" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" class="grid-sin-panel-grupos" AllowGrouping="true" Groups="@_grupos" Style="height:100%; width:auto;">
             <GroupHeaderTemplate>
                     @{
                         var order = new { Key = context.Data.Key?.ToString() ?? "", Count = context.Data.Count };

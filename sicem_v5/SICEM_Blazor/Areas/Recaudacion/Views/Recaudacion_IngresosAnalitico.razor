@@ -32,7 +32,7 @@
                             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 3/4; grid-column: 1/2;">
                                 @if (visibles[0, 0])
                                 {
-                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoMensual" @ref="_dataGrid_analitico_mensual" Data="@DatosAnalitico.Analitico_Mensual.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
+                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoMensual" SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid_analitico_mensual" Data="@DatosAnalitico.Analitico_Mensual.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
                                         <Columns>
                                             <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Oficina)" Title="Oficina" TextAlign="TextAlign.Center" Width="120px" />
                                             <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Año)" Title="Año" TextAlign="TextAlign.Center" Width="130px" />
@@ -54,7 +54,7 @@
                                 }
                                 @if (visibles[0, 1])
                                 {
-                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoQuincenal" @ref="_dataGrid_analitico_quincenal" Data="@DatosAnalitico.Analitico_Quincenal.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
+                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoQuincenal" SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid_analitico_quincenal" Data="@DatosAnalitico.Analitico_Quincenal.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
                                         <Columns>
                                             <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Oficina)" Title="Oficina" TextAlign="TextAlign.Center" Width="120px" />
                                             <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Año)" Title="Año" TextAlign="TextAlign.Center" Width="130px" />
@@ -88,7 +88,7 @@
                                 }
                                 @if (visibles[0, 2])
                                 {
-                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoSemanal" @ref="_dataGrid_analitico_semanal" Data="@DatosAnalitico.Analitico_Semanal.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
+                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoSemanal" SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid_analitico_semanal" Data="@DatosAnalitico.Analitico_Semanal.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
                                         <Columns>
                                             <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Oficina)" Title="Oficina" TextAlign="TextAlign.Center" Width="120px" />
                                             <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Año)" Title="Año" TextAlign="TextAlign.Center" Width="130px" />
@@ -201,7 +201,7 @@
                             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 3/4; grid-column: 1/2;">
                                 @if (visibles[1, 0])
                                 {
-                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoMensual" @ref="_dataGrid_analiticoRez_mensual" Data="@DatosAnalitico.AnaliticoRez_Mensual.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
+                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoMensual" SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid_analiticoRez_mensual" Data="@DatosAnalitico.AnaliticoRez_Mensual.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
                                         <Columns>
                                             <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Oficina)" Title="Oficina" TextAlign="TextAlign.Center" Width="120px" />
                                             <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoMensual.Año)" Title="Año" TextAlign="TextAlign.Center" Width="130px" />
@@ -223,7 +223,7 @@
                                 }
                                 @if (visibles[1, 1])
                                 {
-                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoQuincenal" @ref="_dataGrid_analiticoRez_quincenal" Data="@DatosAnalitico.AnaliticoRez_Quincenal.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
+                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoQuincenal" SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid_analiticoRez_quincenal" Data="@DatosAnalitico.AnaliticoRez_Quincenal.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;">
                                         <Columns>
                                             <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Oficina)" Title="Oficina" TextAlign="TextAlign.Center" Width="120px" />
                                             <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoQuincenal.Año)" Title="Año" TextAlign="TextAlign.Center" Width="130px" />
@@ -257,7 +257,7 @@
                                 }
                                 @if (visibles[1, 2])
                                 {
-                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoSemanal" @ref="_dataGrid_analiticoRez_semanal" Data="@DatosAnalitico.AnaliticoRez_Semanal.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;"> 
+                                    <RadzenDataGrid TItem="Recaudacion_AnaliticoSemanal" SelectionMode="DataGridSelectionMode.Single" @ref="_dataGrid_analiticoRez_semanal" Data="@DatosAnalitico.AnaliticoRez_Semanal.OrderByDescending(item => item.Año)" AllowSorting="true" AllowFiltering="false" Density="Density.Compact" Style="height:100%; width:auto;"> 
                                         <Columns>
                                             <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Oficina)" Title="Oficina" TextAlign="TextAlign.Center" Width="120px" />
                                             <RadzenDataGridColumn Property="@nameof(Recaudacion_AnaliticoSemanal.Año)" Title="Año" TextAlign="TextAlign.Center" Width="130px" />

@@ -21,7 +21,7 @@
                 }
                 else
                 {
-                    <RadzenDataGrid TItem="Usuario" @ref="dataGrid" Data="@(Sicem_Blazor.Helpers.BusquedaGrid.Filtrar(CatUsuarios, _textoBusquedaGrid))" AllowColumnResize="true" AllowSorting="true" Density="Density.Compact" Style="height:100%;">
+                    <RadzenDataGrid TItem="Usuario" SelectionMode="DataGridSelectionMode.Single" @ref="dataGrid" Data="@(Sicem_Blazor.Helpers.BusquedaGrid.Filtrar(CatUsuarios, _textoBusquedaGrid))" AllowColumnResize="true" AllowSorting="true" Density="Density.Compact" Style="height:100%;">
                         <Columns>
                             <RadzenDataGridColumn Property="@nameof(Usuario.Nombre)" Title="Nombre" TextAlign="TextAlign.Left" Width="140px"></RadzenDataGridColumn>
                             <RadzenDataGridColumn Property="@nameof(Usuario.Usuario1)" Title="Usuario" TextAlign="TextAlign.Left" Width="80px"></RadzenDataGridColumn>

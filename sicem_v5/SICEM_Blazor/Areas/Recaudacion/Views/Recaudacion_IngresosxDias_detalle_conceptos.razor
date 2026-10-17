@@ -15,7 +15,7 @@
             </div>
 
             <div class="m-1 p-2 border rounded bg-white" style="grid-row: 2/3; grid-column: 1/2;">
-                <RadzenDataGrid TItem="Recaudacion_IngresosDetalleConceptos" @ref="DataGrid" Data="@Datos" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
+                <RadzenDataGrid TItem="Recaudacion_IngresosDetalleConceptos" SelectionMode="DataGridSelectionMode.Single" @ref="DataGrid" Data="@Datos" AllowSorting="true" AllowFiltering="false" Style="height:100%; width:auto;">
                     <Columns>
                         <RadzenDataGridColumn Property="@nameof(Recaudacion_IngresosDetalleConceptos.Descripcion)" Title="Descripcion" TextAlign="TextAlign.Left" Width="220px" />
                         <RadzenDataGridColumn Property="@nameof(Recaudacion_IngresosDetalleConceptos.Concepto_Con_Iva)" Title="Conc Con Iva" TextAlign="TextAlign.Right" Width="140px" FormatString="{0:c2}" />
